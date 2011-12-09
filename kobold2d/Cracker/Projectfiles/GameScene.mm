@@ -9,6 +9,7 @@
 #import "GameScene.h"
 #import "MenuScene.h"
 #import "PlayLayer.h"
+#import "SimpleAudioEngine.h"
 
 @implementation GameScene
 
@@ -19,6 +20,8 @@
         [self addChild:[PlayLayer node]];
         
         [self scheduleUpdate];
+        
+
     }
     return self;
 }

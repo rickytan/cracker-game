@@ -10,11 +10,13 @@
 #import "Box2D.h"
 #import "CC3Node.h"
 #import "Ball3DLayer.h"
+#import "ContactListener.h"
 
 @interface PlayLayer : CCLayer {
     b2World *               world;
-
+    ContactListener *       contact;
     Ball3DLayer *           ball3DLayer;// Weak assign
+    b2Body *                theBall;    // Weak assign
     NSTimer *               timer;
     
     uint                    score;

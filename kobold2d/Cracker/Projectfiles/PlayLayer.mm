@@ -10,10 +10,12 @@
 #import "Ball3DLayer.h"
 #import "Hello3DLayer.h"
 #import "Hello3DWorld.h"
+#import "SimpleAudioEngine.h"
+
 
 @interface PlayLayer (PrivateMethods)
 - (void)CreateScreenBound;
-- (void)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r;
+- (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r;
 @end
 
 @implementation PlayLayer
@@ -26,6 +28,7 @@ const float PTM_RATIO = 128.0f;
     [super dealloc];
 #endif
     delete world;
+    delete contact;
 }
 
 - (id)init
@@ -35,6 +38,8 @@ const float PTM_RATIO = 128.0f;
         world = new b2World(b2Vec2(0.0f,0.0f));
         world->SetAllowSleeping(NO);
         
+        contact = new ContactListener;
+        world->SetContactListener(contact);
         
         
         ball3DLayer = [Ball3DLayer node];
@@ -44,14 +49,12 @@ const float PTM_RATIO = 128.0f;
         [self CreateScreenBound];
         CGPoint p = [ball3DLayer getBallLocation];
         CGFloat r = [ball3DLayer getBallRadius];
-        [self CreateBallAtScreenLocation:p withScreenRadius:r];
-        
-        CCSprite *bg = [CCSprite spriteWithFile:@"wood2.jpg"];
-        [self addChild:bg z:-1];
-        bg.position = [CCDirector sharedDirector].screenCenter;
+        theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
         
         [self scheduleUpdate];
-        [KKInput sharedInput].accelerometerActive = YES;
+        
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"Pow.caf"];
+        
         [KKInput sharedInput].deviceMotionActive = YES;
     }
     return self;
@@ -89,7 +92,7 @@ const float PTM_RATIO = 128.0f;
     screenBorderBody->CreateFixture(&screenBorderShape, 0)->SetRestitution(boundFriction);
 }
 
-- (void)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r
+- (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r
 {
     p = ccpMult(p, 1 / PTM_RATIO);
     
@@ -109,6 +112,7 @@ const float PTM_RATIO = 128.0f;
     fix.density = 0.3;
     
     ball->CreateFixture(&fix);
+    return ball;
 }
 
 // convenience method to convert a CGPoint to a b2Vec2
@@ -146,6 +150,13 @@ const float PTM_RATIO = 128.0f;
     int32 positionIterations = 1;
     world->Step(delta, velocityIterations, positionIterations);
     
+    
+    CGPoint p = [self toPixels:theBall->GetPosition()];
+    CGFloat a = theBall->GetAngle();
+    
+    [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
+    
+    /*
     // for each body, get its assigned sprite and update the sprite's position
     for (b2Body* body = world->GetBodyList(); body != nil; body = body->GetNext())
     {
@@ -156,6 +167,7 @@ const float PTM_RATIO = 128.0f;
             [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
         }
     }
+     */
 }
 
 @end
