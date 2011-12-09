@@ -7,6 +7,7 @@
 
 #import "ContactListener.h"
 #import "cocos2d.h"
+#import "SimpleAudioEngine.h"
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
@@ -20,6 +21,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 		spriteA.color = ccMAGENTA;
 		spriteB.color = ccMAGENTA;
 	}
+    [[SimpleAudioEngine sharedEngine] playEffect:@"Pow.caf"];
 }
 
 void ContactListener::EndContact(b2Contact* contact)

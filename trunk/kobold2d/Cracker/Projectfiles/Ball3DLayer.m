@@ -13,6 +13,8 @@
 #import "CC3ParametricMeshNodes.h"
 #import "CC3Camera.h"
 #import "CC3Light.h"
+#import "CC3VertexArrays.h"
+#import "CC3VertexArrayMesh.h"
 
 
 @interface Ball3DWorld : CC3World {
@@ -42,7 +44,7 @@
 	// Create the camera, place it back a bit
 	_cam = [CC3Camera nodeWithName: @"Camera"];
 	_cam.location = cc3v(0.0, 0.0, 15.0);
-    _ballRadius = 0.5f;
+    _ballRadius = 0.3f;
     
 	[self addChild:_cam];
     
@@ -65,20 +67,26 @@
                                                 boxBound.width/2,  boxBound.height/2, 0);
     
     _box = [CC3BoxNode nodeWithName:@"Box"];
-    [_box populateAsSolidBox:bounds];
-    _box.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
+    [_box populateAsWireBox:bounds];
     _box.specularColor = kCCC4FWhite;
     _box.diffuseColor = kCCC4FLightGray;
     _box.ambientColor = kCCC4FDarkGray;
     
     [self addChild:_box];
 
+    CC3PlaneNode *floor = [CC3PlaneNode nodeWithName:@"floor"];
+    [floor populateAsTexturedRectangleWithSize:boxBound
+                                      andPivot:ccp(boxBound.width/2 , boxBound.height/2)];
+    floor.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
+    floor.location = cc3v(0, 0, -1);
+    [_box addChild:floor];
 
     _ball = [CC3PlaneNode nodeWithName:@"Ball"];
-    
-    [_ball populateAsCenteredRectangleWithSize:CGSizeMake(2*_ballRadius, 2*_ballRadius) 
-                                   withTexture:[CC3Texture textureFromFile:@"ball.png"] 
-                                 invertTexture:YES];
+    [_ball populateAsTexturedRectangleWithSize:CGSizeMake(2*_ballRadius, 2*_ballRadius) 
+                                      andPivot:ccp(_ballRadius, _ballRadius)];
+    _ball.texture = [CC3Texture textureFromFile:@"ball.png"];
+    [_ball shouldUseLighting];
+    [_ball alignInvertedTextures];
     _ball.material.isOpaque = YES;
     _ball.material.sourceBlend = GL_SRC_ALPHA;
     _ball.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
@@ -112,6 +120,10 @@
         float xd = CC_RADIANS_TO_DEGREES(m.pitch);
         float yd = CC_RADIANS_TO_DEGREES(m.roll);
         _box.rotation = cc3v(xd<10?(xd>-10?xd:-10):10, yd<10?(yd>-10?yd:-10):10,0.0);
+        
+        CC3VertexArrayMesh* vam = (CC3VertexArrayMesh*)_box.mesh; 
+        CC3VertexLocations* locArray = vam.vertexLocations;
+        //locArray.elements;
     }
 }
 
