@@ -1,0 +1,33 @@
+Contents of /Volumes/C-共享/WorkSpace/BeatBack/BeatBack/Prefix.pch
+3.0 (tags/Apple/clang-211.9) (based on LLVM 3.0svn)
+arm-apple-darwin10.8.0
+-x
+objective-c
+-arch
+armv7
+-fmessage-length=0
+-fdiagnostics-print-source-range-info
+-fdiagnostics-show-category=id
+-fdiagnostics-parseable-fixits
+-std=gnu99
+-fpascal-strings
+-O0
+-DDEBUG
+-DCOCOS2D_DEBUG=1
+-isysroot
+/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS5.0.sdk
+-gdwarf-2
+-mthumb
+-DIBOutlet=__attribute__((iboutlet))
+-DIBOutletCollection(ClassName)=__attribute__((iboutletcollection(ClassName)))
+-DIBAction=void)__attribute__((ibaction)
+-miphoneos-version-min=5.0
+-iquote
+-iquote
+-I/Volumes/C-共享/WorkSpace/BeatBack/DerivedData/BeatBack/Build/Products/Debug-iphoneos/include
+-F/Volumes/C-共享/WorkSpace/BeatBack/DerivedData/BeatBack/Build/Products/Debug-iphoneos
+-ferror-limit=10
+-working-directory=/Volumes/C-共享/WorkSpace/BeatBack
+-Xclang
+-detailed-preprocessing-record
+SDK_PRODUCT_BUILD_VERSION=9A334
