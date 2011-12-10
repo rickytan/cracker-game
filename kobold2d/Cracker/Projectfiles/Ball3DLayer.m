@@ -17,6 +17,8 @@
 #import "CC3VertexArrayMesh.h"
 
 
+
+
 @interface Ball3DWorld : CC3World {
     CC3Camera *                 _cam;    // Weak assign
     CC3PlaneNode *              _ball;   // Weak assign
@@ -43,7 +45,7 @@
 {
 	// Create the camera, place it back a bit
 	_cam = [CC3Camera nodeWithName: @"Camera"];
-	_cam.location = cc3v(0.0, 0.0, 15.0);
+	_cam.location = cc3v(0.0, 0.0, 10.0);
     _ballRadius = 0.3f;
     
 	[self addChild:_cam];
@@ -71,7 +73,14 @@
     _box.specularColor = kCCC4FWhite;
     _box.diffuseColor = kCCC4FLightGray;
     _box.ambientColor = kCCC4FDarkGray;
-    
+    //_box.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
+    /*
+    [_box setVertexTexCoord2F:(ccTex2F){0,0} at:0];
+    [_box setVertexTexCoord2F:(ccTex2F){0,1} at:2];
+    [_box setVertexTexCoord2F:(ccTex2F){1,0} at:4];
+    [_box setVertexTexCoord2F:(ccTex2F){1,1} at:6];
+    [_box updateVertexTextureCoordinatesGLBuffer];
+    */
     [self addChild:_box];
 
     CC3PlaneNode *floor = [CC3PlaneNode nodeWithName:@"floor"];
@@ -100,7 +109,7 @@
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
 	[self createGLBuffers];
-	[self releaseRedundantData];
+//	[self releaseRedundantData];
 }
 
 -(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor {}
@@ -117,13 +126,31 @@
     if (director.currentDeviceIsSimulator == NO)
     {
         KKDeviceMotion* m = input.deviceMotion;
-        float xd = CC_RADIANS_TO_DEGREES(m.pitch);
-        float yd = CC_RADIANS_TO_DEGREES(m.roll);
-        _box.rotation = cc3v(xd<10?(xd>-10?xd:-10):10, yd<10?(yd>-10?yd:-10):10,0.0);
+        float xd = m.pitch / 2;
+        float yd = m.roll / 2;
         
-        CC3VertexArrayMesh* vam = (CC3VertexArrayMesh*)_box.mesh; 
-        CC3VertexLocations* locArray = vam.vertexLocations;
-        //locArray.elements;
+        const float tmax = 0.2;
+        xd = xd<tmax?(xd>-tmax?xd:-tmax):tmax;
+        yd = yd<tmax?(yd>-tmax?yd:-tmax):tmax;
+        
+        //_box.rotation = cc3v(xd<10?(xd>-10?xd:-10):10, yd<10?(yd>-10?yd:-10):10,0.0);
+        
+        [_box setVertexLocation:cc3v(-boxBound.width/2 - yd, -boxBound.height/2 + xd, -1) at:0];
+        [_box setVertexLocation:cc3v(-boxBound.width/2 - yd,  boxBound.height/2 + xd, -1) at:2];
+        [_box setVertexLocation:cc3v( boxBound.width/2 - yd, -boxBound.height/2 + xd, -1) at:4];
+        [_box setVertexLocation:cc3v( boxBound.width/2 - yd,  boxBound.height/2 + xd, -1) at:6];
+        [_box rebuildBoundingVolume];
+        [_box updateVertexLocationsGLBuffer];
+        [_box updateVertexTextureCoordinatesGLBuffer];
+        
+        CC3PlaneNode *floor = [_box getNodeNamed:@"floor"];
+        [floor setVertexLocation:cc3v(-boxBound.width/2 + m.roll*2, -boxBound.height/2 + m.pitch*2, 0) at:0];
+        [floor setVertexLocation:cc3v(-boxBound.width/2 + m.roll*2,  boxBound.height/2 + m.pitch*2, 0) at:1];
+        [floor setVertexLocation:cc3v( boxBound.width/2 + m.roll*2, -boxBound.height/2 + m.pitch*2, 0) at:2];
+        [floor setVertexLocation:cc3v( boxBound.width/2 + m.roll*2,  boxBound.height/2 + m.pitch*2, 0) at:3];
+        [floor rebuildBoundingVolume];
+        [floor updateVertexLocationsGLBuffer];
+        [floor updateVertexTextureCoordinatesGLBuffer];
     }
 }
 
