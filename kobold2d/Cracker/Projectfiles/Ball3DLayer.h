@@ -15,7 +15,7 @@
 
 @interface Ball3DLayer : CC3Layer {
     CC3Camera *                 camera;     // Weak assign
-    
+
 }
 
 - (void)updateBallLocation:(CGPoint)l andRotation:(CGFloat)a;
