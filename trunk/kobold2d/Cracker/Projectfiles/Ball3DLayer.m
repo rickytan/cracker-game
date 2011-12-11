@@ -26,6 +26,7 @@
     
     CGFloat                     _ballRadius;
     CGSize                      boxBound;
+    CC3BoundingBox              bounds;
 }
 
 - (void)setBallLocation:(CGPoint)ballLocation;
@@ -35,6 +36,7 @@
 - (CGPoint)toBoxPoint:(CGPoint)screen;
 - (CGPoint)toScreenPoint:(CGPoint)box;
 - (CC3BoxNode*)createScreenBox:(CC3BoundingBox)bounds;
+- (void)tiltBox:(CC3BoxNode*)boxNode inBound:(CC3BoundingBox)box withX:(CGFloat)radiansX andY:(CGFloat)radiansY;
 @end
 
 @implementation Ball3DWorld
@@ -53,21 +55,21 @@
     
 	// Create a light, place it and make it shine in all directions (not directional)
 	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
-	lamp.location = cc3v(-4.0, 1.0, 10.0);
-	lamp.isDirectionalOnly = YES;
+	lamp.location = cc3v(-4.0, 1.0, -6.0);
+	lamp.isDirectionalOnly = NO;
     lamp.color = ccc3(0xff, 0xff, 0xff);
     lamp.specularColor = kCCC4FWhite;
-    lamp.ambientColor = kCCC4FLightGray;
+    lamp.ambientColor = kCCC4FWhite;
     lamp.diffuseColor = kCCC4FWhite;
-	[self addChild:lamp];
+	[_cam addChild:lamp];
     
     const CGFloat ratio = 60;
     CGSize s = [CCDirector sharedDirector].winSize;
     boxBound.width = s.width / ratio;
     boxBound.height = s.height / ratio;
     
-    CC3BoundingBox bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -1, 
-                                               boxBound.width/2,  boxBound.height/2, 0);
+    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -0.5, 
+                                               boxBound.width/2,  boxBound.height/2, 0.5);
     
     _box = [CC3BoxNode nodeWithName:@"Box"];
     //[_box populateAsSolidBox:bounds];
@@ -77,7 +79,7 @@
     
     _box.specularColor = kCCC4FWhite;
     _box.diffuseColor = kCCC4FLightGray;
-    _box.ambientColor = kCCC4FDarkGray;
+    _box.ambientColor = kCCC4FWhite;
     _box.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
     
     /*
@@ -133,15 +135,19 @@
     if (director.currentDeviceIsSimulator == NO)
     {
         KKDeviceMotion* m = input.deviceMotion;
-        float xd = CC_RADIANS_TO_DEGREES(m.pitch) ;
-        float yd = CC_RADIANS_TO_DEGREES(m.roll) ;
+        float xd = (-m.roll) ;
+        float yd = (m.pitch) ;
         
-        const float tmax = 90;
-        xd = xd<tmax?(xd>-tmax?xd:-tmax):tmax;
-        yd = yd<tmax?(yd>-tmax?yd:-tmax):tmax;
+        const float tmaxx = M_PI / 180 * 8;
+        const float tmaxy = M_PI / 180 * 12;
+        xd = xd<tmaxx?(xd>-tmaxx?xd:-tmaxx):tmaxx;
+        yd = yd<tmaxy?(yd>-tmaxy?yd:-tmaxy):tmaxy;
         
-        _box.rotation = cc3v(-xd, -yd,0.0);
-        
+        //_box.rotation = cc3v(-xd, -yd,0.0);
+        [self tiltBox:_box
+              inBound:bounds
+                withX:xd
+                 andY:yd];
         /*
         [_box setVertexLocation:cc3v(-boxBound.width/2 - yd, -boxBound.height/2 + xd, -1) at:0];
         [_box setVertexLocation:cc3v(-boxBound.width/2 - yd,  boxBound.height/2 + xd, -1) at:2];
@@ -269,31 +275,31 @@
     vertices[0].normal = kCC3VectorUnitXPositive;
     vertices[0].texCoord = (ccTex2F){0.5f, corner.y};
     
-    vertices[1].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
-    vertices[1].normal = kCC3VectorUnitXPositive;
-    vertices[1].texCoord = (ccTex2F){(0.5f + corner.x), corner.y};
+    vertices[3].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
+    vertices[3].normal = kCC3VectorUnitXPositive;
+    vertices[3].texCoord = (ccTex2F){(0.5f + corner.x), corner.y};
     
     vertices[2].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
     vertices[2].normal = kCC3VectorUnitXPositive;
     vertices[2].texCoord = (ccTex2F){(0.5f + corner.x), (1.0f - corner.y)};
     
-    vertices[3].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
-    vertices[3].normal = kCC3VectorUnitXPositive;
-    vertices[3].texCoord = (ccTex2F){0.5f, (1.0f - corner.y)};
+    vertices[1].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
+    vertices[1].normal = kCC3VectorUnitXPositive;
+    vertices[1].texCoord = (ccTex2F){0.5f, (1.0f - corner.y)};
     
     // Back face, CCW winding:
-    vertices[4].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
+    vertices[4].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
     vertices[4].normal = kCC3VectorUnitZPositive;
-    vertices[4].texCoord = (ccTex2F){(0.5f + corner.x), corner.y};
+    vertices[4].texCoord = (ccTex2F){1.0f, (1.0f - corner.y)};
+    
+    vertices[6].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
+    vertices[6].normal = kCC3VectorUnitZPositive;
+    vertices[6].texCoord = (ccTex2F){(0.5f + corner.x), corner.y};
     
     vertices[5].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
     vertices[5].normal = kCC3VectorUnitZPositive;
     vertices[5].texCoord = (ccTex2F){1.0f, corner.y};
-    
-    vertices[6].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
-    vertices[6].normal = kCC3VectorUnitZPositive;
-    vertices[6].texCoord = (ccTex2F){1.0f, (1.0f - corner.y)};
-    
+
     vertices[7].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
     vertices[7].normal = kCC3VectorUnitZPositive;
     vertices[7].texCoord = (ccTex2F){(0.5f + corner.x), (1.0f - corner.y)};
@@ -303,51 +309,51 @@
     vertices[8].normal = kCC3VectorUnitXNegative;
     vertices[8].texCoord = (ccTex2F){0.0f, corner.y};
     
-    vertices[9].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
-    vertices[9].normal = kCC3VectorUnitXNegative;
-    vertices[9].texCoord = (ccTex2F){corner.x, corner.y};
+    vertices[11].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
+    vertices[11].normal = kCC3VectorUnitXNegative;
+    vertices[11].texCoord = (ccTex2F){corner.x, corner.y};
     
     vertices[10].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
     vertices[10].normal = kCC3VectorUnitXNegative;
     vertices[10].texCoord = (ccTex2F){corner.x, (1.0f - corner.y)};
     
-    vertices[11].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
-    vertices[11].normal = kCC3VectorUnitXNegative;
-    vertices[11].texCoord = (ccTex2F){0.0f, (1.0f - corner.y)};
+    vertices[9].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
+    vertices[9].normal = kCC3VectorUnitXNegative;
+    vertices[9].texCoord = (ccTex2F){0.0f, (1.0f - corner.y)};
     
     // Top face, CCW winding:
     vertices[12].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
     vertices[12].normal = kCC3VectorUnitYPositive;
     vertices[12].texCoord = (ccTex2F){corner.x, 1.0f};
     
-    vertices[13].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
-    vertices[13].normal = kCC3VectorUnitYPositive;
-    vertices[13].texCoord = (ccTex2F){corner.x, (1.0f - corner.y)};
+    vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
+    vertices[15].normal = kCC3VectorUnitYPositive;
+    vertices[15].texCoord = (ccTex2F){corner.x, (1.0f - corner.y)};
     
     vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
     vertices[14].normal = kCC3VectorUnitYPositive;
     vertices[14].texCoord = (ccTex2F){0.5f, (1.0f - corner.y)};
     
-    vertices[15].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
-    vertices[15].normal = kCC3VectorUnitYPositive;
-    vertices[15].texCoord = (ccTex2F){0.5f, 1.0f};
+    vertices[13].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
+    vertices[13].normal = kCC3VectorUnitYPositive;
+    vertices[13].texCoord = (ccTex2F){0.5f, 1.0f};
     
     // Bottom face, CCW winding:
     vertices[16].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
-    vertices[16].normal = kCC3VectorUnitYNegative;
+    vertices[16].normal = kCC3VectorUnitYPositive;
     vertices[16].texCoord = (ccTex2F){corner.x, corner.y};
     
-    vertices[17].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
-    vertices[17].normal = kCC3VectorUnitYNegative;
-    vertices[17].texCoord = (ccTex2F){corner.x, 0.0f};
+    vertices[19].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
+    vertices[19].normal = kCC3VectorUnitYPositive;
+    vertices[19].texCoord = (ccTex2F){corner.x, 0.0f};
     
     vertices[18].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
-    vertices[18].normal = kCC3VectorUnitYNegative;
+    vertices[18].normal = kCC3VectorUnitYPositive;
     vertices[18].texCoord = (ccTex2F){0.5f, 0.0f};
     
-    vertices[19].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
-    vertices[19].normal = kCC3VectorUnitYNegative;
-    vertices[19].texCoord = (ccTex2F){0.5f, corner.y};
+    vertices[17].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
+    vertices[17].normal = kCC3VectorUnitYPositive;
+    vertices[17].texCoord = (ccTex2F){0.5f, corner.y};
     
     // Construct the vertex indices that will draw the triangles that make up each
     // face of the box. Indices are ordered for each of the six faces starting in
@@ -388,6 +394,52 @@
     return meshBox;
     //self.mesh = aMesh;
 }
+
+- (void)tiltBox:(CC3BoxNode *)boxNode
+        inBound:(CC3BoundingBox)box 
+          withX:(CGFloat)radiansX 
+           andY:(CGFloat)radiansY
+{
+    CC3TexturedVertex* vertices = ((CC3VertexArrayMesh*)boxNode.mesh).vertexTextureCoordinates.elements;		// Array of custom structures to hold the interleaved vertex data
+    CC3Vector boxMin = box.minimum;
+    CC3Vector boxMax = box.maximum;
+    
+    CGFloat height = boxMax.z - boxMin.z;
+
+    // Right face, CCW winding:
+    //vertices[0].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
+    vertices[3].location = cc3v(boxMax.x + radiansX*height, boxMin.y + radiansY*height, boxMin.z);
+    vertices[2].location = cc3v(boxMax.x + radiansX*height, boxMax.y + radiansY*height, boxMin.z);
+    //vertices[1].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
+    
+    // Back face, CCW winding:
+    vertices[4].location = cc3v(boxMin.x + radiansX*height, boxMax.y + radiansY*height, boxMin.z);
+    vertices[6].location = cc3v(boxMax.x + radiansX*height, boxMin.y + radiansY*height, boxMin.z);
+    vertices[5].location = cc3v(boxMin.x + radiansX*height, boxMin.y + radiansY*height, boxMin.z);
+    vertices[7].location = cc3v(boxMax.x + radiansX*height, boxMax.y + radiansY*height, boxMin.z);
+    
+    // Left face, CCW winding:
+    vertices[8].location = cc3v(boxMin.x + radiansX*height, boxMin.y + radiansY*height, boxMin.z);
+    //vertices[11].location = cc3v(boxMin.x, boxMin.y, boxMax.z);  
+    //vertices[10].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
+    vertices[9].location = cc3v(boxMin.x + radiansX*height, boxMax.y + radiansY*height, boxMin.z);
+   
+    // Top face, CCW winding:
+    vertices[12].location = cc3v(boxMin.x + radiansX*height, boxMax.y + radiansY*height, boxMin.z);  
+    //vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z); 
+    //vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
+    vertices[13].location = cc3v(boxMax.x + radiansX*height, boxMax.y + radiansY*height, boxMin.z);
+  
+    // Bottom face, CCW winding:
+    //vertices[16].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
+    vertices[19].location = cc3v(boxMin.x + radiansX*height, boxMin.y + radiansY*height, boxMin.z);
+    vertices[18].location = cc3v(boxMax.x + radiansX*height, boxMin.y + radiansY*height, boxMin.z);
+    //vertices[17].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
+
+    [boxNode rebuildBoundingVolume];
+    [boxNode updateVertexLocationsGLBuffer];
+    [boxNode updateVertexTextureCoordinatesGLBuffer];
+}
 @end
 
 
@@ -406,7 +458,7 @@
          self.contentSize = CGSizeMake(s.width/2, s.height/2);
          self.position = CGPointMake(s.width/4, s.height/4);
          */
-        
+        [self addChild:[CCSprite spriteWithFile:@"Icon.png"]];
         [self scheduleUpdate];
     }
     return self;

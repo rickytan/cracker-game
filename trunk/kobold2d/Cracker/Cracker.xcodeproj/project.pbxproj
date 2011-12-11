@@ -27,6 +27,7 @@
 		8199FD32148F688F0007A5E1 /* PlayLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8199FD29148F688F0007A5E1 /* PlayLayer.mm */; };
 		9C7E83701490E0AA00BAF67A /* wood2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 9C7E836F1490E0AA00BAF67A /* wood2.jpg */; };
 		9C7E83731490EEA700BAF67A /* ball.png in Resources */ = {isa = PBXBuildFile; fileRef = 9C7E83721490EEA700BAF67A /* ball.png */; };
+		9C8B5D4E1494900700398B7E /* Wind.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C8B5D4D1494900700398B7E /* Wind.mm */; };
 		DC193EC813B6976200500B56 /* Pow.caf in Resources */ = {isa = PBXBuildFile; fileRef = DC193EC713B6976200500B56 /* Pow.caf */; };
 		DC485B4813AA194F00F2BC70 /* ship.png in Resources */ = {isa = PBXBuildFile; fileRef = DC485B4713AA194F00F2BC70 /* ship.png */; };
 		DC485B4B13AA1C0E00F2BC70 /* ship-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = DC485B4A13AA1C0E00F2BC70 /* ship-hd.png */; };
@@ -96,6 +97,8 @@
 		9C8382C9148FC7800004268A /* BuildSettings-Debug-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "BuildSettings-Debug-iOS.xcconfig"; sourceTree = "<group>"; };
 		9C8382CA148FC7800004268A /* BuildSettings-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "BuildSettings-iOS.xcconfig"; sourceTree = "<group>"; };
 		9C8382CB148FC7800004268A /* BuildSettings-Release-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "BuildSettings-Release-iOS.xcconfig"; sourceTree = "<group>"; };
+		9C8B5D4C1494900600398B7E /* Wind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wind.h; sourceTree = "<group>"; };
+		9C8B5D4D1494900700398B7E /* Wind.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Wind.mm; sourceTree = "<group>"; };
 		DC193EC713B6976200500B56 /* Pow.caf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Pow.caf; sourceTree = "<group>"; };
 		DC485B4713AA194F00F2BC70 /* ship.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = ship.png; sourceTree = "<group>"; };
 		DC485B4A13AA1C0E00F2BC70 /* ship-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "ship-hd.png"; sourceTree = "<group>"; };
@@ -193,6 +196,8 @@
 				8199FD1F148F688F0007A5E1 /* GameScene.mm */,
 				8199FD28148F688F0007A5E1 /* PlayLayer.h */,
 				8199FD29148F688F0007A5E1 /* PlayLayer.mm */,
+				9C8B5D4C1494900600398B7E /* Wind.h */,
+				9C8B5D4D1494900700398B7E /* Wind.mm */,
 			);
 			name = Game;
 			sourceTree = "<group>";
@@ -409,6 +414,7 @@
 				8199FD2F148F688F0007A5E1 /* MainMenu.mm in Sources */,
 				8199FD30148F688F0007A5E1 /* MenuScene.mm in Sources */,
 				8199FD32148F688F0007A5E1 /* PlayLayer.mm in Sources */,
+				9C8B5D4E1494900700398B7E /* Wind.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

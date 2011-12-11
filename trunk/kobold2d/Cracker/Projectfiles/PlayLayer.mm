@@ -141,7 +141,7 @@ const float PTM_RATIO = 128.0f;
         world->SetGravity(gravity);
     }
     
-	
+	theBall->ApplyForceToCenter(b2Vec2(-1,0));
 	// The number of iterations influence the accuracy of the physics simulation. With higher values the
 	// body's velocity and position are more accurately tracked but at the cost of speed.
 	// Usually for games only 1 position iteration is necessary to achieve good results.
