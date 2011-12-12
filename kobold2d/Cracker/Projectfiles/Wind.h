@@ -11,7 +11,10 @@
 
 
 @interface Wind : NSObject {
-    
+    b2Rot                   direction;
 }
+- (void)blow:(b2Body*)body;
 
+@property (nonatomic, assign) CGFloat force;
+@property (nonatomic, assign) CGFloat angle;
 @end
