@@ -138,16 +138,18 @@
         float xd = (-m.roll) ;
         float yd = (m.pitch) ;
         
-        const float tmaxx = M_PI / 180 * 8;
+        const float tmaxx =  M_PI / 180 * 8;
         const float tmaxy = M_PI / 180 * 12;
         xd = xd<tmaxx?(xd>-tmaxx?xd:-tmaxx):tmaxx;
         yd = yd<tmaxy?(yd>-tmaxy?yd:-tmaxy):tmaxy;
         
         //_box.rotation = cc3v(-xd, -yd,0.0);
+        
         [self tiltBox:_box
               inBound:bounds
                 withX:xd
                  andY:yd];
+         
         /*
         [_box setVertexLocation:cc3v(-boxBound.width/2 - yd, -boxBound.height/2 + xd, -1) at:0];
         [_box setVertexLocation:cc3v(-boxBound.width/2 - yd,  boxBound.height/2 + xd, -1) at:2];
@@ -458,7 +460,9 @@
          self.contentSize = CGSizeMake(s.width/2, s.height/2);
          self.position = CGPointMake(s.width/4, s.height/4);
          */
-        [self addChild:[CCSprite spriteWithFile:@"Icon.png"]];
+        CCSprite *s = [CCSprite spriteWithFile:@"Icon.png"];
+        s.position = ccp(100, 100);
+        [self addChild:s];
         [self scheduleUpdate];
     }
     return self;

@@ -140,8 +140,11 @@ const float PTM_RATIO = 128.0f;
         b2Vec2 gravity = 10.0f * b2Vec2(acceleration.smoothedX, acceleration.smoothedY);
         world->SetGravity(gravity);
     }
+    static ccTime total = 0.0f;
     
-	theBall->ApplyForceToCenter(b2Vec2(-1,0));
+	theBall->ApplyForceToCenter(b2Vec2(0.1 * sinf(total += delta),0.1 * cosf(total)));
+    total = (total>2*M_PI)?total - 2*M_PI:total;
+    
 	// The number of iterations influence the accuracy of the physics simulation. With higher values the
 	// body's velocity and position are more accurately tracked but at the cost of speed.
 	// Usually for games only 1 position iteration is necessary to achieve good results.
