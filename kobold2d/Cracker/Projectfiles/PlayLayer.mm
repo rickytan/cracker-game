@@ -142,7 +142,7 @@ const float PTM_RATIO = 128.0f;
     }
     static ccTime total = 0.0f;
     
-	theBall->ApplyForceToCenter(b2Vec2(0.1 * sinf(total += delta),0.1 * cosf(total)));
+	theBall->ApplyForceToCenter(b2Vec2(0.010 * sinf(total += delta),0.010 * cosf(total)));
     total = (total>2*M_PI)?total - 2*M_PI:total;
     
 	// The number of iterations influence the accuracy of the physics simulation. With higher values the

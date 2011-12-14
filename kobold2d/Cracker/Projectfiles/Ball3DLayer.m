@@ -23,7 +23,7 @@
     CC3Camera *                 _cam;    // Weak assign
     CC3PlaneNode *              _ball;   // Weak assign
     CC3BoxNode *                _box;    // Weak assign
-    
+    CC3Node *                   _floorNode;  // Weak assign
     CGFloat                     _ballRadius;
     CGSize                      boxBound;
     CC3BoundingBox              bounds;
@@ -68,12 +68,8 @@
     boxBound.width = s.width / ratio;
     boxBound.height = s.height / ratio;
     
-    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -0.5, 
-                                               boxBound.width/2,  boxBound.height/2, 0.5);
-    
-    _box = [CC3BoxNode nodeWithName:@"Box"];
-    //[_box populateAsSolidBox:bounds];
-    [_box populateAsTexturedBox:bounds withCorner:(CGPoint){1,1}];
+    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -2.5, 
+                                               boxBound.width/2,  boxBound.height/2, 0.0);
     
     _box = [self createScreenBox:bounds];
     
@@ -82,22 +78,29 @@
     _box.ambientColor = kCCC4FWhite;
     _box.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
     
-    /*
-     [_box setVertexTexCoord2F:(ccTex2F){0,0} at:0];
-     [_box setVertexTexCoord2F:(ccTex2F){0,1} at:2];
-     [_box setVertexTexCoord2F:(ccTex2F){1,0} at:4];
-     [_box setVertexTexCoord2F:(ccTex2F){1,1} at:6];
-     [_box updateVertexTextureCoordinatesGLBuffer];
-     */
     [self addChild:_box];
     
+    _floorNode = [CC3Node nodeWithName:@"floornode"];
+    _floorNode.location = cc3v(0, 0, bounds.minimum.z);
+    [_box addChild:_floorNode];
     
     CC3PlaneNode *floor = [CC3PlaneNode nodeWithName:@"floor"];
     [floor populateAsTexturedRectangleWithSize:boxBound
-                                      andPivot:ccp(boxBound.width/2 , boxBound.height/2)];
-    floor.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
-    floor.location = cc3v(0, 0, -1);
-    //[_box addChild:floor];
+                              andPivot:ccp(boxBound.width/2 , boxBound.height/2)];
+    CCLabelTTF *ttf = [CCLabelTTF labelWithString:@"test"
+                                         fontName:@"Bank Gothic"
+                                         fontSize:18];
+    CC3Texture *texture = [CC3Texture textureFromFile:@"Icon.png"];
+    CCTexture2D *tex = [[CCTexture2D alloc] initWithImage:[UIImage imageNamed:@"Icon.png"]];
+    //texture.texture = tex;
+    floor.texture = texture;
+    floor.material.isOpaque = YES;
+    floor.material.sourceBlend = GL_SRC_ALPHA;
+    floor.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
+    [floor shouldUseLighting];
+    [floor alignInvertedTextures];
+    floor.location = cc3v(0, 0, -3);//bounds.minimum.z);
+    [_box addChild:floor];
     
     _ball = [CC3PlaneNode nodeWithName:@"Ball"];
     [_ball populateAsTexturedRectangleWithSize:CGSizeMake(2*_ballRadius, 2*_ballRadius) 
@@ -110,9 +113,11 @@
     _ball.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
     _ball.shouldCullBackFaces = NO;
     
-    [_ball retainVertexLocations];
+    //[_ball retainVertexLocations];
     
+    _ball.location = cc3v(0, 0, bounds.minimum.z+_ballRadius);
     [_box addChild:_ball];
+
     
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
@@ -144,34 +149,24 @@
         yd = yd<tmaxy?(yd>-tmaxy?yd:-tmaxy):tmaxy;
         
         //_box.rotation = cc3v(-xd, -yd,0.0);
-        
+        GLfloat glMat[] = {
+            1,0,0,0,
+            0,1,0,0,
+            0,0,1,0,
+            0,0,0,1
+        };
+        glMat[8] = xd;
+        glMat[9] = yd;
+        CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
+        _box.transformMatrix = matrix;
+        //[_box.transformMatrix multiplyByMatrix:matrix];
+        /*
         [self tiltBox:_box
               inBound:bounds
                 withX:xd
                  andY:yd];
-         
-        /*
-        [_box setVertexLocation:cc3v(-boxBound.width/2 - yd, -boxBound.height/2 + xd, -1) at:0];
-        [_box setVertexLocation:cc3v(-boxBound.width/2 - yd,  boxBound.height/2 + xd, -1) at:2];
-        [_box setVertexLocation:cc3v( boxBound.width/2 - yd, -boxBound.height/2 + xd, -1) at:4];
-        [_box setVertexLocation:cc3v( boxBound.width/2 - yd,  boxBound.height/2 + xd, -1) at:6];
-        [_box rebuildBoundingVolume];
-        [_box updateVertexLocationsGLBuffer];
-        [_box updateVertexTextureCoordinatesGLBuffer];
          */
-        //CC3GLMatrix *matrix = _box.transformMatrix;
-        
-        
-        /*
-         CC3PlaneNode *floor = [_box getNodeNamed:@"floor"];
-         [floor setVertexLocation:cc3v(-boxBound.width/2 + m.roll*2, -boxBound.height/2 + m.pitch*2, 0) at:0];
-         [floor setVertexLocation:cc3v(-boxBound.width/2 + m.roll*2,  boxBound.height/2 + m.pitch*2, 0) at:1];
-         [floor setVertexLocation:cc3v( boxBound.width/2 + m.roll*2, -boxBound.height/2 + m.pitch*2, 0) at:2];
-         [floor setVertexLocation:cc3v( boxBound.width/2 + m.roll*2,  boxBound.height/2 + m.pitch*2, 0) at:3];
-         [floor rebuildBoundingVolume];
-         [floor updateVertexLocationsGLBuffer];
-         [floor updateVertexTextureCoordinatesGLBuffer];
-         */
+
     }
 }
 
@@ -199,7 +194,7 @@
 - (void)setBallLocation:(CGPoint)screenPoint
 {
     CGPoint p = [self toBoxPoint:screenPoint];
-    _ball.location = cc3v(p.x, p.y, 0);
+    _ball.location = cc3v(p.x, p.y,  bounds.minimum.z+_ballRadius);
 }
 
 - (void)setBallRotation:(CGFloat)ballRotation
@@ -460,9 +455,7 @@
          self.contentSize = CGSizeMake(s.width/2, s.height/2);
          self.position = CGPointMake(s.width/4, s.height/4);
          */
-        CCSprite *s = [CCSprite spriteWithFile:@"Icon.png"];
-        s.position = ccp(100, 100);
-        [self addChild:s];
+
         [self scheduleUpdate];
     }
     return self;
