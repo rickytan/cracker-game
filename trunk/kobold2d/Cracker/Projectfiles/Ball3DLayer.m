@@ -23,6 +23,7 @@
     CC3Camera *                 _cam;    // Weak assign
     CC3PlaneNode *              _ball;   // Weak assign
     CC3BoxNode *                _box;    // Weak assign
+    CC3BoxNode *                _floor;  // Weak assign
     CC3Node *                   _floorNode;  // Weak assign
     CGFloat                     _ballRadius;
     CGSize                      boxBound;
@@ -36,7 +37,11 @@
 - (CGPoint)toBoxPoint:(CGPoint)screen;
 - (CGPoint)toScreenPoint:(CGPoint)box;
 - (CC3BoxNode*)createScreenBox:(CC3BoundingBox)bounds;
-- (void)tiltBox:(CC3BoxNode*)boxNode inBound:(CC3BoundingBox)box withX:(CGFloat)radiansX andY:(CGFloat)radiansY;
+- (void)tiltBox:(CC3BoxNode*)boxNode 
+        inBound:(CC3BoundingBox)box 
+          withX:(CGFloat)radiansX 
+           andY:(CGFloat)radiansY;
+- (void)addChildToFloor:(CC3Node*)child;
 @end
 
 @implementation Ball3DWorld
@@ -55,9 +60,9 @@
     
 	// Create a light, place it and make it shine in all directions (not directional)
 	CC3Light* lamp = [CC3Light nodeWithName: @"Lamp"];
-	lamp.location = cc3v(-4.0, 1.0, -6.0);
+	//lamp.location = cc3v(0.0, 0.0, 0.0);
 	lamp.isDirectionalOnly = NO;
-    lamp.color = ccc3(0xff, 0xff, 0xff);
+    //lamp.color = ccc3(0xff, 0xff, 0xff);
     lamp.specularColor = kCCC4FWhite;
     lamp.ambientColor = kCCC4FWhite;
     lamp.diffuseColor = kCCC4FWhite;
@@ -68,13 +73,13 @@
     boxBound.width = s.width / ratio;
     boxBound.height = s.height / ratio;
     
-    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -2.5, 
+    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -.5, 
                                                boxBound.width/2,  boxBound.height/2, 0.0);
     
     _box = [self createScreenBox:bounds];
     
     _box.specularColor = kCCC4FWhite;
-    _box.diffuseColor = kCCC4FLightGray;
+    _box.diffuseColor = kCCC4FWhite;
     _box.ambientColor = kCCC4FWhite;
     _box.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
     
@@ -84,25 +89,20 @@
     _floorNode.location = cc3v(0, 0, bounds.minimum.z);
     [_box addChild:_floorNode];
     
-    CC3PlaneNode *floor = [CC3PlaneNode nodeWithName:@"floor"];
-    [floor populateAsTexturedRectangleWithSize:boxBound
-                              andPivot:ccp(boxBound.width/2 , boxBound.height/2)];
-    CCLabelTTF *ttf = [CCLabelTTF labelWithString:@"test"
-                                         fontName:@"Bank Gothic"
-                                         fontSize:18];
-    CC3Texture *texture = [CC3Texture textureFromFile:@"Icon.png"];
-    CCTexture2D *tex = [[CCTexture2D alloc] initWithImage:[UIImage imageNamed:@"Icon.png"]];
-    //texture.texture = tex;
-    floor.texture = texture;
-    floor.material.isOpaque = YES;
-    floor.material.sourceBlend = GL_SRC_ALPHA;
-    floor.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
-    [floor shouldUseLighting];
-    [floor alignInvertedTextures];
-    floor.location = cc3v(0, 0, -3);//bounds.minimum.z);
-    [_box addChild:floor];
+    _floor = [CC3PlaneNode nodeWithName:@"floor"];
+    [_floor populateAsTexturedRectangleWithSize:CGSizeMake(2*_ballRadius, 2*_ballRadius) 
+                                       andPivot:ccp(_ballRadius, _ballRadius)];
+    _floor.texture = [CC3Texture textureFromFile:@"ball.png"];
+    [_floor shouldUseLighting];
+    [_floor alignInvertedTextures];
+    _floor.material.isOpaque = YES;
+    _floor.material.sourceBlend = GL_SRC_ALPHA;
+    _floor.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
+    _floor.shouldCullBackFaces = NO;
+    [self addChildToFloor:_floor];
+
     
-    _ball = [CC3PlaneNode nodeWithName:@"Ball"];
+    _ball = [CC3PlaneNode nodeWithName:@"ball"];
     [_ball populateAsTexturedRectangleWithSize:CGSizeMake(2*_ballRadius, 2*_ballRadius) 
                                       andPivot:ccp(_ballRadius, _ballRadius)];
     _ball.texture = [CC3Texture textureFromFile:@"ball.png"];
@@ -117,18 +117,23 @@
     
     _ball.location = cc3v(0, 0, bounds.minimum.z+_ballRadius);
     [_box addChild:_ball];
-
     
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
 	[self createGLBuffers];
-    //	[self releaseRedundantData];
+    [self releaseRedundantData];
 }
 
--(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor {}
+-(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor 
+{
+    
+}
 
--(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor {}
+-(void) updateAfterTransform: (CC3NodeUpdatingVisitor*) visitor 
+{
+
+}
 
 -(void) updateWorld:(ccTime)dt
 {
@@ -155,10 +160,11 @@
             0,0,1,0,
             0,0,0,1
         };
-        glMat[8] = xd;
-        glMat[9] = yd;
+        glMat[8] = -xd;
+        glMat[9] = -yd;
         CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
         _box.transformMatrix = matrix;
+        [_floorNode markTransformDirty];
         //[_box.transformMatrix multiplyByMatrix:matrix];
         /*
         [self tiltBox:_box
@@ -269,19 +275,19 @@
     
     // Right face, CCW winding:
     vertices[0].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
-    vertices[0].normal = kCC3VectorUnitXPositive;
+    vertices[0].normal = kCC3VectorUnitXNegative;
     vertices[0].texCoord = (ccTex2F){0.5f, corner.y};
     
     vertices[3].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
-    vertices[3].normal = kCC3VectorUnitXPositive;
+    vertices[3].normal = kCC3VectorUnitXNegative;
     vertices[3].texCoord = (ccTex2F){(0.5f + corner.x), corner.y};
     
     vertices[2].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
-    vertices[2].normal = kCC3VectorUnitXPositive;
+    vertices[2].normal = kCC3VectorUnitXNegative;
     vertices[2].texCoord = (ccTex2F){(0.5f + corner.x), (1.0f - corner.y)};
     
     vertices[1].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
-    vertices[1].normal = kCC3VectorUnitXPositive;
+    vertices[1].normal = kCC3VectorUnitXNegative;
     vertices[1].texCoord = (ccTex2F){0.5f, (1.0f - corner.y)};
     
     // Back face, CCW winding:
@@ -303,36 +309,36 @@
     
     // Left face, CCW winding:
     vertices[8].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
-    vertices[8].normal = kCC3VectorUnitXNegative;
+    vertices[8].normal = kCC3VectorUnitXPositive;
     vertices[8].texCoord = (ccTex2F){0.0f, corner.y};
     
     vertices[11].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
-    vertices[11].normal = kCC3VectorUnitXNegative;
+    vertices[11].normal = kCC3VectorUnitXPositive;
     vertices[11].texCoord = (ccTex2F){corner.x, corner.y};
     
     vertices[10].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
-    vertices[10].normal = kCC3VectorUnitXNegative;
+    vertices[10].normal = kCC3VectorUnitXPositive;
     vertices[10].texCoord = (ccTex2F){corner.x, (1.0f - corner.y)};
     
     vertices[9].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
-    vertices[9].normal = kCC3VectorUnitXNegative;
+    vertices[9].normal = kCC3VectorUnitXPositive;
     vertices[9].texCoord = (ccTex2F){0.0f, (1.0f - corner.y)};
     
     // Top face, CCW winding:
     vertices[12].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
-    vertices[12].normal = kCC3VectorUnitYPositive;
+    vertices[12].normal = kCC3VectorUnitXNegative;
     vertices[12].texCoord = (ccTex2F){corner.x, 1.0f};
     
     vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
-    vertices[15].normal = kCC3VectorUnitYPositive;
+    vertices[15].normal = kCC3VectorUnitXNegative;
     vertices[15].texCoord = (ccTex2F){corner.x, (1.0f - corner.y)};
     
     vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
-    vertices[14].normal = kCC3VectorUnitYPositive;
+    vertices[14].normal = kCC3VectorUnitXNegative;
     vertices[14].texCoord = (ccTex2F){0.5f, (1.0f - corner.y)};
     
     vertices[13].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
-    vertices[13].normal = kCC3VectorUnitYPositive;
+    vertices[13].normal = kCC3VectorUnitXNegative;
     vertices[13].texCoord = (ccTex2F){0.5f, 1.0f};
     
     // Bottom face, CCW winding:
@@ -342,7 +348,7 @@
     
     vertices[19].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
     vertices[19].normal = kCC3VectorUnitYPositive;
-    vertices[19].texCoord = (ccTex2F){corner.x, 0.0f};
+    vertices[19].texCoord = (ccTex2F){0.5f, corner.y};
     
     vertices[18].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
     vertices[18].normal = kCC3VectorUnitYPositive;
@@ -350,7 +356,7 @@
     
     vertices[17].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
     vertices[17].normal = kCC3VectorUnitYPositive;
-    vertices[17].texCoord = (ccTex2F){0.5f, corner.y};
+    vertices[17].texCoord = (ccTex2F){corner.x, 0.0f};
     
     // Construct the vertex indices that will draw the triangles that make up each
     // face of the box. Indices are ordered for each of the six faces starting in
@@ -436,6 +442,10 @@
     [boxNode rebuildBoundingVolume];
     [boxNode updateVertexLocationsGLBuffer];
     [boxNode updateVertexTextureCoordinatesGLBuffer];
+}
+- (void)addChildToFloor:(CC3Node *)child
+{
+    [_floorNode addChild:_floor];
 }
 @end
 
