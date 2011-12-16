@@ -21,4 +21,6 @@
 - (void)updateBallLocation:(CGPoint)l andRotation:(CGFloat)a;
 - (CGPoint)getBallLocation;
 - (CGFloat)getBallRadius;
+- (void)showAd;
+- (void)hideAd;
 @end

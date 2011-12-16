@@ -150,9 +150,9 @@ const float PTM_RATIO = 96.0f;
         }
         
 		[self addChild: menu];
-        
+
         [self scheduleUpdate];
-		
+
 		[KKInput sharedInput].accelerometerActive = YES;
     }
     return self;

@@ -18,16 +18,20 @@
 #import "CC3GLMatrix.h"
 
 
+#define iAd_Height      40.0f
+
 
 @interface Ball3DWorld : CC3World {
     CC3Camera *                 _cam;    // Weak assign
     CC3PlaneNode *              _ball;   // Weak assign
     CC3BoxNode *                _box;    // Weak assign
-    CC3BoxNode *                _floor;  // Weak assign
+    CC3PlaneNode *              _floor;  // Weak assign
     CC3Node *                   _floorNode;  // Weak assign
+    CC3PlaneNode *              _arrow;  // Weak assign
     CGFloat                     _ballRadius;
     CGSize                      boxBound;
     CC3BoundingBox              bounds;
+    float                       ratio;
 }
 
 - (void)setBallLocation:(CGPoint)ballLocation;
@@ -42,6 +46,8 @@
           withX:(CGFloat)radiansX 
            andY:(CGFloat)radiansY;
 - (void)addChildToFloor:(CC3Node*)child;
+- (void)shrink;
+- (void)grow;
 @end
 
 @implementation Ball3DWorld
@@ -68,7 +74,7 @@
     lamp.diffuseColor = kCCC4FWhite;
 	[_cam addChild:lamp];
     
-    const CGFloat ratio = 60;
+    ratio = 60;
     CGSize s = [CCDirector sharedDirector].winSize;
     boxBound.width = s.width / ratio;
     boxBound.height = s.height / ratio;
@@ -122,7 +128,7 @@
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
 	[self createGLBuffers];
-    [self releaseRedundantData];
+    //[self releaseRedundantData];
 }
 
 -(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor 
@@ -221,6 +227,104 @@
     return _ballRadius / boxBound.width * s.width;
 }
 
+- (void)shrink
+{
+    CC3TexturedVertex *vertices = ((CC3VertexArrayMesh*)_box.mesh).vertexTextureCoordinates.elements;
+    CC3Vector boxMin = bounds.minimum;
+    CC3Vector boxMax = bounds.maximum;
+    boxMax.y -= iAd_Height / ratio;
+    
+    // Only move donw the top face!!!
+    vertices[12].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
+    vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
+    vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z); 
+    vertices[13].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
+    [_box rebuildBoundingVolume];
+    [_box updateVertexLocationsGLBuffer];
+    [_box updateVertexTextureCoordinatesGLBuffer];
+}
+- (void)grow
+{
+    CC3TexturedVertex *vertices = ((CC3VertexArrayMesh*)_box.mesh).vertexTextureCoordinates.elements;
+    CC3Vector boxMin = bounds.minimum;
+    CC3Vector boxMax = bounds.maximum;
+    
+    // Only move donw the top face!!!
+    vertices[12].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
+    vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
+    vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z); 
+    vertices[13].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
+    [_box rebuildBoundingVolume];
+    [_box updateVertexLocationsGLBuffer];
+    [_box updateVertexTextureCoordinatesGLBuffer];
+}
+- (void)updateBox:(CC3BoundingBox)box animated:(BOOL)animated
+{
+    CC3TexturedVertex* vertices = ((CC3VertexArrayMesh*)_box.mesh).vertexTextureCoordinates.elements;
+    
+    CC3Vector boxMin = box.minimum;
+    CC3Vector boxMax = box.maximum;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    [UIView setAnimationDuration:0.6];
+    // Right face, CCW winding:
+    vertices[0].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
+    vertices[0].normal = kCC3VectorUnitXNegative;
+
+    
+    vertices[3].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
+    vertices[3].normal = kCC3VectorUnitXNegative;
+
+    
+    vertices[2].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
+    vertices[2].normal = kCC3VectorUnitXNegative;
+        
+    vertices[1].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
+    vertices[1].normal = kCC3VectorUnitXNegative;
+    
+    
+    // Left face, CCW winding:
+    vertices[8].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
+    vertices[8].normal = kCC3VectorUnitXPositive;
+    
+    vertices[11].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
+    vertices[11].normal = kCC3VectorUnitXPositive;
+    
+    vertices[10].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
+    vertices[10].normal = kCC3VectorUnitXPositive;
+    
+    vertices[9].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
+    vertices[9].normal = kCC3VectorUnitXPositive;
+    
+    // Top face, CCW winding:
+    vertices[12].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
+    vertices[12].normal = kCC3VectorUnitXNegative;
+    
+    vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
+    vertices[15].normal = kCC3VectorUnitXNegative;
+    
+    vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
+    vertices[14].normal = kCC3VectorUnitXNegative;
+    
+    vertices[13].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
+    vertices[13].normal = kCC3VectorUnitXNegative;
+    
+    // Bottom face, CCW winding:
+    vertices[16].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
+    vertices[16].normal = kCC3VectorUnitYPositive;
+    
+    vertices[19].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
+    vertices[19].normal = kCC3VectorUnitYPositive;
+
+    vertices[18].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
+    vertices[18].normal = kCC3VectorUnitYPositive;
+    
+    vertices[17].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
+    vertices[17].normal = kCC3VectorUnitYPositive;
+    [_box updateVertexLocationsGLBuffer];
+    [_box rebuildBoundingVolume];
+    [UIView commitAnimations];
+}
 - (CC3BoxNode*)createScreenBox:(CC3BoundingBox)box
 {
     CGPoint corner = {1.0,1.0};
@@ -254,24 +358,7 @@
     tcArray.elementCount = vertexCount;
     tcArray.elementOffset = 2 * sizeof(CC3Vector);		// Offset to texCoord element in vertex structure
     
-    /*
-    // Front face, CCW winding:
-    vertices[0].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
-    vertices[0].normal = kCC3VectorUnitZPositive;
-    vertices[0].texCoord = (ccTex2F){corner.x, corner.y};
-    
-    vertices[1].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
-    vertices[1].normal = kCC3VectorUnitZPositive;
-    vertices[1].texCoord = (ccTex2F){0.5f, corner.y};
-    
-    vertices[2].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
-    vertices[2].normal = kCC3VectorUnitZPositive;
-    vertices[2].texCoord = (ccTex2F){0.5f, (1.0f - corner.y)};
-    
-    vertices[3].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
-    vertices[3].normal = kCC3VectorUnitZPositive;
-    vertices[3].texCoord = (ccTex2F){corner.x, (1.0f - corner.y)};
-     */
+
     
     // Right face, CCW winding:
     vertices[0].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
@@ -450,7 +537,6 @@
 @end
 
 
-
 @implementation Ball3DLayer
 
 - (id)init
@@ -492,6 +578,28 @@
     return [w getBallRadius];
 }
 
+- (void)showAd
+{
+    CGSize s = self.contentSize;
+    s.height -= iAd_Height;
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
+    [UIView setAnimationDuration:0.6];
+    self.contentSize = s;
+    Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
+    [w shrink];
+    s.height += iAd_Height;
+    [w.viewportManager updateBounds:CGRectMake(0, 0, s.width, s.height) withDeviceOrientation:[[CCDirector sharedDirector] deviceOrientation]];
+    
+    [UIView commitAnimations];
+}
+- (void)hideAd
+{
+    CGSize s = [CCDirector sharedDirector].winSize;
+    self.contentSize = s;
+    Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
+    [w grow];
+}
 #pragma mark - Overrided Methods
 
 - (void)initializeControls
