@@ -13,14 +13,16 @@
 #import "SimpleAudioEngine.h"
 
 
+
 @interface PlayLayer (PrivateMethods)
 - (void)CreateScreenBound;
 - (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r;
+- (void)Ad:(NSTimer*)timer;
 @end
 
 @implementation PlayLayer
 
-const float PTM_RATIO = 128.0f;
+const float PTM_RATIO = 96.0f;
 
 - (void)dealloc
 {
@@ -29,6 +31,7 @@ const float PTM_RATIO = 128.0f;
 #endif
     delete world;
     delete contact;
+    [wind release];
 }
 
 - (id)init
@@ -50,8 +53,19 @@ const float PTM_RATIO = 128.0f;
         CGPoint p = [ball3DLayer getBallLocation];
         CGFloat r = [ball3DLayer getBallRadius];
         theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
+        wind = [[Wind alloc] initWithForce:0.1
+                                  andAngle:0
+                                    repeat:YES];
+        [wind blow:theBall];
+        [wind startBlow];
         
         [self scheduleUpdate];
+        
+        [NSTimer scheduledTimerWithTimeInterval:2.0f
+                                         target:self
+                                       selector:@selector(Ad:)
+                                       userInfo:nil 
+                                        repeats:YES];
         
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"Pow.caf"];
         
@@ -61,7 +75,15 @@ const float PTM_RATIO = 128.0f;
 }
 
 #pragma mark - Private Methods
-
+- (void)Ad:(NSTimer *)timer
+{
+    static BOOL shown = NO;
+    if (shown)
+        [ball3DLayer hideAd];
+    else
+        [ball3DLayer showAd];
+    shown = !shown;
+}
 - (void)CreateScreenBound
 {
     // for the screenBorder body we'll need these values
@@ -140,10 +162,6 @@ const float PTM_RATIO = 128.0f;
         b2Vec2 gravity = 10.0f * b2Vec2(acceleration.smoothedX, acceleration.smoothedY);
         world->SetGravity(gravity);
     }
-    static ccTime total = 0.0f;
-    
-	theBall->ApplyForceToCenter(b2Vec2(0.010 * sinf(total += delta),0.010 * cosf(total)));
-    total = (total>2*M_PI)?total - 2*M_PI:total;
     
 	// The number of iterations influence the accuracy of the physics simulation. With higher values the
 	// body's velocity and position are more accurately tracked but at the cost of speed.

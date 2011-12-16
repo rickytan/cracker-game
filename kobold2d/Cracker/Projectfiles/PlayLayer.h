@@ -11,6 +11,7 @@
 #import "CC3Node.h"
 #import "Ball3DLayer.h"
 #import "ContactListener.h"
+#import "Wind.h"
 
 @interface PlayLayer : CCLayer {
     b2World *               world;
@@ -18,7 +19,7 @@
     Ball3DLayer *           ball3DLayer;// Weak assign
     b2Body *                theBall;    // Weak assign
     NSTimer *               timer;
-    
+    Wind *                  wind;
     uint                    score;
 }
 
