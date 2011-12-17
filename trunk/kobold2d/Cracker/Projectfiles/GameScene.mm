@@ -21,7 +21,6 @@
         
         [self scheduleUpdate];
         
-
     }
     return self;
 }

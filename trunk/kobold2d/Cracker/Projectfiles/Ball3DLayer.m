@@ -33,7 +33,7 @@
     CC3BoundingBox              bounds;
     float                       ratio;
 }
-
+- (void)setArrowDirection:(CGFloat)angle;
 - (void)setBallLocation:(CGPoint)ballLocation;
 - (void)setBallRotation:(CGFloat)ballRotation;
 - (CGPoint)getBallLocation;
@@ -106,6 +106,19 @@
     _floor.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
     _floor.shouldCullBackFaces = NO;
     [self addChildToFloor:_floor];
+    
+    _arrow = [CC3PlaneNode nodeWithName:@"arrow"];
+    CC3Texture *tex = [CC3Texture textureFromFile:@"blackArrow.png"];
+    
+    [_arrow populateAsTexturedRectangleWithSize:CGSizeMake(2*_ballRadius, 2*_ballRadius) 
+                                       andPivot:ccp(_ballRadius, _ballRadius)];
+    _arrow.texture = tex;
+    [_arrow alignInvertedTextures];
+    _arrow.material.sourceBlend = GL_SRC_ALPHA;
+    _arrow.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
+    _arrow.material.isOpaque = YES;
+    _arrow.location = cc3v(0, 0, 0);
+    [self addChildToFloor:_arrow];
 
     
     _ball = [CC3PlaneNode nodeWithName:@"ball"];
@@ -171,6 +184,7 @@
         CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
         _box.transformMatrix = matrix;
         [_floorNode markTransformDirty];
+
         //[_box.transformMatrix multiplyByMatrix:matrix];
         /*
         [self tiltBox:_box
@@ -257,6 +271,12 @@
     [_box rebuildBoundingVolume];
     [_box updateVertexLocationsGLBuffer];
     [_box updateVertexTextureCoordinatesGLBuffer];
+}
+
+- (void)setArrowDirection:(CGFloat)angle
+{
+    _arrow.rotationAxis = cc3v(0, 0, 1);
+    _arrow.rotationAngle = angle;
 }
 - (void)updateBox:(CC3BoundingBox)box animated:(BOOL)animated
 {
@@ -576,6 +596,12 @@
 {
     Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
     return [w getBallRadius];
+}
+
+- (void)setArrowDirection:(CGFloat)angle
+{
+    Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
+    [w setArrowDirection:angle];
 }
 
 - (void)showAd
