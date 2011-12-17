@@ -17,9 +17,11 @@
 @interface PlayLayer (PrivateMethods)
 - (void)CreateScreenBound;
 - (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r;
-- (void)Ad:(NSTimer*)timer;
+- (void)control:(NSTimer*)timer;
 - (void)scoreAddByTime:(NSTimer*)timer;
 - (void)scoreAddByPixel:(CGFloat)pixels;
+- (void)setWindDirection:(CGFloat)angle;
+- (void)speedUpWind;
 @end
 
 @implementation PlayLayer
@@ -35,6 +37,10 @@ const float PTM_RATIO = 96.0f;
     delete world;
     delete contact;
     [wind release];
+    if ([timer isValid])
+        [timer invalidate];
+    if ([scoreAddTimer isValid])
+        [scoreAddTimer invalidate];
 }
 
 - (id)init
@@ -69,13 +75,15 @@ const float PTM_RATIO = 96.0f;
                                   andAngle:0
                                     repeat:YES];
         [wind blow:theBall];
-        [wind startBlow];
+        
+        [self setWindDirection:0];
         
         [self scheduleUpdate];
+
         
-        [NSTimer scheduledTimerWithTimeInterval:2.0f
+        [NSTimer scheduledTimerWithTimeInterval:1.0f
                                          target:self
-                                       selector:@selector(Ad:)
+                                       selector:@selector(control:)
                                        userInfo:nil 
                                         repeats:YES];
         scoreAddTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
@@ -92,15 +100,23 @@ const float PTM_RATIO = 96.0f;
 }
 
 #pragma mark - Private Methods
-- (void)Ad:(NSTimer *)timer
+- (void)control:(NSTimer *)timer
 {
+    static int counter = 0;
+    counter++;
+    
+    if (counter % 2){
     static BOOL shown = NO;
     if (shown)
         [ball3DLayer hideAd];
     else
         [ball3DLayer showAd];
     shown = !shown;
+    }
+    
+    
 }
+
 - (void)CreateScreenBound
 {
     // for the screenBorder body we'll need these values
@@ -138,7 +154,7 @@ const float PTM_RATIO = 96.0f;
     b2BodyDef body;
     body.type = b2_dynamicBody;
     body.position = b2Vec2(p.x, p.y);
-    body.userData = (void*)0x1;
+    //body.userData = (void*)0x1;
     
     b2Body *ball = world->CreateBody(&body);
     b2CircleShape circle;
@@ -162,6 +178,17 @@ const float PTM_RATIO = 96.0f;
 - (void)scoreAddByPixel:(CGFloat)pixels
 {
     self.score += pixels;
+}
+
+- (void)speedUpWind
+{
+    [wind increase];
+}
+
+- (void)setWindDirection:(CGFloat)angle
+{
+    wind.angle = angle;
+    [ball3DLayer setArrowDirection:CC_RADIANS_TO_DEGREES(angle)];
 }
 
 // convenience method to convert a CGPoint to a b2Vec2
@@ -210,6 +237,7 @@ const float PTM_RATIO = 96.0f;
     CGFloat a = theBall->GetAngle();
     
     [self scoreAddByPixel:ccpDistance(lastPosition, p)];
+    [self setWindDirection:a];
     [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
     
     /*
@@ -224,6 +252,18 @@ const float PTM_RATIO = 96.0f;
      }
      }
      */
+}
+
+- (void)onEnter
+{
+    [super onEnter];
+    [wind startBlow];
+}
+
+- (void)onExit
+{
+    [super onExit];
+    [wind stopBlow];
 }
 
 @end

@@ -34,10 +34,11 @@
 
 - (id)initWithForce:(CGFloat)force andAngle:(CGFloat)angle repeat:(BOOL)repeat;
 {
-    [self init];
-    self.force = force;
-    self.angle = angle;
-    self.repeat = repeat;
+    if ((self = [self init])){
+        self.force = force;
+        self.angle = angle;
+        self.repeat = repeat;
+    }
     return self;
 }
 - (void)dealloc

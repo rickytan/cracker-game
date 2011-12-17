@@ -9,6 +9,7 @@
 #import "cocos2d.h"
 #import "Box2D.h"
 #import "GLES-Render.h"
+#import "GameScene.h"
 
 
 @interface MainMenu : CCLayer {
@@ -17,6 +18,7 @@
     CCMenu *                    menu;           // Weak assign
   	GLESDebugDraw *             debugDraw;
     CCMenuItem *                disabledItem;   // Weak assign
+    GameScene *                 playScene;      
 }
 - (id)init;
 
