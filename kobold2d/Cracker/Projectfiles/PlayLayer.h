@@ -21,6 +21,9 @@
     NSTimer *               timer;
     Wind *                  wind;
     uint                    score;
+    CCLabelAtlas *          scoreLabel;
+    NSTimer *               scoreAddTimer;
 }
 
+@property (nonatomic, assign) uint score;
 @end

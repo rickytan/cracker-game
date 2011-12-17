@@ -18,9 +18,12 @@
 - (void)CreateScreenBound;
 - (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r;
 - (void)Ad:(NSTimer*)timer;
+- (void)scoreAddByTime:(NSTimer*)timer;
+- (void)scoreAddByPixel:(CGFloat)pixels;
 @end
 
 @implementation PlayLayer
+@synthesize score;
 
 const float PTM_RATIO = 96.0f;
 
@@ -37,16 +40,25 @@ const float PTM_RATIO = 96.0f;
 - (id)init
 {
     if ((self = [super init])){
-        
         world = new b2World(b2Vec2(0.0f,0.0f));
         world->SetAllowSleeping(NO);
         
         contact = new ContactListener;
         world->SetContactListener(contact);
         
-        
         ball3DLayer = [Ball3DLayer node];
         [self addChild:ball3DLayer];
+        
+        score = 0;
+        scoreLabel = [CCLabelAtlas labelWithString:[NSNumber numberWithInt:score].stringValue 
+                                       charMapFile:@"fps_images.png" 
+                                         itemWidth:16
+                                        itemHeight:24 
+                                      startCharMap:'.'];
+        
+        scoreLabel.position = ccp(4, self.contentSize.height - 30);
+        scoreLabel.color = ccBLUE;
+        [self addChild:scoreLabel z:1];
         
         
         [self CreateScreenBound];
@@ -66,6 +78,11 @@ const float PTM_RATIO = 96.0f;
                                        selector:@selector(Ad:)
                                        userInfo:nil 
                                         repeats:YES];
+        scoreAddTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
+                                                         target:self
+                                                       selector:@selector(scoreAddByTime:)
+                                                       userInfo:nil
+                                                        repeats:YES];
         
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"Pow.caf"];
         
@@ -137,6 +154,16 @@ const float PTM_RATIO = 96.0f;
     return ball;
 }
 
+- (void)scoreAddByTime:(NSTimer *)timer
+{
+    self.score += 10;
+}
+
+- (void)scoreAddByPixel:(CGFloat)pixels
+{
+    self.score += pixels;
+}
+
 // convenience method to convert a CGPoint to a b2Vec2
 -(b2Vec2) toMeters:(CGPoint)point
 {
@@ -147,6 +174,12 @@ const float PTM_RATIO = 96.0f;
 -(CGPoint) toPixels:(b2Vec2)vec
 {
 	return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
+}
+
+- (void)setScore:(uint)_score
+{
+    score = _score;
+    scoreLabel.string = [NSNumber numberWithInt:score].stringValue;
 }
 
 #pragma mark - Overrided Methods
@@ -163,10 +196,11 @@ const float PTM_RATIO = 96.0f;
         world->SetGravity(gravity);
     }
     
+    CGPoint lastPosition = [self toPixels:theBall->GetPosition()];
+    
 	// The number of iterations influence the accuracy of the physics simulation. With higher values the
 	// body's velocity and position are more accurately tracked but at the cost of speed.
 	// Usually for games only 1 position iteration is necessary to achieve good results.
-    
     int32 velocityIterations = 2;
     int32 positionIterations = 1;
     world->Step(delta, velocityIterations, positionIterations);
@@ -175,19 +209,20 @@ const float PTM_RATIO = 96.0f;
     CGPoint p = [self toPixels:theBall->GetPosition()];
     CGFloat a = theBall->GetAngle();
     
+    [self scoreAddByPixel:ccpDistance(lastPosition, p)];
     [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
     
     /*
-    // for each body, get its assigned sprite and update the sprite's position
-    for (b2Body* body = world->GetBodyList(); body != nil; body = body->GetNext())
-    {
-        if (body->GetUserData()){
-            CGPoint p = [self toPixels:body->GetPosition()];
-            CGFloat a = body->GetAngle();
-            
-            [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
-        }
-    }
+     // for each body, get its assigned sprite and update the sprite's position
+     for (b2Body* body = world->GetBodyList(); body != nil; body = body->GetNext())
+     {
+     if (body->GetUserData()){
+     CGPoint p = [self toPixels:body->GetPosition()];
+     CGFloat a = body->GetAngle();
+     
+     [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
+     }
+     }
      */
 }
 
