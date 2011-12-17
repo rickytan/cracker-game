@@ -10,6 +10,7 @@
 #import "MenuScene.h"
 #import "PlayLayer.h"
 #import "SimpleAudioEngine.h"
+#import "PauseScene.h"
 
 @implementation GameScene
 
@@ -33,9 +34,7 @@
     KKInput *input = [KKInput sharedInput];
     
     if (input.anyTouchEndedThisFrame){
-        [[CCDirector sharedDirector]
-         replaceScene:[CCTransitionSlideInL transitionWithDuration:0.3f
-                                                             scene:[MenuScene node]]];
+        [[CCDirector sharedDirector] pushScene:[PauseScene node]];
     }
 }
 

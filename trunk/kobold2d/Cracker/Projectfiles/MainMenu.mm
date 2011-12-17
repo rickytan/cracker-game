@@ -19,6 +19,8 @@ const float PTM_RATIO = 96.0f;
 - (void)menuCallbackEnable:(id)sender;
 - (void)enableBox2dDebugDrawing;
 - (void)activate;
+- (b2Vec2) toMeters:(CGPoint)point;
+- (CGPoint) toPixels:(b2Vec2)vec;
 @end
 
 
@@ -31,6 +33,7 @@ const float PTM_RATIO = 96.0f;
 #endif
     delete world;
     delete debugDraw;
+    [playScene release];
 }
 - (id)init
 {
@@ -38,9 +41,11 @@ const float PTM_RATIO = 96.0f;
         
         world = new b2World(b2Vec2(0.0f, 0.0f));
         world->SetAllowSleeping(NO);
+        playScene = [GameScene new];
+        
         
         worldStatic = YES;
-        //[self enableBox2dDebugDrawing];
+        [self enableBox2dDebugDrawing];
         
         // for the screenBorder body we'll need these values
 		CGSize screenSize = [CCDirector sharedDirector].winSize;
@@ -150,10 +155,49 @@ const float PTM_RATIO = 96.0f;
         }
         
 		[self addChild: menu];
+        
+        // elastic effect
+        ccTime duration = 2.0f;
+
+        for( CCNode *child in [menu children] ) {
+            CGPoint dstPoint = child.position;
+            dstPoint.x = 0;
+            [child runAction: 
+             [CCEaseElasticOut actionWithAction: 
+              [CCMoveTo actionWithDuration:duration
+                                  position:dstPoint]
+                                         period: 0.35f]];
+            i++;
+            
+            /*=============== Add Bodies =================*/
+            b2Body *body;
+            b2BodyDef bodyDef;
+            bodyDef.position = [self toMeters:ccpAdd(dstPoint,menu.position)];
+            bodyDef.type = b2_dynamicBody;
+            bodyDef.userData = (__bridge void*)child;
+            body = world->CreateBody(&bodyDef);
+            
+            // Define another box shape for our dynamic bodies.
+            b2PolygonShape dynamicBox;
+            CGSize bound = child.contentSize;
+            dynamicBox.SetAsBox(bound.width / PTM_RATIO * 0.5f, bound.height / PTM_RATIO * 0.5f);
+            
+            // Define the dynamic body fixture.
+            b2FixtureDef fixtureDef;
+            fixtureDef.shape = &dynamicBox;	
+            fixtureDef.density = 0.1f;
+            fixtureDef.friction = 0.5f;
+            fixtureDef.restitution = 0.6f;
+            body->CreateFixture(&fixtureDef);
+            
+        }
+        [self performSelector:@selector(activate) 
+                   withObject:nil
+                   afterDelay:duration];
 
         [self scheduleUpdate];
 
-		[KKInput sharedInput].accelerometerActive = YES;
+		[KKInput sharedInput].deviceMotionActive = YES;
     }
     return self;
 }
@@ -163,8 +207,8 @@ const float PTM_RATIO = 96.0f;
 - (void)gameStart:(id)sender
 {
     CCDirector *dir = [CCDirector sharedDirector];
-    [dir replaceScene:[CCTransitionSlideInR transitionWithDuration:0.3f
-                                                             scene:[GameScene node]]];
+    [dir pushScene:[CCTransitionSlideInR transitionWithDuration:0.3f
+                                                             scene:playScene]];
     
 }
 
@@ -250,7 +294,7 @@ const float PTM_RATIO = 96.0f;
     KKInput* input = [KKInput sharedInput];
     if (director.currentDeviceIsSimulator == NO)
     {
-        KKAcceleration* acceleration = input.acceleration;
+        KKAcceleration* acceleration = input.deviceMotion.gravity;
         b2Vec2 gravity = 20.0f * b2Vec2(acceleration.rawX, acceleration.rawY);
         world->SetGravity(gravity);
     }
@@ -303,47 +347,4 @@ const float PTM_RATIO = 96.0f;
 }
 #endif
 
-- (void)onEnterTransitionDidFinish
-{
-    [super onEnterTransitionDidFinish];
-    // elastic effect
-    ccTime duration = 2.0f;
-
-    int i=0;
-    for( CCNode *child in [menu children] ) {
-        CGPoint dstPoint = child.position;
-        dstPoint.x = 0;
-        [child runAction: 
-         [CCEaseElasticOut actionWithAction: 
-          [CCMoveTo actionWithDuration:duration
-                              position:dstPoint]
-                                     period: 0.35f]];
-        i++;
-        
-        /*=============== Add Bodies =================*/
-        b2Body *body;
-        b2BodyDef bodyDef;
-        bodyDef.position = [self toMeters:ccpAdd(dstPoint,menu.position)];
-        bodyDef.type = b2_dynamicBody;
-        bodyDef.userData = (__bridge void*)child;
-        body = world->CreateBody(&bodyDef);
-        
-        // Define another box shape for our dynamic bodies.
-        b2PolygonShape dynamicBox;
-        CGSize bound = child.contentSize;
-        dynamicBox.SetAsBox(bound.width / PTM_RATIO * 0.5f, bound.height / PTM_RATIO * 0.5f);
-        
-        // Define the dynamic body fixture.
-        b2FixtureDef fixtureDef;
-        fixtureDef.shape = &dynamicBox;	
-        fixtureDef.density = 0.1f;
-        fixtureDef.friction = 0.5f;
-        fixtureDef.restitution = 0.6f;
-        body->CreateFixture(&fixtureDef);
-
-    }
-    [self performSelector:@selector(activate) 
-               withObject:nil
-               afterDelay:duration];
-}
 @end
