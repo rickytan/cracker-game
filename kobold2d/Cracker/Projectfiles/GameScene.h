@@ -8,11 +8,16 @@
 
 #import "CCScene.h"
 #import "PlayLayer.h"
+#import "PauseScene.h"
+#import "MainMenu.h"
 #import <iAd/iAd.h>
+
 
 @interface GameScene : CCScene <ADBannerViewDelegate> {
     ADBannerView *          adView;
     PlayLayer *             playlayer;  // Weak assign
+    PauseScene *            pauselayer; // Weak assign
+    MainMenu *              menulayer;  // Weak assign
 }
 
 - (void)showAd;

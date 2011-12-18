@@ -11,6 +11,7 @@
 #import "SimpleAudioEngine.h"
 #import "PauseScene.h"
 
+
 @implementation GameScene
 
 - (id)init
@@ -21,18 +22,13 @@
         //[[CCDirector sharedDirector] enableRetinaDisplay:YES];
         
         playlayer = [PlayLayer node];
-        [self addChild:playlayer];
+        pauselayer = [PauseScene node];
         
-        [self scheduleUpdate];
+        menulayer = [MainMenu node];
+
+        CCLayerMultiplex *layer = [CCLayerMultiplex layerWithLayers:menulayer,playlayer,pauselayer,nil];
         
-        CCCallFunc *sad = [CCCallFunc actionWithTarget:self
-                                              selector:@selector(showAd)];
-        CCCallFunc *had = [CCCallFunc actionWithTarget:self
-                                              selector:@selector(hideAd)];
-        CCDelayTime *delay0 = [CCDelayTime actionWithDuration:1.5];
-        CCDelayTime *delay1 = [CCDelayTime actionWithDuration:1.5];
-        
-        //[self runAction:[CCRepeatForever actionWithAction:[CCSequence actions:delay0, sad, delay1, had, nil]]];
+        [self addChild:layer];
     }
     return self;
 }
@@ -66,22 +62,12 @@
     [UIView commitAnimations];
 }
 
-#pragma mark - Overrided Methods
-
-- (void)update:(ccTime)delta
-{
-    KKInput *input = [KKInput sharedInput];
-    
-    if (input.anyTouchEndedThisFrame){
-        [[CCDirector sharedDirector] pushScene:[PauseScene node]];
-    }
-}
-
 - (void)onEnter
 {
     [super onEnter];
     
     adView = [[ADBannerView alloc] initWithFrame:CGRectZero];
+    
     adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier320x50;
     [[CCDirector sharedDirector].openGLView addSubview:adView];
     adView.delegate = self;
@@ -110,7 +96,7 @@
 // it wished to defer placing the banner in a view hierarchy until the banner has content to display.
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    if ([self isRunning]) {
+    if ([playlayer isRunning]) {
         [self showAd];
     }
 }
@@ -132,6 +118,9 @@
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner 
                willLeaveApplication:(BOOL)willLeave
 {
+    if (!willLeave && playlayer.isRunning) {
+        [playlayer pauseSchedulerAndActions];
+    }
     return YES;
 }
 
@@ -140,6 +129,7 @@
 // of the action should resume at this point.
 - (void)bannerViewActionDidFinish:(ADBannerView *)banner
 {
+    [playlayer resumeSchedulerAndActions];
     [self hideAd];
 }
 @end

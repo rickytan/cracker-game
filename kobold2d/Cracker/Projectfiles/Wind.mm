@@ -10,7 +10,7 @@
 
 @interface Wind (Private)
 - (void)update:(ccTime)dt;
-- (void)apply:(ccTime)delta;
+- (void)apply;
 
 - (void)randomDirection;
 
@@ -35,10 +35,10 @@
         _elastic = 0.0f;
         _duration = 2.0f;
         _repeat = NO;
-        [[CCScheduler sharedScheduler] scheduleUpdateForTarget:self
-                                                      priority:0 paused:YES];
+        
         [self level1];
         [self pauseSchedulerAndActions];
+        [self scheduleUpdate];
     }
     return self;
 }
@@ -84,7 +84,7 @@
 }
 - (void)increase
 {
-    [self increaseBy:0.002*expf(_force)];
+    [self increaseBy:0.01*expf(_force)];
 }
 - (void)increaseBy:(CGFloat)delta
 {
@@ -92,7 +92,7 @@
 }
 - (void)decrease
 {
-    [self decreaseBy:0.002*expf(_force) - 0.002];
+    [self decreaseBy:0.01*expf(_force) - 0.002];
 }
 - (void)decreaseBy:(CGFloat)delta
 {
@@ -102,14 +102,12 @@
 }
 - (void)startBlow
 {
-    [[CCScheduler sharedScheduler] resumeTarget:self];
     [self resumeSchedulerAndActions];
 }
 
 - (void)stopBlow
 {
     [self pauseSchedulerAndActions];
-    [[CCScheduler sharedScheduler] pauseTarget:self];
 }
 
 
@@ -132,7 +130,7 @@
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:3];
     CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level3)];
     
-    [self runAction:[CCSequence actions:r, next, nil]];
+    [self runAction:[CCSequence actions:[CCCallFunc actionWithTarget:self selector:@selector(increase)], r, next, nil]];
 }
 
 - (void)level3
@@ -143,7 +141,7 @@
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:4];
     CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level4)];
     
-    [self runAction:[CCSequence actions:r, next, nil]];
+    [self runAction:[CCSequence actions:[CCCallFunc actionWithTarget:self selector:@selector(increase)], r, next, nil]];
 }
 
 - (void)level4
@@ -154,7 +152,7 @@
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:5];
     CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level5)];
     
-    [self runAction:[CCSequence actions:r, next, nil]];
+    [self runAction:[CCSequence actions:[CCCallFunc actionWithTarget:self selector:@selector(increase)], r, next, nil]];
 }
 
 - (void)level5
@@ -185,31 +183,17 @@
     CGFloat angle = CCRANDOM_MINUS1_1()*M_PI;
     self.angle = angle;
 }
-- (void)step:(ccTime)dt
-{
-    
-}
 
-- (void)apply:(ccTime)delta
-{
-    for (bodyList::iterator it = objects.begin(); it != objects.end(); ++it) {
-        CGFloat f = _force * sinf(M_PI*delta);
-        (*it)->ApplyForceToCenter(f*b2Vec2(direction.c,direction.s));
-    }
-}
 - (void)update:(ccTime)dt
 {
-    _elastic += dt;
-    if (_elastic >= _duration && _repeat){
-        _elastic -= _duration;
-    }
-    else if (_elastic >= _duration){
-        [self stopBlow];
-        return;
-    }
-    
-    [self apply:MIN(1, _elastic/_duration)];
+    [self apply];
 }
 
+- (void)apply
+{
+    for (bodyList::iterator it = objects.begin(); it != objects.end(); ++it) {
+        (*it)->ApplyForceToCenter(_force*b2Vec2(direction.c,direction.s));
+    }
+}
 
 @end
