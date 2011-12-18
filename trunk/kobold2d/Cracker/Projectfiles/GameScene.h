@@ -7,8 +7,14 @@
 //
 
 #import "CCScene.h"
-//#import "Box2D.h"
+#import "PlayLayer.h"
+#import <iAd/iAd.h>
 
-@interface GameScene : CCScene
+@interface GameScene : CCScene <ADBannerViewDelegate> {
+    ADBannerView *          adView;
+    PlayLayer *             playlayer;  // Weak assign
+}
 
+- (void)showAd;
+- (void)hideAd;
 @end

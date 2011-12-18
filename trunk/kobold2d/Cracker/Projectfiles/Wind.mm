@@ -11,6 +11,15 @@
 @interface Wind (Private)
 - (void)update:(ccTime)dt;
 - (void)apply:(ccTime)delta;
+
+- (void)randomDirection;
+
+- (void)level1;
+- (void)level2;
+- (void)level3;
+- (void)level4;
+- (void)level5;
+- (void)level6;
 @end
 
 @implementation Wind
@@ -28,6 +37,8 @@
         _repeat = NO;
         [[CCScheduler sharedScheduler] scheduleUpdateForTarget:self
                                                       priority:0 paused:YES];
+        [self level1];
+        [self pauseSchedulerAndActions];
     }
     return self;
 }
@@ -92,13 +103,88 @@
 - (void)startBlow
 {
     [[CCScheduler sharedScheduler] resumeTarget:self];
+    [self resumeSchedulerAndActions];
 }
 
 - (void)stopBlow
 {
+    [self pauseSchedulerAndActions];
     [[CCScheduler sharedScheduler] pauseTarget:self];
 }
 
+
+- (void)level1
+{
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:2.5];
+    CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(randomDirection)];
+    CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:2];
+    CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level2)];
+    
+    [self runAction:[CCSequence actions:r, next, nil]];
+}
+
+- (void)level2
+{
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:2.0];
+    CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(randomDirection)];
+    CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:3];
+    CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level3)];
+    
+    [self runAction:[CCSequence actions:r, next, nil]];
+}
+
+- (void)level3
+{
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.5];
+    CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(randomDirection)];
+    CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:4];
+    CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level4)];
+    
+    [self runAction:[CCSequence actions:r, next, nil]];
+}
+
+- (void)level4
+{
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.0];
+    CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(randomDirection)];
+    CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:5];
+    CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level5)];
+    
+    [self runAction:[CCSequence actions:r, next, nil]];
+}
+
+- (void)level5
+{
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.0];
+    CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(randomDirection)];
+    CCCallFunc *c2 = [CCCallFunc actionWithTarget:self selector:@selector(increase)];
+    CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, c2, nil] times:5];
+    CCCallFunc *next = [CCCallFunc actionWithTarget:self selector:@selector(level6)];
+    
+    [self runAction:[CCSequence actions:r, next, nil]];
+}
+
+- (void)level6
+{
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:0.6];
+    CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(randomDirection)];
+    
+    CCRepeatForever *r = [CCRepeatForever actionWithAction:[CCSequence actions:d1, c1, nil]];
+    
+    [self runAction:r];
+}
+
+- (void)randomDirection
+{
+    CGFloat angle = CCRANDOM_MINUS1_1()*M_PI;
+    self.angle = angle;
+}
 - (void)step:(ccTime)dt
 {
     
@@ -124,4 +210,6 @@
     
     [self apply:MIN(1, _elastic/_duration)];
 }
+
+
 @end
