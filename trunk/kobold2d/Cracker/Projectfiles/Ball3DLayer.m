@@ -20,6 +20,14 @@
 
 #define iAd_Height      60.0f
 
+typedef enum {
+        AD_CUBE_TOP = 0,
+        AD_CUBE_RIGHT,
+        AD_CUBE_BOTTOM,
+        AD_CUBE_LEFT,
+        AD_CUBE_BACK,
+        AD_CUBE_TOTAL
+}AdCubeFace;
 
 @interface Ball3DWorld : CC3World {
     CC3Camera *                 _cam;    // Weak assign
@@ -29,14 +37,8 @@
     CC3Node *                   _floorNode;  // Weak assign
     CC3Node *                   _arrowNode;  // Weak assign
     
-    enum {
-        AD_CUBE_TOP = 0,
-        AD_CUBE_RIGHT,
-        AD_CUBE_BOTTOM,
-        AD_CUBE_LEFT,
-        AD_CUBE_TOTAL
-    };
-    CC3BoxNode *                _adCube[AD_CUBE_TOTAL];
+    
+    CC3BoxNode *                _adCube[AD_CUBE_TOTAL]; // Weak assign
     
     CGFloat                     _ballRadius;
     CGSize                      boxBound;
@@ -64,7 +66,6 @@
 
 @implementation Ball3DWorld
 
-
 #pragma mark - Overrided Methods
 
 -(void) initializeWorld
@@ -91,21 +92,43 @@
     boxBound.width = s.width / ratio;
     boxBound.height = s.height / ratio;
     
-    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -2.5, 
+    const CGFloat cube_height = 2.5;
+    
+    bounds = CC3BoundingBoxMake(-boxBound.width/2, -boxBound.height/2, -cube_height, 
                                 boxBound.width/2,  boxBound.height/2, 0.0);
     
-    _box = [self createScreenBox:bounds];
+    _floorNode = [CC3Node node];
+    [self addChild:_floorNode];
     
-    _box.specularColor = kCCC4FWhite;
-    _box.diffuseColor = kCCC4FWhite;
-    _box.ambientColor = kCCC4FWhite;
-    _box.texture = [CC3Texture textureFromFile:@"wood2.jpg"];
+    
+    CC3Vector cube_locations[AD_CUBE_TOTAL] = {
+        {                0, boxBound.height/2,           0},
+        { boxBound.width/2,                 0,           0},
+        {                0,-boxBound.height/2,           0},
+        {-boxBound.width/2,                 0,           0},
+        {                0,                 0,-cube_height}
+    };
+    NSString *cube_texture[] = {
+        @"wood2.jpg",
+        @"wood2.jpg",
+        @"wood2.jpg",
+        @"wood2.jpg",
+        @"wood2.jpg"
+    };
+    for (int i=0; i<AD_CUBE_TOTAL; ++i) {
+        _adCube[i] = [CC3BoxNode node];
+        [_adCube[i] populateAsTexturedBox:bounds withCorner:(CGPoint){1.0,1.0}];
+        _adCube[i].shouldUseLighting = YES;
+        _adCube[i].shouldCullBackFaces = NO;
+        _adCube[i].texture = [CC3Texture textureFromFile:cube_texture[i]];
+        _adCube[i].location = cube_locations[i];
+        _adCube[i].specularColor = kCCC4FWhite;
+        _adCube[i].ambientColor = kCCC4FWhite;
+        _adCube[i].diffuseColor = kCCC4FWhite;
+        
+        [_floorNode addChild:_adCube[i]];
+    }
 
-    [self addChild:_box];
-    
-    _floorNode = [CC3Node nodeWithName:@"floornode"];
-    _floorNode.location = cc3v(0, 0, bounds.minimum.z);
-    [_box addChild:_floorNode];
     
     _floor = [CC3PlaneNode nodeWithName:@"floor"];
     [_floor populateAsTexturedRectangleWithSize:CGSizeMake(4, 4) 
@@ -117,7 +140,7 @@
                                                         alignment:UITextAlignmentLeft
                                                          fontName:@"Marker Felt" 
                                                          fontSize:20] autorelease];
-    [self addContentFromPODResourceFile:@"wolegequ2.pod"];
+    //[self addContentFromPODResourceFile:@"wolegequ2.pod"];
     
     [_floor shouldUseLighting];
     [_floor alignInvertedTextures];
@@ -169,13 +192,13 @@
     //[_ball retainVertexLocations];
     
     _ball.location = cc3v(0, 0, bounds.minimum.z+_ballRadius);
-    [_box addChild:_ball];
+    [_floorNode addChild:_ball];
     
 	
 	// Create OpenGL ES buffers for the vertex arrays to keep things fast and efficient,
 	// and to save memory, release the vertex data in main memory because it is now redundant.
 	[self createGLBuffers];
-    //[self releaseRedundantData];
+    [self releaseRedundantData];
 }
 
 -(void) updateBeforeTransform: (CC3NodeUpdatingVisitor*) visitor 
@@ -201,10 +224,10 @@
         float xd = (-m.roll) ;
         float yd = (m.pitch) ;
         
-        const float tmaxx =  M_PI / 180 * 8;
+        const float tmaxx = M_PI / 180 * 8;
         const float tmaxy = M_PI / 180 * 12;
-        xd = xd<tmaxx?(xd>-tmaxx?xd:-tmaxx):tmaxx;
-        yd = yd<tmaxy?(yd>-tmaxy?yd:-tmaxy):tmaxy;
+        //xd = xd<tmaxx?(xd>-tmaxx?xd:-tmaxx):tmaxx;
+        //yd = yd<tmaxy?(yd>-tmaxy?yd:-tmaxy):tmaxy;
         
         //_box.rotation = cc3v(-xd, -yd,0.0);
         GLfloat glMat[] = {
@@ -216,9 +239,9 @@
         glMat[8] = -xd;
         glMat[9] = -yd;
         CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
-        _box.transformMatrix = matrix;
-        [_floorNode markTransformDirty];
-        
+        //_floorNode.transformMatrix = matrix;
+        //[_floorNode markTransformDirty];
+        _floorNode.rotation = cc3v(CC_RADIANS_TO_DEGREES(-yd), CC_RADIANS_TO_DEGREES(xd), 0);
         //[_box.transformMatrix multiplyByMatrix:matrix];
         /*
          [self tiltBox:_box
@@ -275,37 +298,12 @@
     return _ballRadius / boxBound.width * s.width;
 }
 
-- (void)moveTopFace:(CC3TexturedVertex *)vertex by:(CC3Vector)vector
-{
-    CC3Vector v;
-    CGFloat rate = 0.2;
-    if (CC3VectorLengthSquared(vector) < 1e-6)
-        return;
-    
-    v = CC3VectorLerp(vertex[0].location, CC3VectorAdd(vertex[0].location, vector), rate);
-    vertex[0].location = v;
-
-    v = CC3VectorLerp(vertex[1].location, CC3VectorAdd(vertex[1].location, vector), rate);
-    vertex[1].location = v;
-    
-    v = CC3VectorLerp(vertex[2].location, CC3VectorAdd(vertex[2].location, vector), rate);
-    vertex[2].location = v;
-    
-    v = CC3VectorLerp(vertex[3].location, CC3VectorAdd(vertex[3].location, vector), rate);
-    vertex[3].location = v;
-    
-    
-    [NSTimer scheduledTimerWithTimeInterval:1.0/24
-                                     target:self
-                                   selector:@selector(moveTopFace:by:) 
-                                   userInfo:nil 
-                                    repeats:NO];
-}
-
 - (void)shrink
 {
     topFaceOffset = -iAd_Height / ratio;
-    [self moveTopFace:nil];
+    CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
+    
+    [_adCube[AD_CUBE_TOP] runAction:move];
 }
 - (void)moveTopFace:(NSTimer *)timer
 {
@@ -336,7 +334,9 @@
 - (void)grow
 {
     topFaceOffset = iAd_Height / ratio;
-    [self moveTopFace:nil];
+    CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
+    
+    [_adCube[AD_CUBE_TOP] runAction:move];
     return;
     
     CC3TexturedVertex *vertices = ((CC3VertexArrayMesh*)_box.mesh).vertexTextureCoordinates.elements;
@@ -360,70 +360,7 @@
 }
 - (void)updateBox:(CC3BoundingBox)box animated:(BOOL)animated
 {
-    CC3TexturedVertex* vertices = ((CC3VertexArrayMesh*)_box.mesh).vertexTextureCoordinates.elements;
-    
-    CC3Vector boxMin = box.minimum;
-    CC3Vector boxMax = box.maximum;
-    [UIView beginAnimations:nil context:nil];
-    [UIView setAnimationCurve:UIViewAnimationCurveEaseOut];
-    [UIView setAnimationDuration:0.6];
-    // Right face, CCW winding:
-    vertices[0].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
-    vertices[0].normal = kCC3VectorUnitXNegative;
-    
-    
-    vertices[3].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
-    vertices[3].normal = kCC3VectorUnitXNegative;
-    
-    
-    vertices[2].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
-    vertices[2].normal = kCC3VectorUnitXNegative;
-    
-    vertices[1].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
-    vertices[1].normal = kCC3VectorUnitXNegative;
-    
-    
-    // Left face, CCW winding:
-    vertices[8].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
-    vertices[8].normal = kCC3VectorUnitXPositive;
-    
-    vertices[11].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
-    vertices[11].normal = kCC3VectorUnitXPositive;
-    
-    vertices[10].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
-    vertices[10].normal = kCC3VectorUnitXPositive;
-    
-    vertices[9].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
-    vertices[9].normal = kCC3VectorUnitXPositive;
-    
-    // Top face, CCW winding:
-    vertices[12].location = cc3v(boxMin.x, boxMax.y, boxMin.z);
-    vertices[12].normal = kCC3VectorUnitXNegative;
-    
-    vertices[15].location = cc3v(boxMin.x, boxMax.y, boxMax.z);
-    vertices[15].normal = kCC3VectorUnitXNegative;
-    
-    vertices[14].location = cc3v(boxMax.x, boxMax.y, boxMax.z);
-    vertices[14].normal = kCC3VectorUnitXNegative;
-    
-    vertices[13].location = cc3v(boxMax.x, boxMax.y, boxMin.z);
-    vertices[13].normal = kCC3VectorUnitXNegative;
-    
-    // Bottom face, CCW winding:
-    vertices[16].location = cc3v(boxMin.x, boxMin.y, boxMax.z);
-    vertices[16].normal = kCC3VectorUnitYPositive;
-    
-    vertices[19].location = cc3v(boxMin.x, boxMin.y, boxMin.z);
-    vertices[19].normal = kCC3VectorUnitYPositive;
-    
-    vertices[18].location = cc3v(boxMax.x, boxMin.y, boxMin.z);
-    vertices[18].normal = kCC3VectorUnitYPositive;
-    
-    vertices[17].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
-    vertices[17].normal = kCC3VectorUnitYPositive;
-    [_box updateVertexLocationsGLBuffer];
-    [_box rebuildBoundingVolume];
-    [UIView commitAnimations];
+
 }
 - (CC3BoxNode*)createScreenBox:(CC3BoundingBox)box
 {
@@ -435,15 +372,13 @@
     GLuint vertexCount = 20;
     
     // Create vertexLocation array.
-    itemName = [NSString stringWithFormat: @"%@-Locations", self.name];
-    CC3VertexLocations* locArray = [CC3VertexLocations vertexArrayWithName: itemName];
+    CC3VertexLocations* locArray = [CC3VertexLocations vertexArray];
     locArray.elementStride = sizeof(CC3TexturedVertex);	// Set stride before allocating elements.
     locArray.elementOffset = 0;							// Offset to location element in vertex structure
     vertices = [locArray allocateElements: vertexCount];
     
     // Create the normal array interleaved on the same element array
-    itemName = [NSString stringWithFormat: @"%@-Normals", self.name];
-    CC3VertexNormals* normArray = [CC3VertexNormals vertexArrayWithName: itemName];
+    CC3VertexNormals* normArray = [CC3VertexNormals vertexArray];
     normArray.elements = vertices;
     normArray.elementStride = locArray.elementStride;	// Interleaved...so same stride
     normArray.elementCount = vertexCount;
@@ -451,14 +386,11 @@
     
     // Create the tex coord array interleaved on the same element array as the vertex locations
     CC3VertexTextureCoordinates* tcArray = nil;
-    itemName = [NSString stringWithFormat: @"%@-Texture", self.name];
-    tcArray = [CC3VertexTextureCoordinates vertexArrayWithName: itemName];
+    tcArray = [CC3VertexTextureCoordinates vertexArray];
     tcArray.elements = vertices;
     tcArray.elementStride = locArray.elementStride;		// Interleaved...so same stride
     tcArray.elementCount = vertexCount;
     tcArray.elementOffset = 2 * sizeof(CC3Vector);		// Offset to texCoord element in vertex structure
-    
-    
     
     // Right face, CCW winding:
     vertices[0].location = cc3v(boxMax.x, boxMin.y, boxMax.z);
@@ -632,7 +564,7 @@
 }
 - (void)addChildToFloor:(CC3Node *)child
 {
-    [_floorNode addChild:child];
+    [_adCube[AD_CUBE_BACK] addChild:child];
 }
 @end
 
