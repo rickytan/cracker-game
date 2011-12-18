@@ -17,7 +17,7 @@
 - (id)init
 {
     if ((self = [super init])){
-        //[[CCDirector sharedDirector] enableRetinaDisplay:YES];
+        [[CCDirector sharedDirector] enableRetinaDisplay:YES];
         [self addChild:[PlayLayer node]];
         
         [self scheduleUpdate];
