@@ -18,7 +18,7 @@
 - (void)CreateScreenBound;
 - (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r;
 - (void)control:(NSTimer*)timer;
-- (void)scoreAddByTime:(NSTimer*)timer;
+- (void)scoreAddByTime;
 - (void)scoreAddByPixel:(CGFloat)pixels;
 - (void)setWindDirection:(CGFloat)angle;
 - (void)speedUpWind;
@@ -43,7 +43,7 @@ const float PTM_RATIO = 96.0f;
 #endif
     delete world;
     delete contact;
-    [wind release];
+
     if ([timer isValid])
         [timer invalidate];
     if ([scoreAddTimer isValid])
@@ -60,8 +60,6 @@ const float PTM_RATIO = 96.0f;
         world->SetContactListener(contact);
         
         ball3DLayer = [Ball3DLayer node];
-        ball3DLayer.contentSize = CGSizeMake(300, 300);
-        ball3DLayer.position = ccp(40, 40);
         [self addChild:ball3DLayer z:-1];
         
         score = 0;
@@ -75,16 +73,25 @@ const float PTM_RATIO = 96.0f;
         scoreLabel.color = ccBLUE;
         [self addChild:scoreLabel z:1];
         
-        [self addChild:[CCSprite spriteWithFile:@"Icon.png"]];
+        CCMenuItemSprite *pauseItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
+                                                              selectedSprite:[CCSprite spriteWithFile:@"back.png"]
+                                                                      target:self
+                                                                    selector:@selector(pausePressed:)];
+        pauseItem.position = ccp(30, 30);
+        CCMenu *mainmenu = [CCMenu menuWithItems:pauseItem, nil];
+        
+        [self addChild:mainmenu];
         
         [self CreateScreenBound];
         CGPoint p = [ball3DLayer getBallLocation];
         CGFloat r = [ball3DLayer getBallRadius];
         theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
-        wind = [[Wind alloc] initWithForce:0.1
+        wind = [[Wind alloc] initWithForce:0.04
                                   andAngle:0
                                     repeat:YES];
         [wind blow:theBall];
+        [self addChild:wind];
+        [wind release];
         
         [self setWindDirection:0];
         
@@ -92,11 +99,10 @@ const float PTM_RATIO = 96.0f;
         
         //[self runAction:[CCRepeatForever actionWithAction:[CCSequence actions:delay0, sad, delay1, had, nil]]];
         
-        scoreAddTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
-                                                         target:self
-                                                       selector:@selector(scoreAddByTime:)
-                                                       userInfo:nil
-                                                        repeats:YES];
+        CCDelayTime *delay = [CCDelayTime actionWithDuration:1.0];
+        CCCallFunc *cb = [CCCallFunc actionWithTarget:self selector:@selector(scoreAddByTime)];
+        CCRepeatForever *repeat = [CCRepeatForever actionWithAction:[CCSequence actions:delay, cb, nil]];
+        [self runAction:repeat];
         
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"Pow.caf"];
         
@@ -222,7 +228,7 @@ const float PTM_RATIO = 96.0f;
     return ball;
 }
 
-- (void)scoreAddByTime:(NSTimer *)timer
+- (void)scoreAddByTime
 {
     self.score += 10;
 }
@@ -307,16 +313,10 @@ const float PTM_RATIO = 96.0f;
      */
 }
 
-- (void)onEnter
+- (void)pausePressed:(id)sender
 {
-    [super onEnter];
-    [wind startBlow];
-}
-
-- (void)onExit
-{
-    [super onExit];
-    [wind stopBlow];
+    CCLayerMultiplex *layer = (CCLayerMultiplex*)self.parent;
+    [layer switchTo:2];
 }
 
 @end

@@ -13,6 +13,7 @@
     CCMenu *                menu;   // Weak assign
 }
 + (id)scene;
+- (void)modal;
 - (void)resumePressed:(id)sender;
 - (void)quitPressed:(id)sender;
 @end

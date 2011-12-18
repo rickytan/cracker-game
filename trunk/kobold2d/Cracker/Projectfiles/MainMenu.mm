@@ -33,7 +33,7 @@ const float PTM_RATIO = 96.0f;
 #endif
     delete world;
     delete debugDraw;
-    [playScene release];
+    //[playScene release];
 }
 - (id)init
 {
@@ -41,11 +41,11 @@ const float PTM_RATIO = 96.0f;
         
         world = new b2World(b2Vec2(0.0f, 0.0f));
         world->SetAllowSleeping(NO);
-        playScene = [GameScene new];
+        //playScene = [GameScene new];
         
         
         worldStatic = YES;
-        [self enableBox2dDebugDrawing];
+        //[self enableBox2dDebugDrawing];
         
         // for the screenBorder body we'll need these values
 		CGSize screenSize = [CCDirector sharedDirector].winSize;
@@ -206,10 +206,11 @@ const float PTM_RATIO = 96.0f;
 
 - (void)gameStart:(id)sender
 {
-    CCDirector *dir = [CCDirector sharedDirector];
-    [dir pushScene:[CCTransitionSlideInR transitionWithDuration:0.3f
-                                                             scene:playScene]];
-    
+    //CCDirector *dir = [CCDirector sharedDirector];
+    //[dir pushScene:[CCTransitionSlideInR transitionWithDuration:0.3f
+    //                                                         scene:playScene]];
+    CCLayerMultiplex *layer = (CCLayerMultiplex *)self.parent;
+    [layer switchTo:1];
 }
 
 - (void)gameConfig:(id)sender

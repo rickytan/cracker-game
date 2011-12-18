@@ -18,8 +18,8 @@
 {
     if ((self = [super init])){
         
-        CCMenuItemImage *resumeItem = [CCMenuItemImage itemFromNormalImage:@"Icon.png"
-                                                             selectedImage:@"Icon.png"
+        CCMenuItemImage *resumeItem = [CCMenuItemImage itemFromNormalImage:@"continue.png"
+                                                             selectedImage:@"continue.png"
                                                                     target:self
                                                                   selector:@selector(resumePressed:)];
         CCMenuItemImage *quit = [CCMenuItemImage itemFromNormalImage:@"blueArrow.png"
@@ -36,14 +36,21 @@
     return self;
 }
 
+- (void)modal
+{
+    
+}
+
 - (void)resumePressed:(id)sender
 {
-    CCDirector *dir = [CCDirector sharedDirector];
-    [dir popScene];
+    CCLayerMultiplex *layer = (CCLayerMultiplex*)self.parent;
+    [layer switchTo:1];
+    
 }
 
 - (void)quitPressed:(id)sender
 {
-    
+    CCLayerMultiplex *layer = (CCLayerMultiplex*)self.parent;
+    [layer switchTo:0];
 }
 @end

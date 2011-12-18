@@ -21,7 +21,7 @@
     
     Ball3DLayer *           ball3DLayer;// Weak assign
     NSTimer *               timer;
-    Wind *                  wind;
+    Wind *                  wind;       // Weak assign
     uint                    score;
     CCLabelAtlas *          scoreLabel;
     NSTimer *               scoreAddTimer;
@@ -32,6 +32,7 @@
 
 @property (nonatomic, assign) uint score;
 
+- (void)pausePressed:(id)sender;
 - (void)showAd;
 - (void)hideAd;
 @end

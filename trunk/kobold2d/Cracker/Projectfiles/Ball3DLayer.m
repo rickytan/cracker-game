@@ -65,8 +65,8 @@ typedef enum {
 {
 	// Create the camera, place it back a bit
 	_cam = [CC3Camera nodeWithName: @"Camera"];
-	_cam.location = cc3v(0.0, 0.0, 10.0);
-    _ballRadius = 0.3f;
+	_cam.location = cc3v(0.0, 0.0, 9.6);
+    _ballRadius = 0.22f;
     
 	[self addChild:_cam];
     
