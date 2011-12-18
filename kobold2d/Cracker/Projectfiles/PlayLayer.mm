@@ -22,6 +22,14 @@
 - (void)scoreAddByPixel:(CGFloat)pixels;
 - (void)setWindDirection:(CGFloat)angle;
 - (void)speedUpWind;
+- (void)showAd;
+- (void)hideAd;
+- (void)moveDownTopFace;
+- (void)moveUpTopFace;
+- (void)stopMoveTopFace;
+- (void)removeAd;
+- (b2Vec2)toMeters:(CGPoint)point;
+- (CGPoint) toPixels:(b2Vec2)vec;
 @end
 
 @implementation PlayLayer
@@ -81,11 +89,15 @@ const float PTM_RATIO = 96.0f;
         [self scheduleUpdate];
 
         
-        [NSTimer scheduledTimerWithTimeInterval:1.0f
-                                         target:self
-                                       selector:@selector(control:)
-                                       userInfo:nil 
-                                        repeats:YES];
+        CCCallFunc *sad = [CCCallFunc actionWithTarget:self
+                                             selector:@selector(showAd)];
+        CCCallFunc *had = [CCCallFunc actionWithTarget:self
+                                              selector:@selector(hideAd)];
+        CCDelayTime *delay0 = [CCDelayTime actionWithDuration:1.5];
+        CCDelayTime *delay1 = [CCDelayTime actionWithDuration:1.5];
+        
+        [self runAction:[CCRepeatForever actionWithAction:[CCSequence actions:delay0, sad, delay1, had, nil]]];
+        
         scoreAddTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
                                                          target:self
                                                        selector:@selector(scoreAddByTime:)
@@ -106,15 +118,51 @@ const float PTM_RATIO = 96.0f;
     counter++;
     
     if (counter % 2){
-    static BOOL shown = NO;
-    if (shown)
-        [ball3DLayer hideAd];
-    else
-        [ball3DLayer showAd];
-    shown = !shown;
+        if (isAdShown)
+            [self hideAd];
+        else
+            [self showAd];
     }
+}
+- (void)moveDownTopFace
+{
+    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, -60 / 0.35)]);
+    CCCallFunc *cb = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(stopMoveTopFace)];
+    CCDelayTime *delay = [CCDelayTime actionWithDuration:0.35];
+    [self runAction:[CCSequence actions:delay, cb, nil]];
+}
+
+- (void)moveUpTopFace
+{
+    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, 60 / 0.35)]);
+    CCCallFunc *cb = [CCCallFunc actionWithTarget:self
+                                         selector:@selector(stopMoveTopFace)];
+    CCDelayTime *delay = [CCDelayTime actionWithDuration:0.35];
+    [self runAction:[CCSequence actions:delay, cb, nil]];
+}
+- (void)stopMoveTopFace
+{
+    topBoundBody->SetLinearVelocity(b2Vec2(0,0));
+}
+- (void)showAd
+{
+    if (isAdShown)
+        return;
+    isAdShown = YES;
     
+    [self moveDownTopFace];
+    [ball3DLayer showAd];
     
+}
+
+- (void)hideAd
+{
+    if (!isAdShown)
+        return;
+    isAdShown = NO;
+    [self moveUpTopFace];
+    [ball3DLayer hideAd];
 }
 
 - (void)CreateScreenBound
@@ -130,21 +178,31 @@ const float PTM_RATIO = 96.0f;
     b2Vec2 upperLeftCorner = b2Vec2(0, heightInMeters);
     b2Vec2 upperRightCorner = b2Vec2(widthInMeters, heightInMeters);
     
+    b2EdgeShape screenBorderShape;
+    
+    
     // Define the static container body, which will provide the collisions at screen borders.
     b2BodyDef screenBorderDef;
+    screenBorderDef.type = b2_kinematicBody;
     screenBorderDef.position.Set(0, 0);
     b2Body* screenBorderBody = world->CreateBody(&screenBorderDef);
-    b2EdgeShape screenBorderShape;
     
     // Create fixtures for the four borders (the border shape is re-used)
     screenBorderShape.Set(lowerLeftCorner, lowerRightCorner);
     screenBorderBody->CreateFixture(&screenBorderShape, 0)->SetRestitution(boundFriction);
+    
+    screenBorderBody = world->CreateBody(&screenBorderDef);
     screenBorderShape.Set(lowerRightCorner, upperRightCorner);
     screenBorderBody->CreateFixture(&screenBorderShape, 0)->SetRestitution(boundFriction);
-    screenBorderShape.Set(upperRightCorner, upperLeftCorner);
-    screenBorderBody->CreateFixture(&screenBorderShape, 0)->SetRestitution(boundFriction);
+    
+    screenBorderBody = world->CreateBody(&screenBorderDef);
     screenBorderShape.Set(upperLeftCorner, lowerLeftCorner);
     screenBorderBody->CreateFixture(&screenBorderShape, 0)->SetRestitution(boundFriction);
+    
+    screenBorderDef.type = b2_kinematicBody;
+    topBoundBody = world->CreateBody(&screenBorderDef);
+    screenBorderShape.Set(upperRightCorner, upperLeftCorner);
+    topBoundBody->CreateFixture(&screenBorderShape,0)->SetRestitution(boundFriction);
 }
 
 - (b2Body*)CreateBallAtScreenLocation:(CGPoint)p withScreenRadius:(CGFloat)r
@@ -237,7 +295,7 @@ const float PTM_RATIO = 96.0f;
     CGFloat a = theBall->GetAngle();
     
     [self scoreAddByPixel:ccpDistance(lastPosition, p)];
-    [self setWindDirection:a];
+    [self setWindDirection:M_PI_2];
     [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
     
     /*
@@ -257,7 +315,7 @@ const float PTM_RATIO = 96.0f;
 - (void)onEnter
 {
     [super onEnter];
-    [wind startBlow];
+    //[wind startBlow];
 }
 
 - (void)onExit

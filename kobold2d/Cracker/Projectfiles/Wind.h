@@ -14,7 +14,7 @@ using namespace std;
 
 typedef list<b2Body*>   bodyList;
 
-@interface Wind : NSObject {
+@interface Wind : CCNode {
     b2Rot                   direction;
 
     bodyList                objects;

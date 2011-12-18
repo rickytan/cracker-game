@@ -15,14 +15,19 @@
 
 @interface PlayLayer : CCLayer {
     b2World *               world;
+    b2Body *                topBoundBody;
     ContactListener *       contact;
-    Ball3DLayer *           ball3DLayer;// Weak assign
     b2Body *                theBall;    // Weak assign
+    
+    Ball3DLayer *           ball3DLayer;// Weak assign
     NSTimer *               timer;
     Wind *                  wind;
     uint                    score;
     CCLabelAtlas *          scoreLabel;
     NSTimer *               scoreAddTimer;
+
+    
+    BOOL                    isAdShown;
 }
 
 @property (nonatomic, assign) uint score;
