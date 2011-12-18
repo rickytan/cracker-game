@@ -31,4 +31,7 @@
 }
 
 @property (nonatomic, assign) uint score;
+
+- (void)showAd;
+- (void)hideAd;
 @end

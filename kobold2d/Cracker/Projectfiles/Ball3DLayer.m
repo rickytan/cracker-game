@@ -18,7 +18,7 @@
 #import "CC3GLMatrix.h"
 
 
-#define iAd_Height      60.0f
+#define iAd_Height      50.0f
 
 typedef enum {
         AD_CUBE_TOP = 0,
@@ -286,8 +286,7 @@ typedef enum {
     CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
     
     [_adCube[AD_CUBE_TOP] runAction:move];
-    //move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(-topFaceOffset, 0, 0)];
-    //[_adCube[AD_CUBE_LEFT] runAction:move];
+
 }
 
 - (void)grow
@@ -296,8 +295,7 @@ typedef enum {
     CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
     
     [_adCube[AD_CUBE_TOP] runAction:move];
-    //move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(-topFaceOffset,0,  0)];
-    //[_adCube[AD_CUBE_LEFT] runAction:move];
+
 }
 
 - (void)setArrowDirection:(CGFloat)angle

@@ -22,14 +22,13 @@
 - (void)scoreAddByPixel:(CGFloat)pixels;
 - (void)setWindDirection:(CGFloat)angle;
 - (void)speedUpWind;
-- (void)showAd;
-- (void)hideAd;
 - (void)moveDownTopFace;
 - (void)moveUpTopFace;
 - (void)stopMoveTopFace;
 - (void)removeAd;
 - (b2Vec2)toMeters:(CGPoint)point;
-- (CGPoint) toPixels:(b2Vec2)vec;
+- (CGPoint)toPixels:(b2Vec2)vec;
+
 @end
 
 @implementation PlayLayer
@@ -61,7 +60,9 @@ const float PTM_RATIO = 96.0f;
         world->SetContactListener(contact);
         
         ball3DLayer = [Ball3DLayer node];
-        [self addChild:ball3DLayer];
+        ball3DLayer.contentSize = CGSizeMake(300, 300);
+        ball3DLayer.position = ccp(40, 40);
+        [self addChild:ball3DLayer z:-1];
         
         score = 0;
         scoreLabel = [CCLabelAtlas labelWithString:[NSNumber numberWithInt:score].stringValue 
@@ -74,6 +75,7 @@ const float PTM_RATIO = 96.0f;
         scoreLabel.color = ccBLUE;
         [self addChild:scoreLabel z:1];
         
+        [self addChild:[CCSprite spriteWithFile:@"Icon.png"]];
         
         [self CreateScreenBound];
         CGPoint p = [ball3DLayer getBallLocation];
@@ -87,16 +89,8 @@ const float PTM_RATIO = 96.0f;
         [self setWindDirection:0];
         
         [self scheduleUpdate];
-
         
-        CCCallFunc *sad = [CCCallFunc actionWithTarget:self
-                                             selector:@selector(showAd)];
-        CCCallFunc *had = [CCCallFunc actionWithTarget:self
-                                              selector:@selector(hideAd)];
-        CCDelayTime *delay0 = [CCDelayTime actionWithDuration:1.5];
-        CCDelayTime *delay1 = [CCDelayTime actionWithDuration:1.5];
-        
-        [self runAction:[CCRepeatForever actionWithAction:[CCSequence actions:delay0, sad, delay1, had, nil]]];
+        //[self runAction:[CCRepeatForever actionWithAction:[CCSequence actions:delay0, sad, delay1, had, nil]]];
         
         scoreAddTimer = [NSTimer scheduledTimerWithTimeInterval:1.0f
                                                          target:self
@@ -126,7 +120,7 @@ const float PTM_RATIO = 96.0f;
 }
 - (void)moveDownTopFace
 {
-    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, -60 / 0.35)]);
+    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, -50 / 0.35)]);
     CCCallFunc *cb = [CCCallFunc actionWithTarget:self
                                          selector:@selector(stopMoveTopFace)];
     CCDelayTime *delay = [CCDelayTime actionWithDuration:0.35];
@@ -135,7 +129,7 @@ const float PTM_RATIO = 96.0f;
 
 - (void)moveUpTopFace
 {
-    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, 60 / 0.35)]);
+    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, 50 / 0.35)]);
     CCCallFunc *cb = [CCCallFunc actionWithTarget:self
                                          selector:@selector(stopMoveTopFace)];
     CCDelayTime *delay = [CCDelayTime actionWithDuration:0.35];
@@ -169,7 +163,7 @@ const float PTM_RATIO = 96.0f;
 {
     // for the screenBorder body we'll need these values
     CGSize screenSize = [CCDirector sharedDirector].winSize;
-    const CGFloat boundFriction = 0.8;
+    const CGFloat boundFriction = 0.3;
     
     float widthInMeters = screenSize.width / PTM_RATIO;
     float heightInMeters = screenSize.height / PTM_RATIO;
@@ -249,6 +243,7 @@ const float PTM_RATIO = 96.0f;
     [ball3DLayer setArrowDirection:CC_RADIANS_TO_DEGREES(angle)];
 }
 
+
 // convenience method to convert a CGPoint to a b2Vec2
 -(b2Vec2) toMeters:(CGPoint)point
 {
@@ -295,7 +290,7 @@ const float PTM_RATIO = 96.0f;
     CGFloat a = theBall->GetAngle();
     
     [self scoreAddByPixel:ccpDistance(lastPosition, p)];
-    [self setWindDirection:M_PI_2];
+    [ball3DLayer setArrowDirection:CC_RADIANS_TO_DEGREES(wind.angle)];
     [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
     
     /*
@@ -315,7 +310,7 @@ const float PTM_RATIO = 96.0f;
 - (void)onEnter
 {
     [super onEnter];
-    //[wind startBlow];
+    [wind startBlow];
 }
 
 - (void)onExit
