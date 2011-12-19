@@ -19,14 +19,14 @@
     if ((self = [super init])){
 
         
-        //[[CCDirector sharedDirector] enableRetinaDisplay:YES];
+        [[CCDirector sharedDirector] enableRetinaDisplay:YES];
         
         playlayer = [PlayLayer node];
+        playlayer.tag = kPlayLayer;
         pauselayer = [PauseScene node];
+        pauselayer.tag = kPauseLayer;
         
-        menulayer = [MainMenu node];
-
-        CCLayerMultiplex *layer = [CCLayerMultiplex layerWithLayers:menulayer,playlayer,pauselayer,nil];
+        CCLayerMultiplex *layer = [CCLayerMultiplex layerWithLayers:playlayer,pauselayer,nil];
         
         [self addChild:layer];
     }
@@ -96,7 +96,7 @@
 // it wished to defer placing the banner in a view hierarchy until the banner has content to display.
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    if ([playlayer isRunning]) {
+    if (playlayer.isGamePlaying) {
         [self showAd];
     }
 }
@@ -118,8 +118,8 @@
 - (BOOL)bannerViewActionShouldBegin:(ADBannerView *)banner 
                willLeaveApplication:(BOOL)willLeave
 {
-    if (!willLeave && playlayer.isRunning) {
-        [playlayer pauseSchedulerAndActions];
+    if (!willLeave && playlayer.isGamePlaying) {
+        [playlayer pausePressed:nil];
     }
     return YES;
 }
@@ -129,7 +129,6 @@
 // of the action should resume at this point.
 - (void)bannerViewActionDidFinish:(ADBannerView *)banner
 {
-    [playlayer resumeSchedulerAndActions];
     [self hideAd];
 }
 @end

@@ -18,8 +18,6 @@
 #import "CC3GLMatrix.h"
 
 
-#define iAd_Height      50.0f
-
 typedef enum {
         AD_CUBE_TOP = 0,
         AD_CUBE_RIGHT,
@@ -53,8 +51,9 @@ typedef enum {
 - (CGPoint)toBoxPoint:(CGPoint)screen;
 - (CGPoint)toScreenPoint:(CGPoint)box;
 - (void)addChildToFloor:(CC3Node*)child;
-- (void)shrink;
-- (void)grow;
+- (void)shrink:(CGFloat)offset;
+- (void)grow:(CGFloat)offset;
+- (void)reset;
 @end
 
 @implementation Ball3DWorld
@@ -102,11 +101,11 @@ typedef enum {
         {              0,               0,-cube_height}
     };
     NSString *cube_texture[] = {
-        @"wood2.jpg",
-        @"wood2.jpg",
-        @"wood2.jpg",
-        @"wood2.jpg",
-        @"diban.png"
+        @"material.png",
+        @"material.png",
+        @"material.png",
+        @"material.png",
+        @"floor.png"
     };
     for (int i=AD_CUBE_TOTAL -1 ; i >= 0; --i) {
         _adCube[i] = [CC3BoxNode node];
@@ -128,7 +127,7 @@ typedef enum {
     //[_floor populateAsRectangleWithSize:CGSizeMake(2, 2) andPivot:ccp(1, 1)];
     _floor.texture = [[[CC3Texture alloc] init] autorelease];
     _floor.texture.texture = [[[CCTexture2D alloc] initWithString:@"Note: the arrow above indicate thw wind direction"
-                                                       dimensions:CGSizeMake(48, 48) 
+                                                       dimensions:CGSizeMake(64, 64) 
                                                         alignment:UITextAlignmentLeft
                                                          fontName:@"Marker Felt" 
                                                          fontSize:20] autorelease];
@@ -280,22 +279,29 @@ typedef enum {
     return _ballRadius / boxBound.width * s.width;
 }
 
-- (void)shrink
+- (void)shrink:(CGFloat)offset
 {
-    topFaceOffset = -iAd_Height / ratio;
+    topFaceOffset = -offset / ratio;
     CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
     
     [_adCube[AD_CUBE_TOP] runAction:move];
 
 }
 
-- (void)grow
+- (void)grow:(CGFloat)offset
 {
-    topFaceOffset = iAd_Height / ratio;
+    topFaceOffset = offset / ratio;
     CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
     
     [_adCube[AD_CUBE_TOP] runAction:move];
 
+}
+
+- (void)reset
+{
+    CC3MoveTo *move = [CC3MoveTo actionWithDuration:0.35 moveTo:cc3v(0, 0, 0)];
+    
+    [_adCube[AD_CUBE_TOP] runAction:move];
 }
 
 - (void)setArrowDirection:(CGFloat)angle
@@ -361,13 +367,14 @@ typedef enum {
 - (void)showAd
 {
     Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
-    [w shrink];
+    [w shrink:60];
 }
 - (void)hideAd
 {
     Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
-    [w grow];
+    [w grow:60];
 }
+
 #pragma mark - Overrided Methods
 
 - (void)initializeControls

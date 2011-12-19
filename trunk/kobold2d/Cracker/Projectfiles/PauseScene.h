@@ -8,12 +8,22 @@
 
 #import "cocos2d.h"
 
+@protocol PauseDelegate <NSObject>
+
+@required
+- (void)onResume:(id)sender;
+- (void)onQuit:(id)sender;
+
+@end
 
 @interface PauseScene : CCLayer {
     CCMenu *                menu;   // Weak assign
 }
+@property (nonatomic, assign) id<PauseDelegate> delegate;
+
 + (id)scene;
 - (void)modal;
+- (void)dismiss;
 - (void)resumePressed:(id)sender;
 - (void)quitPressed:(id)sender;
 @end
