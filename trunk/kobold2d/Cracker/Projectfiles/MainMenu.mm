@@ -13,10 +13,6 @@ const float PTM_RATIO = 96.0f;
 
 @interface MainMenu (PrivateMethods)
 
-- (void)menuCallback:(id)sender;
-- (void)menuCallback2:(id)sender;
-- (void)menuCallbackDisabled:(id)sender;
-- (void)menuCallbackEnable:(id)sender;
 - (void)enableBox2dDebugDrawing;
 - (void)activate;
 - (b2Vec2) toMeters:(CGPoint)point;
@@ -78,67 +74,15 @@ const float PTM_RATIO = 96.0f;
 #ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
         self.isTouchEnabled = YES;
 #endif
-        
-        CCMenuItemFont *item0 = [CCMenuItemFont itemFromString:@"Start"
-                                                        target:self
-                                                      selector:@selector(gameStart:)];
-        
-        CCMenuItemFont *item1 = [CCMenuItemFont itemFromString:@"Config"
-                                                        target:self
+        CCLabelBMFont *label = [CCLabelBMFont labelWithString:@"Start" fntFile:@"bitmapFontTest3.fnt"];
+        CCMenuItemLabel *item0 = [CCMenuItemLabel itemWithLabel:label
+                                                         target:self
+                                                       selector:@selector(gameStart:)];
+        label = [CCLabelBMFont labelWithString:@"Config" fntFile:@"bitmapFontTest3.fnt"];
+        CCMenuItemLabel *item1 = [CCMenuItemLabel itemWithLabel:label
+                                                         target:self
                                                       selector:@selector(gameConfig:)];
-        CCMenuItemFont *item2 = [CCMenuItemFont itemFromString:@"About"
-                                                        target:self
-                                                      selector:@selector(gameAbout:)];
-        
-		// Font Item
-		
-		CCSprite *spriteNormal = [CCSprite spriteWithFile:@"menuitemsprite.png" 
-                                                     rect:CGRectMake(0,23*2,115,23)];
-		CCSprite *spriteSelected = [CCSprite spriteWithFile:@"menuitemsprite.png" 
-                                                       rect:CGRectMake(0,23*1,115,23)];
-		CCSprite *spriteDisabled = [CCSprite spriteWithFile:@"menuitemsprite.png" 
-                                                       rect:CGRectMake(0,23*0,115,23)];
-		CCMenuItemSprite *item3 = [CCMenuItemSprite itemFromNormalSprite:spriteNormal 
-                                                          selectedSprite:spriteSelected 
-                                                          disabledSprite:spriteDisabled 
-                                                                  target:self 
-                                                                selector:@selector(menuCallback:)];
-        disabledItem = item3;
-		// Image Item
-		CCMenuItem *item4 = [CCMenuItemImage itemFromNormalImage:@"SendScoreButton.png" 
-                                                   selectedImage:@"SendScoreButtonPressed.png" 
-                                                          target:self 
-                                                        selector:@selector(menuCallback2:)];
-        
-		// Label Item (LabelAtlas)
-		CCLabelAtlas *labelAtlas = [CCLabelAtlas labelWithString:@"0123456789" 
-                                                     charMapFile:@"fps_images.png" 
-                                                       itemWidth:16
-                                                      itemHeight:24 
-                                                    startCharMap:'.'];
-        
-		CCMenuItemLabel *item5 = [CCMenuItemLabel itemWithLabel:labelAtlas
-                                                         target:self 
-                                                       selector:@selector(menuCallbackDisabled:)];
-		item5.disabledColor = ccc3(32,32,64);
-		item5.color = ccc3(200,200,255);
-		
-        
-		// Font Item
-		CCMenuItemFont *item6 = [CCMenuItemFont itemFromString: @"I toggle enable items"
-                                                        target: self 
-                                                      selector:@selector(menuCallbackEnable:)];
-		
-		[item6 setFontSize:20];
-		[item6 setFontName:@"Marker Felt"];
-		
-		
-		CCTintBy* color_action = [CCTintBy actionWithDuration:0.5f red:0 green:-255 blue:-255];
-		id color_back = [color_action reverse];
-		id seq = [CCSequence actions:color_action, color_back, nil];
-		[item6 runAction:[CCRepeatForever actionWithAction:seq]];
-        
-		menu = [CCMenu menuWithItems:item0, item1, item2, item3, item4, item5, item6, nil];
+		menu = [CCMenu menuWithItems:item0, item1, nil];
 		[menu alignItemsVertically];
 		
         CGSize s = [[CCDirector sharedDirector] winSize];
@@ -195,6 +139,7 @@ const float PTM_RATIO = 96.0f;
                    withObject:nil
                    afterDelay:duration];
 
+
         [self scheduleUpdate];
 
 		[KKInput sharedInput].deviceMotionActive = YES;
@@ -206,9 +151,7 @@ const float PTM_RATIO = 96.0f;
 
 - (void)gameStart:(id)sender
 {
-    //CCDirector *dir = [CCDirector sharedDirector];
-    //[dir pushScene:[CCTransitionSlideInR transitionWithDuration:0.3f
-    //                                                         scene:playScene]];
+
     CCLayerMultiplex *layer = (CCLayerMultiplex *)self.parent;
     [layer switchTo:1];
 }
@@ -223,27 +166,6 @@ const float PTM_RATIO = 96.0f;
     
 }
 
-#pragma mark - PrivateMethods
-
-- (void)menuCallback:(id)sender
-{
-    
-}
-
-- (void)menuCallback2:(id)sender
-{
-    
-}
-
-- (void)menuCallbackDisabled:(id)sender
-{
-    disabledItem.isEnabled = NO;
-}
-
-- (void)menuCallbackEnable:(id)sender
-{
-    disabledItem.isEnabled = !disabledItem.isEnabled;
-}
 
 // convenience method to convert a CGPoint to a b2Vec2
 -(b2Vec2) toMeters:(CGPoint)point

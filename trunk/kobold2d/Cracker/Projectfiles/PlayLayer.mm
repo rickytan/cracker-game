@@ -34,7 +34,7 @@
 @implementation PlayLayer
 @synthesize score;
 
-const float PTM_RATIO = 96.0f;
+const float PTM_RATIO = 64.0f;
 
 - (void)dealloc
 {
@@ -53,6 +53,9 @@ const float PTM_RATIO = 96.0f;
 - (id)init
 {
     if ((self = [super init])){
+        CGSize s = [CCDirector sharedDirector].winSize;
+        CGPoint c = [CCDirector sharedDirector].screenCenter;
+        
         world = new b2World(b2Vec2(0.0f,0.0f));
         world->SetAllowSleeping(NO);
         
@@ -63,13 +66,11 @@ const float PTM_RATIO = 96.0f;
         [self addChild:ball3DLayer z:-1];
         
         score = 0;
-        scoreLabel = [CCLabelAtlas labelWithString:[NSNumber numberWithInt:score].stringValue 
-                                       charMapFile:@"fps_images.png" 
-                                         itemWidth:16
-                                        itemHeight:24 
-                                      startCharMap:'.'];
+        scoreLabel = [CCLabelBMFont labelWithString:@"      0" fntFile:@"bitmapFontTest.fnt"];
         
-        scoreLabel.position = ccp(4, self.contentSize.height - 30);
+        scoreLabel.position = ccp(4 + scoreLabel.contentSize.width / 2,
+                                  s.height - scoreLabel.contentSize.height/2);
+
         scoreLabel.color = ccBLUE;
         [self addChild:scoreLabel z:1];
         
@@ -77,7 +78,8 @@ const float PTM_RATIO = 96.0f;
                                                               selectedSprite:[CCSprite spriteWithFile:@"back.png"]
                                                                       target:self
                                                                     selector:@selector(pausePressed:)];
-        pauseItem.position = ccp(30, 30);
+        pauseItem.position = ccpSub(c,ccp(80, 80));
+        pauseItem.contentSize = CGSizeMake(30,30);
         CCMenu *mainmenu = [CCMenu menuWithItems:pauseItem, nil];
         
         [self addChild:mainmenu];

@@ -23,7 +23,7 @@
     NSTimer *               timer;
     Wind *                  wind;       // Weak assign
     uint                    score;
-    CCLabelAtlas *          scoreLabel;
+    CCLabelBMFont *         scoreLabel;
     NSTimer *               scoreAddTimer;
 
     

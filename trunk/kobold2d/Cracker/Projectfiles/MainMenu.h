@@ -16,9 +16,7 @@
     b2World *                   world;
     BOOL                        worldStatic;
     CCMenu *                    menu;           // Weak assign
-  	GLESDebugDraw *             debugDraw;
-    CCMenuItem *                disabledItem;   // Weak assign
-    //GameScene *                 playScene;      
+  	GLESDebugDraw *             debugDraw;     
 }
 - (id)init;
 
