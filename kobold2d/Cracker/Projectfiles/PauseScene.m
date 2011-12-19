@@ -9,6 +9,7 @@
 #import "PauseScene.h"
 
 @implementation PauseScene
+@synthesize delegate;
 
 + (id)scene
 {
@@ -39,19 +40,30 @@
 
 - (void)modal
 {
+    self.scale = 0.0f;
+    CCScaleTo *scale = [CCScaleTo actionWithDuration:0.35 scale:1.0f];
+    CCFadeIn *fadein = [CCFadeIn actionWithDuration:0.2];
     
+    [self runAction:[CCEaseElasticIn actionWithAction:scale period:0.4]];
+    [self runAction:fadein];
+}
+
+- (void)dismiss
+{
+    self.scale = 1.0f;
+    CCScaleTo *scale = [CCScaleTo actionWithDuration:0.35 scale:0.0f];
+    CCFadeOut *fadeout = [CCFadeOut actionWithDuration:0.2f];
+    [self runAction:[CCEaseElasticOut actionWithAction:scale period:0.4]];
+    [self runAction:fadeout];
 }
 
 - (void)resumePressed:(id)sender
 {
-    CCLayerMultiplex *layer = (CCLayerMultiplex*)self.parent;
-    [layer switchTo:1];
-    
+    [delegate onResume:sender];
 }
 
 - (void)quitPressed:(id)sender
 {
-    CCLayerMultiplex *layer = (CCLayerMultiplex*)self.parent;
-    [layer switchTo:0];
+    [delegate onQuit:sender];
 }
 @end

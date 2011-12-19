@@ -11,16 +11,30 @@
 #import "GLES-Render.h"
 //#import "GameScene.h"
 
+@protocol MainMenuButtonDelegate <NSObject>
+
+@required
+- (void)onStart:(id)sender;
+- (void)onHelp:(id)sender;
+- (void)onAbout:(id)sender;
+- (void)onShareFacebook:(id)sender;
+- (void)onShareTwitter:(id)sender;
+
+@end
 
 @interface MainMenu : CCLayer {
     b2World *                   world;
     BOOL                        worldStatic;
-    CCMenu *                    menu;           // Weak assign
+
+    CCMenu *                    menu;       // Weak assign
   	GLESDebugDraw *             debugDraw;     
 }
+@property (nonatomic, assign) id<MainMenuButtonDelegate> delegate;
 - (id)init;
 
-- (void)gameStart:(id)sender;
-- (void)gameConfig:(id)sender;
-- (void)gameAbout:(id)sender;
+- (void)onStart:(id)sender;
+- (void)onHelp:(id)sender;
+- (void)onAbout:(id)sender;
+- (void)onShareFacebook:(id)sender;
+- (void)onShareTwitter:(id)sender;
 @end

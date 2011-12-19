@@ -8,6 +8,7 @@
 
 #import "MainMenu.h"
 #import "GameScene.h"
+#import "Helper.h"
 
 const float PTM_RATIO = 96.0f;
 
@@ -21,6 +22,7 @@ const float PTM_RATIO = 96.0f;
 
 
 @implementation MainMenu
+@synthesize delegate;
 
 - (void)dealloc
 {
@@ -74,15 +76,36 @@ const float PTM_RATIO = 96.0f;
 #ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
         self.isTouchEnabled = YES;
 #endif
-        CCLabelBMFont *label = [CCLabelBMFont labelWithString:@"Start" fntFile:@"bitmapFontTest3.fnt"];
-        CCMenuItemLabel *item0 = [CCMenuItemLabel itemWithLabel:label
-                                                         target:self
-                                                       selector:@selector(gameStart:)];
-        label = [CCLabelBMFont labelWithString:@"Config" fntFile:@"bitmapFontTest3.fnt"];
-        CCMenuItemLabel *item1 = [CCMenuItemLabel itemWithLabel:label
-                                                         target:self
-                                                      selector:@selector(gameConfig:)];
-		menu = [CCMenu menuWithItems:item0, item1, nil];
+        
+        CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook.png"]
+                                                       selectedSprite:[CCSprite spriteWithFile:@"facebook.png"]
+                                                                target:self
+                                                             selector:@selector(onShareFacebook:)];
+        CCMenuItemSprite *tw = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"twitter-hd.png"]
+                                                       selectedSprite:[CCSprite spriteWithFile:@"twitter-hd.png"]
+                                                                target:self
+                                                             selector:@selector(onShareTwitter:)];
+        //fb.scale = 0.5;
+        //tw.scale = 0.5;
+        menu = [CCMenu menuWithItems:fb, tw, nil];
+        [menu alignItemsHorizontally];
+        [self addChild:menu];
+        menu.position = ccpSub(screenSize, ccp(menu.contentSize.width, menu.contentSize.height));
+        
+        CCMenuItemSprite *item0 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"start.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"start.png"]
+                                                                   target:self
+                                                                selector:@selector(onStart:)];
+        CCMenuItemSprite *item1 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"help.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"help.png"]
+                                                                   target:self
+                                                                selector:@selector(onHelp:)];
+        CCMenuItemSprite *item2 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"about.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"about.png"]
+                                                                   target:self
+                                                                selector:@selector(onAbout:)];
+        
+		menu = [CCMenu menuWithItems:item0, item1, item2, nil];
 		[menu alignItemsVertically];
 		
         CGSize s = [[CCDirector sharedDirector] winSize];
@@ -149,25 +172,29 @@ const float PTM_RATIO = 96.0f;
 
 #pragma mark - Methods
 
-- (void)gameStart:(id)sender
+- (void)onStart:(id)sender
 {
-
-    CCLayerMultiplex *layer = (CCLayerMultiplex *)self.parent;
-    [layer switchTo:1];
+    [delegate onStart:sender];
+}
+- (void)onHelp:(id)sender
+{
+    [delegate onHelp:sender];
+}
+- (void)onAbout:(id)sender
+{
+    [delegate onAbout:sender];
+}
+- (void)onShareFacebook:(id)sender
+{
+    [delegate onShareFacebook:sender];
+}
+- (void)onShareTwitter:(id)sender
+{
+    [delegate onShareTwitter:sender];
 }
 
-- (void)gameConfig:(id)sender
-{
-    
-}
 
-- (void)gameAbout:(id)sender
-{
-    
-}
-
-
-// convenience method to convert a CGPoint to a b2Vec2
+// convenience method to convert a CGPoint to a 
 -(b2Vec2) toMeters:(CGPoint)point
 {
 	return b2Vec2(point.x / PTM_RATIO, point.y / PTM_RATIO);

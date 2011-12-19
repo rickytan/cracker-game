@@ -33,6 +33,7 @@
 
 @implementation PlayLayer
 @synthesize score;
+@synthesize isGamePlaying = _isGamePlaying;
 
 const float PTM_RATIO = 64.0f;
 
@@ -43,7 +44,7 @@ const float PTM_RATIO = 64.0f;
 #endif
     delete world;
     delete contact;
-
+    
     if ([timer isValid])
         [timer invalidate];
     if ([scoreAddTimer isValid])
@@ -65,12 +66,16 @@ const float PTM_RATIO = 64.0f;
         ball3DLayer = [Ball3DLayer node];
         [self addChild:ball3DLayer z:-1];
         
+        menulayer = [MainMenu node];
+        menulayer.delegate = self;
+        [self addChild:menulayer z:0];
+        
         score = 0;
-        scoreLabel = [CCLabelBMFont labelWithString:@"      0" fntFile:@"bitmapFontTest.fnt"];
+        scoreLabel = [CCLabelBMFont labelWithString:@"        0" fntFile:@"bitmapFontTest.fnt"];
         
         scoreLabel.position = ccp(4 + scoreLabel.contentSize.width / 2,
                                   s.height - scoreLabel.contentSize.height/2);
-
+        
         scoreLabel.color = ccBLUE;
         [self addChild:scoreLabel z:1];
         
@@ -78,11 +83,12 @@ const float PTM_RATIO = 64.0f;
                                                               selectedSprite:[CCSprite spriteWithFile:@"back.png"]
                                                                       target:self
                                                                     selector:@selector(pausePressed:)];
-        pauseItem.position = ccpSub(c,ccp(80, 80));
-        pauseItem.contentSize = CGSizeMake(30,30);
-        CCMenu *mainmenu = [CCMenu menuWithItems:pauseItem, nil];
+        pauseItem.position = ccpSub(c,ccp(26, 26));
+        pauseItem.scale = 0.3;
+        //pauseItem.contentSize = CGSizeMake(30,30);
+        pausemenu = [CCMenu menuWithItems:pauseItem, nil];
         
-        [self addChild:mainmenu];
+        [self addChild:pausemenu];
         
         [self CreateScreenBound];
         CGPoint p = [ball3DLayer getBallLocation];
@@ -106,7 +112,14 @@ const float PTM_RATIO = 64.0f;
         CCRepeatForever *repeat = [CCRepeatForever actionWithAction:[CCSequence actions:delay, cb, nil]];
         [self runAction:repeat];
         
-        [[SimpleAudioEngine sharedEngine] preloadEffect:@"Pow.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"LOW C.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"C.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"D.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"E.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"F.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"G.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"A.caf"];
+        [[SimpleAudioEngine sharedEngine] preloadEffect:@"B.caf"];
         
         [KKInput sharedInput].deviceMotionActive = YES;
     }
@@ -156,6 +169,8 @@ const float PTM_RATIO = 64.0f;
     [self moveDownTopFace];
     [ball3DLayer showAd];
     
+    CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, -50)];
+    [pausemenu runAction:move];
 }
 
 - (void)hideAd
@@ -165,6 +180,9 @@ const float PTM_RATIO = 64.0f;
     isAdShown = NO;
     [self moveUpTopFace];
     [ball3DLayer hideAd];
+    
+    CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, 50)];
+    [pausemenu runAction:move];
 }
 
 - (void)CreateScreenBound
@@ -270,6 +288,20 @@ const float PTM_RATIO = 64.0f;
     scoreLabel.string = [NSNumber numberWithInt:score].stringValue;
 }
 
+- (void)pauseGame
+{
+    _isGamePlaying = NO;
+    [ball3DLayer pauseSchedulerAndActions];
+    [self pauseSchedulerAndActions];
+}
+
+- (void)resumeGame
+{
+    _isGamePlaying = YES;
+    [ball3DLayer resumeSchedulerAndActions];
+    [self resumeSchedulerAndActions];
+}
+
 #pragma mark - Overrided Methods
 
 - (void)update:(ccTime)delta
@@ -315,10 +347,63 @@ const float PTM_RATIO = 64.0f;
      */
 }
 
-- (void)pausePressed:(id)sender
+- (void)onEnter
 {
-    CCLayerMultiplex *layer = (CCLayerMultiplex*)self.parent;
-    [layer switchTo:2];
+    [super onEnter];
+    [self pauseGame];
 }
 
+- (void)pausePressed:(id)sender
+{
+    if (!pauselayer){
+        pauselayer = [PauseScene node];
+        pauselayer.visible = NO;
+        pauselayer.delegate = self;
+        [self addChild:pauselayer];
+    }
+    [self pauseGame];
+    [pauselayer modal];
+}
+
+#pragma mark - MainMenuDelegate Methods
+
+- (void)onShareTwitter:(id)sender
+{
+    
+}
+
+- (void)onShareFacebook:(id)sender
+{
+    
+}
+
+- (void)onStart:(id)sender
+{
+    [self resumeGame];
+    CCFadeOut *fadeout = [CCFadeOut actionWithDuration:0.35];
+    [menulayer runAction:[CCSequence actions:fadeout, [CCHide action], nil]];
+}
+
+- (void)onAbout:(id)sender
+{
+    
+}
+
+- (void)onHelp:(id)sender
+{
+    
+}
+
+#pragma mark - PauseDelegate Methods
+
+- (void)onQuit:(id)sender
+{
+    
+}
+
+- (void)onResume:(id)sender
+{
+    [pauselayer dismiss];
+    [self resumeGame];
+}
 @end

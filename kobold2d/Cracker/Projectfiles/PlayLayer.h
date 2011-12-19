@@ -12,8 +12,10 @@
 #import "Ball3DLayer.h"
 #import "ContactListener.h"
 #import "Wind.h"
+#import "MainMenu.h"
+#import "PauseScene.h"
 
-@interface PlayLayer : CCLayer {
+@interface PlayLayer : CCLayer <MainMenuButtonDelegate, PauseDelegate> {
     b2World *               world;
     b2Body *                topBoundBody;
     ContactListener *       contact;
@@ -25,14 +27,19 @@
     uint                    score;
     CCLabelBMFont *         scoreLabel;
     NSTimer *               scoreAddTimer;
+    MainMenu *              menulayer;  // Weak assign
+    PauseScene *            pauselayer; // Weak assign
+    CCMenu *                pausemenu;  // Weak assign
 
-    
     BOOL                    isAdShown;
 }
 
 @property (nonatomic, assign) uint score;
+@property (nonatomic, readonly) BOOL isGamePlaying;
 
 - (void)pausePressed:(id)sender;
 - (void)showAd;
 - (void)hideAd;
+- (void)pauseGame;
+- (void)resumeGame;
 @end

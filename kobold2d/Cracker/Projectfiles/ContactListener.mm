@@ -21,7 +21,7 @@ void ContactListener::BeginContact(b2Contact* contact)
 		spriteA.color = ccMAGENTA;
 		spriteB.color = ccMAGENTA;
 	}
-    [[SimpleAudioEngine sharedEngine] playEffect:@"Pow.caf"];
+    [[SimpleAudioEngine sharedEngine] playEffect:@"LOW C.caf"];
 }
 
 void ContactListener::EndContact(b2Contact* contact)
