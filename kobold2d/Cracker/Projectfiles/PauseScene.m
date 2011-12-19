@@ -30,6 +30,7 @@
         [menu alignItemsHorizontallyWithPadding:5];
         [self addChild:menu];
         
+        self.contentSize = CGSizeMake(240, 320);
         
         //[self scheduleUpdate];
     }

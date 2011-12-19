@@ -31,6 +31,37 @@
 		8199FD2F148F688F0007A5E1 /* MainMenu.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8199FD23148F688F0007A5E1 /* MainMenu.mm */; };
 		8199FD30148F688F0007A5E1 /* MenuScene.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8199FD25148F688F0007A5E1 /* MenuScene.mm */; };
 		8199FD32148F688F0007A5E1 /* PlayLayer.mm in Sources */ = {isa = PBXBuildFile; fileRef = 8199FD29148F688F0007A5E1 /* PlayLayer.mm */; };
+		81C12650149F0EFB00C6D8C4 /* A Damn Mess.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C12631149F0EFB00C6D8C4 /* A Damn Mess.ttf */; };
+		81C12651149F0EFB00C6D8C4 /* Abberancy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C12632149F0EFB00C6D8C4 /* Abberancy.ttf */; };
+		81C12652149F0EFB00C6D8C4 /* Abduction.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C12633149F0EFB00C6D8C4 /* Abduction.ttf */; };
+		81C12653149F0EFB00C6D8C4 /* arial16.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C12634149F0EFB00C6D8C4 /* arial16.fnt */; };
+		81C12654149F0EFB00C6D8C4 /* arial16.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12635149F0EFB00C6D8C4 /* arial16.png */; };
+		81C12655149F0EFB00C6D8C4 /* bitmapFontTest.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C12636149F0EFB00C6D8C4 /* bitmapFontTest.fnt */; };
+		81C12656149F0EFB00C6D8C4 /* bitmapFontTest.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12637149F0EFB00C6D8C4 /* bitmapFontTest.png */; };
+		81C12657149F0EFB00C6D8C4 /* bitmapFontTest2.bmp in Resources */ = {isa = PBXBuildFile; fileRef = 81C12638149F0EFB00C6D8C4 /* bitmapFontTest2.bmp */; };
+		81C12658149F0EFB00C6D8C4 /* bitmapFontTest2.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C12639149F0EFB00C6D8C4 /* bitmapFontTest2.fnt */; };
+		81C12659149F0EFB00C6D8C4 /* bitmapFontTest3.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C1263A149F0EFB00C6D8C4 /* bitmapFontTest3.fnt */; };
+		81C1265A149F0EFB00C6D8C4 /* bitmapFontTest3.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1263B149F0EFB00C6D8C4 /* bitmapFontTest3.png */; };
+		81C1265B149F0EFB00C6D8C4 /* bitmapFontTest4.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C1263C149F0EFB00C6D8C4 /* bitmapFontTest4.fnt */; };
+		81C1265C149F0EFB00C6D8C4 /* bitmapFontTest4.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1263D149F0EFB00C6D8C4 /* bitmapFontTest4.png */; };
+		81C1265D149F0EFB00C6D8C4 /* bitmapFontTest5.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C1263E149F0EFB00C6D8C4 /* bitmapFontTest5.fnt */; };
+		81C1265E149F0EFB00C6D8C4 /* bitmapFontTest5.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1263F149F0EFB00C6D8C4 /* bitmapFontTest5.png */; };
+		81C1265F149F0EFB00C6D8C4 /* fps_images-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12640149F0EFB00C6D8C4 /* fps_images-hd.png */; };
+		81C12660149F0EFB00C6D8C4 /* fps_images.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12641149F0EFB00C6D8C4 /* fps_images.png */; };
+		81C12661149F0EFB00C6D8C4 /* futura-48.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C12642149F0EFB00C6D8C4 /* futura-48.fnt */; };
+		81C12662149F0EFB00C6D8C4 /* futura-48.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12643149F0EFB00C6D8C4 /* futura-48.png */; };
+		81C12663149F0EFB00C6D8C4 /* konqa32-hd.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C12644149F0EFB00C6D8C4 /* konqa32-hd.fnt */; };
+		81C12664149F0EFB00C6D8C4 /* konqa32-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12645149F0EFB00C6D8C4 /* konqa32-hd.png */; };
+		81C12665149F0EFB00C6D8C4 /* konqa32.fnt in Resources */ = {isa = PBXBuildFile; fileRef = 81C12646149F0EFB00C6D8C4 /* konqa32.fnt */; };
+		81C12666149F0EFC00C6D8C4 /* konqa32.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12647149F0EFB00C6D8C4 /* konqa32.png */; };
+		81C12667149F0EFC00C6D8C4 /* larabie-16-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12648149F0EFB00C6D8C4 /* larabie-16-hd.png */; };
+		81C12668149F0EFC00C6D8C4 /* larabie-16.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C12649149F0EFB00C6D8C4 /* larabie-16.png */; };
+		81C12669149F0EFC00C6D8C4 /* MarkerFelt.ttc in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264A149F0EFB00C6D8C4 /* MarkerFelt.ttc */; };
+		81C1266A149F0EFC00C6D8C4 /* Paint Boy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264B149F0EFB00C6D8C4 /* Paint Boy.ttf */; };
+		81C1266B149F0EFC00C6D8C4 /* Schwarzwald Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264C149F0EFB00C6D8C4 /* Schwarzwald Regular.ttf */; };
+		81C1266C149F0EFC00C6D8C4 /* Scissor Cuts.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264D149F0EFB00C6D8C4 /* Scissor Cuts.ttf */; };
+		81C1266D149F0EFC00C6D8C4 /* tuffy_bold_italic-charmap-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264E149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap-hd.png */; };
+		81C1266E149F0EFC00C6D8C4 /* tuffy_bold_italic-charmap.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264F149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap.png */; };
 		81F5B60014987B85006B5BF2 /* blackArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 81F5B5FC14987B85006B5BF2 /* blackArrow.png */; };
 		81F5B60114987B85006B5BF2 /* blackArrow@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 81F5B5FD14987B85006B5BF2 /* blackArrow@2x.png */; };
 		81F5B60214987B85006B5BF2 /* blueArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = 81F5B5FE14987B85006B5BF2 /* blueArrow.png */; };
@@ -101,6 +132,37 @@
 		8199FD25148F688F0007A5E1 /* MenuScene.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MenuScene.mm; sourceTree = "<group>"; };
 		8199FD28148F688F0007A5E1 /* PlayLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlayLayer.h; sourceTree = "<group>"; };
 		8199FD29148F688F0007A5E1 /* PlayLayer.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = PlayLayer.mm; sourceTree = "<group>"; };
+		81C12631149F0EFB00C6D8C4 /* A Damn Mess.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "A Damn Mess.ttf"; sourceTree = "<group>"; };
+		81C12632149F0EFB00C6D8C4 /* Abberancy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Abberancy.ttf; sourceTree = "<group>"; };
+		81C12633149F0EFB00C6D8C4 /* Abduction.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Abduction.ttf; sourceTree = "<group>"; };
+		81C12634149F0EFB00C6D8C4 /* arial16.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = arial16.fnt; sourceTree = "<group>"; };
+		81C12635149F0EFB00C6D8C4 /* arial16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = arial16.png; sourceTree = "<group>"; };
+		81C12636149F0EFB00C6D8C4 /* bitmapFontTest.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bitmapFontTest.fnt; sourceTree = "<group>"; };
+		81C12637149F0EFB00C6D8C4 /* bitmapFontTest.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitmapFontTest.png; sourceTree = "<group>"; };
+		81C12638149F0EFB00C6D8C4 /* bitmapFontTest2.bmp */ = {isa = PBXFileReference; lastKnownFileType = image.bmp; path = bitmapFontTest2.bmp; sourceTree = "<group>"; };
+		81C12639149F0EFB00C6D8C4 /* bitmapFontTest2.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bitmapFontTest2.fnt; sourceTree = "<group>"; };
+		81C1263A149F0EFB00C6D8C4 /* bitmapFontTest3.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bitmapFontTest3.fnt; sourceTree = "<group>"; };
+		81C1263B149F0EFB00C6D8C4 /* bitmapFontTest3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitmapFontTest3.png; sourceTree = "<group>"; };
+		81C1263C149F0EFB00C6D8C4 /* bitmapFontTest4.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bitmapFontTest4.fnt; sourceTree = "<group>"; };
+		81C1263D149F0EFB00C6D8C4 /* bitmapFontTest4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitmapFontTest4.png; sourceTree = "<group>"; };
+		81C1263E149F0EFB00C6D8C4 /* bitmapFontTest5.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = bitmapFontTest5.fnt; sourceTree = "<group>"; };
+		81C1263F149F0EFB00C6D8C4 /* bitmapFontTest5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = bitmapFontTest5.png; sourceTree = "<group>"; };
+		81C12640149F0EFB00C6D8C4 /* fps_images-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "fps_images-hd.png"; sourceTree = "<group>"; };
+		81C12641149F0EFB00C6D8C4 /* fps_images.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fps_images.png; sourceTree = "<group>"; };
+		81C12642149F0EFB00C6D8C4 /* futura-48.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "futura-48.fnt"; sourceTree = "<group>"; };
+		81C12643149F0EFB00C6D8C4 /* futura-48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "futura-48.png"; sourceTree = "<group>"; };
+		81C12644149F0EFB00C6D8C4 /* konqa32-hd.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "konqa32-hd.fnt"; sourceTree = "<group>"; };
+		81C12645149F0EFB00C6D8C4 /* konqa32-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "konqa32-hd.png"; sourceTree = "<group>"; };
+		81C12646149F0EFB00C6D8C4 /* konqa32.fnt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = konqa32.fnt; sourceTree = "<group>"; };
+		81C12647149F0EFB00C6D8C4 /* konqa32.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = konqa32.png; sourceTree = "<group>"; };
+		81C12648149F0EFB00C6D8C4 /* larabie-16-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "larabie-16-hd.png"; sourceTree = "<group>"; };
+		81C12649149F0EFB00C6D8C4 /* larabie-16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "larabie-16.png"; sourceTree = "<group>"; };
+		81C1264A149F0EFB00C6D8C4 /* MarkerFelt.ttc */ = {isa = PBXFileReference; lastKnownFileType = file; path = MarkerFelt.ttc; sourceTree = "<group>"; };
+		81C1264B149F0EFB00C6D8C4 /* Paint Boy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Paint Boy.ttf"; sourceTree = "<group>"; };
+		81C1264C149F0EFB00C6D8C4 /* Schwarzwald Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Schwarzwald Regular.ttf"; sourceTree = "<group>"; };
+		81C1264D149F0EFB00C6D8C4 /* Scissor Cuts.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Scissor Cuts.ttf"; sourceTree = "<group>"; };
+		81C1264E149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tuffy_bold_italic-charmap-hd.png"; sourceTree = "<group>"; };
+		81C1264F149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "tuffy_bold_italic-charmap.png"; sourceTree = "<group>"; };
 		81F5B5FC14987B85006B5BF2 /* blackArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blackArrow.png; sourceTree = "<group>"; };
 		81F5B5FD14987B85006B5BF2 /* blackArrow@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "blackArrow@2x.png"; sourceTree = "<group>"; };
 		81F5B5FE14987B85006B5BF2 /* blueArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = blueArrow.png; sourceTree = "<group>"; };
@@ -234,6 +296,44 @@
 			name = Game;
 			sourceTree = "<group>";
 		};
+		81C1262F149F0EC800C6D8C4 /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				81C12631149F0EFB00C6D8C4 /* A Damn Mess.ttf */,
+				81C12632149F0EFB00C6D8C4 /* Abberancy.ttf */,
+				81C12633149F0EFB00C6D8C4 /* Abduction.ttf */,
+				81C12634149F0EFB00C6D8C4 /* arial16.fnt */,
+				81C12635149F0EFB00C6D8C4 /* arial16.png */,
+				81C12636149F0EFB00C6D8C4 /* bitmapFontTest.fnt */,
+				81C12637149F0EFB00C6D8C4 /* bitmapFontTest.png */,
+				81C12638149F0EFB00C6D8C4 /* bitmapFontTest2.bmp */,
+				81C12639149F0EFB00C6D8C4 /* bitmapFontTest2.fnt */,
+				81C1263A149F0EFB00C6D8C4 /* bitmapFontTest3.fnt */,
+				81C1263B149F0EFB00C6D8C4 /* bitmapFontTest3.png */,
+				81C1263C149F0EFB00C6D8C4 /* bitmapFontTest4.fnt */,
+				81C1263D149F0EFB00C6D8C4 /* bitmapFontTest4.png */,
+				81C1263E149F0EFB00C6D8C4 /* bitmapFontTest5.fnt */,
+				81C1263F149F0EFB00C6D8C4 /* bitmapFontTest5.png */,
+				81C12640149F0EFB00C6D8C4 /* fps_images-hd.png */,
+				81C12641149F0EFB00C6D8C4 /* fps_images.png */,
+				81C12642149F0EFB00C6D8C4 /* futura-48.fnt */,
+				81C12643149F0EFB00C6D8C4 /* futura-48.png */,
+				81C12644149F0EFB00C6D8C4 /* konqa32-hd.fnt */,
+				81C12645149F0EFB00C6D8C4 /* konqa32-hd.png */,
+				81C12646149F0EFB00C6D8C4 /* konqa32.fnt */,
+				81C12647149F0EFB00C6D8C4 /* konqa32.png */,
+				81C12648149F0EFB00C6D8C4 /* larabie-16-hd.png */,
+				81C12649149F0EFB00C6D8C4 /* larabie-16.png */,
+				81C1264A149F0EFB00C6D8C4 /* MarkerFelt.ttc */,
+				81C1264B149F0EFB00C6D8C4 /* Paint Boy.ttf */,
+				81C1264C149F0EFB00C6D8C4 /* Schwarzwald Regular.ttf */,
+				81C1264D149F0EFB00C6D8C4 /* Scissor Cuts.ttf */,
+				81C1264E149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap-hd.png */,
+				81C1264F149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap.png */,
+			);
+			name = Font;
+			sourceTree = "<group>";
+		};
 		DCC1A0D613A94EC0005BD75D = {
 			isa = PBXGroup;
 			children = (
@@ -305,6 +405,7 @@
 		DCC1A39413A94F1A005BD75D /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				81C1262F149F0EC800C6D8C4 /* Font */,
 				2907F34C149336AC001D7E3B /* btn-about-normal.png */,
 				2907F34D149336AC001D7E3B /* btn-about-selected.png */,
 				2907F34E149336AC001D7E3B /* btn-highscores-normal.png */,
@@ -435,6 +536,37 @@
 				29E2F8D1149E1D54007EFE41 /* back.png in Resources */,
 				29E2F8D2149E1D54007EFE41 /* continue.png in Resources */,
 				29E2F8D3149E1D54007EFE41 /* menu.jpg in Resources */,
+				81C12650149F0EFB00C6D8C4 /* A Damn Mess.ttf in Resources */,
+				81C12651149F0EFB00C6D8C4 /* Abberancy.ttf in Resources */,
+				81C12652149F0EFB00C6D8C4 /* Abduction.ttf in Resources */,
+				81C12653149F0EFB00C6D8C4 /* arial16.fnt in Resources */,
+				81C12654149F0EFB00C6D8C4 /* arial16.png in Resources */,
+				81C12655149F0EFB00C6D8C4 /* bitmapFontTest.fnt in Resources */,
+				81C12656149F0EFB00C6D8C4 /* bitmapFontTest.png in Resources */,
+				81C12657149F0EFB00C6D8C4 /* bitmapFontTest2.bmp in Resources */,
+				81C12658149F0EFB00C6D8C4 /* bitmapFontTest2.fnt in Resources */,
+				81C12659149F0EFB00C6D8C4 /* bitmapFontTest3.fnt in Resources */,
+				81C1265A149F0EFB00C6D8C4 /* bitmapFontTest3.png in Resources */,
+				81C1265B149F0EFB00C6D8C4 /* bitmapFontTest4.fnt in Resources */,
+				81C1265C149F0EFB00C6D8C4 /* bitmapFontTest4.png in Resources */,
+				81C1265D149F0EFB00C6D8C4 /* bitmapFontTest5.fnt in Resources */,
+				81C1265E149F0EFB00C6D8C4 /* bitmapFontTest5.png in Resources */,
+				81C1265F149F0EFB00C6D8C4 /* fps_images-hd.png in Resources */,
+				81C12660149F0EFB00C6D8C4 /* fps_images.png in Resources */,
+				81C12661149F0EFB00C6D8C4 /* futura-48.fnt in Resources */,
+				81C12662149F0EFB00C6D8C4 /* futura-48.png in Resources */,
+				81C12663149F0EFB00C6D8C4 /* konqa32-hd.fnt in Resources */,
+				81C12664149F0EFB00C6D8C4 /* konqa32-hd.png in Resources */,
+				81C12665149F0EFB00C6D8C4 /* konqa32.fnt in Resources */,
+				81C12666149F0EFC00C6D8C4 /* konqa32.png in Resources */,
+				81C12667149F0EFC00C6D8C4 /* larabie-16-hd.png in Resources */,
+				81C12668149F0EFC00C6D8C4 /* larabie-16.png in Resources */,
+				81C12669149F0EFC00C6D8C4 /* MarkerFelt.ttc in Resources */,
+				81C1266A149F0EFC00C6D8C4 /* Paint Boy.ttf in Resources */,
+				81C1266B149F0EFC00C6D8C4 /* Schwarzwald Regular.ttf in Resources */,
+				81C1266C149F0EFC00C6D8C4 /* Scissor Cuts.ttf in Resources */,
+				81C1266D149F0EFC00C6D8C4 /* tuffy_bold_italic-charmap-hd.png in Resources */,
+				81C1266E149F0EFC00C6D8C4 /* tuffy_bold_italic-charmap.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
