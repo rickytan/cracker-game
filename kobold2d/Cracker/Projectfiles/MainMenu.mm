@@ -73,9 +73,6 @@ const float PTM_RATIO = 96.0f;
 		[CCMenuItemFont setFontSize:30];
 		[CCMenuItemFont setFontName: @"Courier New"];
         
-#ifdef __IPHONE_OS_VERSION_MAX_ALLOWED
-        self.isTouchEnabled = YES;
-#endif
         
         CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook.png"]
                                                        selectedSprite:[CCSprite spriteWithFile:@"facebook.png"]
@@ -90,7 +87,7 @@ const float PTM_RATIO = 96.0f;
         menu = [CCMenu menuWithItems:fb, tw, nil];
         [menu alignItemsHorizontally];
         [self addChild:menu];
-        menu.position = ccpSub(screenSize, ccp(menu.contentSize.width, menu.contentSize.height));
+        menu.position = ccpSub(ccp(screenSize.width,screenSize.height), ccp(menu.contentSize.width, menu.contentSize.height));
         
         CCMenuItemSprite *item0 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"start.png"]
                                                           selectedSprite:[CCSprite spriteWithFile:@"start.png"]
