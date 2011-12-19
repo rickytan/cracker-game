@@ -84,7 +84,7 @@ const float PTM_RATIO = 64.0f;
                                                                       target:self
                                                                     selector:@selector(pausePressed:)];
         pauseItem.position = ccpSub(c,ccp(26, 26));
-        pauseItem.scale = 0.3;
+        pauseItem.scale = 0.6;
         //pauseItem.contentSize = CGSizeMake(30,30);
         pausemenu = [CCMenu menuWithItems:pauseItem, nil];
         
@@ -359,7 +359,7 @@ const float PTM_RATIO = 64.0f;
         pauselayer = [PauseScene node];
         pauselayer.visible = NO;
         pauselayer.delegate = self;
-        [self addChild:pauselayer];
+        [self addChild:pauselayer z:5];
     }
     [self pauseGame];
     [pauselayer modal];
@@ -380,8 +380,8 @@ const float PTM_RATIO = 64.0f;
 - (void)onStart:(id)sender
 {
     [self resumeGame];
-    CCFadeOut *fadeout = [CCFadeOut actionWithDuration:0.35];
-    [menulayer runAction:[CCSequence actions:fadeout, [CCHide action], nil]];
+    CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
+    [menulayer runAction:[CCSequence actions:[CCEaseElasticOut actionWithAction:move period:0.4], [CCHide action], nil]];
 }
 
 - (void)onAbout:(id)sender
