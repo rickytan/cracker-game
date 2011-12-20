@@ -6,22 +6,20 @@
 //  Copyright (c) 2011年 __MyCompanyName__. All rights reserved.
 //
 
-#import "CCScene.h"
+#import "cocos2d.h"
 #import "PlayLayer.h"
-#import "PauseScene.h"
-#import "MainMenu.h"
 #import <iAd/iAd.h>
 
+
 enum {
-    kPlayLayer,
-    kMainLayer,
-    kPauseLayer
+    kPlayLayer
 };
 
 @interface GameScene : CCScene <ADBannerViewDelegate> {
     ADBannerView *          adView;
     PlayLayer *             playlayer;  // Weak assign
 }
+@property (nonatomic, readonly) uint score;
 
 - (void)showAd;
 - (void)hideAd;

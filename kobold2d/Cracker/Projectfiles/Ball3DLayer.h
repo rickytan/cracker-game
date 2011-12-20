@@ -22,6 +22,5 @@
 - (CGPoint)getBallLocation;
 - (CGFloat)getBallRadius;
 - (void)setArrowDirection:(CGFloat)angle;
-- (void)showAd;
-- (void)hideAd;
+- (void)moveTo:(CGFloat)d;
 @end

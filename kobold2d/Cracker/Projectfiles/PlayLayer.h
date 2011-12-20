@@ -14,8 +14,9 @@
 #import "Wind.h"
 #import "MainMenu.h"
 #import "PauseScene.h"
+#import "GameOver.h"
 
-@interface PlayLayer : CCLayer <MainMenuButtonDelegate, PauseDelegate> {
+@interface PlayLayer : CCLayer <MainMenuButtonDelegate, PauseDelegate, GameOverDelegate> {
     b2World *               world;
     b2Body *                topBoundBody;
     ContactListener *       contact;
@@ -29,7 +30,9 @@
     NSTimer *               scoreAddTimer;
     MainMenu *              menulayer;  // Weak assign
     PauseScene *            pauselayer; // Weak assign
+    GameOver *              gameover;   // Weak assign
     CCMenu *                pausemenu;  // Weak assign
+    CCMenu *                upmenu;     // Weak assign
     CCMotionStreak *        motionStreak;   // Weak assign
     
     BOOL                    isAdShown;
@@ -44,4 +47,5 @@
 - (void)startGame;
 - (void)pauseGame;
 - (void)resumeGame;
+- (void)endGame;
 @end

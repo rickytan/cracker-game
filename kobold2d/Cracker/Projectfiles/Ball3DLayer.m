@@ -41,7 +41,6 @@ typedef enum {
     CGSize                      boxBound;
     CC3BoundingBox              bounds;
     float                       ratio;
-    CGFloat                     topFaceOffset;
 }
 - (void)setArrowDirection:(CGFloat)angle;
 - (void)setBallLocation:(CGPoint)ballLocation;
@@ -51,9 +50,8 @@ typedef enum {
 - (CGPoint)toBoxPoint:(CGPoint)screen;
 - (CGPoint)toScreenPoint:(CGPoint)box;
 - (void)addChildToFloor:(CC3Node*)child;
-- (void)shrink:(CGFloat)offset;
-- (void)grow:(CGFloat)offset;
 - (void)reset;
+- (void)moveTo:(CGFloat)offset;
 @end
 
 @implementation Ball3DWorld
@@ -140,6 +138,7 @@ typedef enum {
     [self addChildToFloor:_floor];
     
     CC3PlaneNode *_arrow = [CC3PlaneNode nodeWithName:@"arrow"];
+    
     CC3Texture *tex = [CC3Texture textureFromFile:@"blackArrow.png"];
     
     [_arrow populateAsTexturedRectangleWithSize:CGSizeMake(0.6, 2.4) 
@@ -228,6 +227,7 @@ typedef enum {
         CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
         _floorNode.transformMatrix = matrix;
         
+        [_ball markTransformDirty];
         for (int i=0; i<AD_CUBE_TOTAL; ++i) {
             [_adCube[i] markTransformDirty];
         }
@@ -279,29 +279,23 @@ typedef enum {
     return _ballRadius / boxBound.width * s.width;
 }
 
-- (void)shrink:(CGFloat)offset
+- (void)moveTo:(CGFloat)offset
 {
-    topFaceOffset = -offset / ratio;
-    CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
+    static BOOL _first = YES;
+    static CC3Vector orgiLocation;
+    if (_first){
+        _first = NO;
+        orgiLocation = _adCube[AD_CUBE_TOP].location;
+    }
+    
+    CC3MoveTo *move = [CC3MoveTo actionWithDuration:0.35 moveTo:CC3VectorAdd(orgiLocation, cc3v(0, -offset/ratio, 0))];
     
     [_adCube[AD_CUBE_TOP] runAction:move];
-
-}
-
-- (void)grow:(CGFloat)offset
-{
-    topFaceOffset = offset / ratio;
-    CC3MoveBy *move = [CC3MoveBy actionWithDuration:0.35 moveBy:cc3v(0, topFaceOffset, 0)];
-    
-    [_adCube[AD_CUBE_TOP] runAction:move];
-
 }
 
 - (void)reset
 {
-    CC3MoveTo *move = [CC3MoveTo actionWithDuration:0.35 moveTo:cc3v(0, 0, 0)];
-    
-    [_adCube[AD_CUBE_TOP] runAction:move];
+    [self moveTo:0];
 }
 
 - (void)setArrowDirection:(CGFloat)angle
@@ -364,15 +358,10 @@ typedef enum {
     [w setArrowDirection:angle];
 }
 
-- (void)showAd
+- (void)moveTo:(CGFloat)d
 {
     Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
-    [w shrink:60];
-}
-- (void)hideAd
-{
-    Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
-    [w grow:60];
+    [w moveTo:d];
 }
 
 #pragma mark - Overrided Methods
