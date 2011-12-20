@@ -84,7 +84,7 @@
 }
 - (void)increase
 {
-    [self increaseBy:0.01*expf(_force)];
+    [self increaseBy:0.016*expf(_force)];
 }
 - (void)increaseBy:(CGFloat)delta
 {

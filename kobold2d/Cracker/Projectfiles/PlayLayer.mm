@@ -28,7 +28,7 @@
 - (void)removeAd;
 - (b2Vec2)toMeters:(CGPoint)point;
 - (CGPoint)toPixels:(b2Vec2)vec;
-
+- (void)pausePressed:(id)sender;
 @end
 
 @implementation PlayLayer
@@ -55,20 +55,13 @@ const float PTM_RATIO = 64.0f;
 {
     if ((self = [super init])){
         CGSize s = [CCDirector sharedDirector].winSize;
-        CGPoint c = [CCDirector sharedDirector].screenCenter;
-        
-        world = new b2World(b2Vec2(0.0f,0.0f));
-        world->SetAllowSleeping(NO);
-        
-        contact = new ContactListener;
-        world->SetContactListener(contact);
         
         ball3DLayer = [Ball3DLayer node];
-        [self addChild:ball3DLayer z:-1];
+        [self addChild:ball3DLayer z:-2];
         
         menulayer = [MainMenu node];
         menulayer.delegate = self;
-        [self addChild:menulayer z:0];
+        [self addChild:menulayer z:-1];
         
         score = 0;
         scoreLabel = [CCLabelBMFont labelWithString:@"        0" fntFile:@"bitmapFontTest.fnt"];
@@ -76,41 +69,15 @@ const float PTM_RATIO = 64.0f;
         scoreLabel.position = ccp(4 + scoreLabel.contentSize.width / 2,
                                   s.height - scoreLabel.contentSize.height/2);
         
-        scoreLabel.color = ccBLUE;
-        [self addChild:scoreLabel z:1];
+        [self addChild:scoreLabel];
         
-        CCMenuItemSprite *pauseItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
-                                                              selectedSprite:[CCSprite spriteWithFile:@"back.png"]
-                                                                      target:self
-                                                                    selector:@selector(pausePressed:)];
-        pauseItem.position = ccpSub(c,ccp(26, 26));
-        pauseItem.scale = 0.6;
-        //pauseItem.contentSize = CGSizeMake(30,30);
-        pausemenu = [CCMenu menuWithItems:pauseItem, nil];
         
-        [self addChild:pausemenu];
         
-        [self CreateScreenBound];
-        CGPoint p = [ball3DLayer getBallLocation];
-        CGFloat r = [ball3DLayer getBallRadius];
-        theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
-        wind = [[Wind alloc] initWithForce:0.04
-                                  andAngle:0
-                                    repeat:YES];
-        [wind blow:theBall];
-        [self addChild:wind];
-        [wind release];
-        
-        [self setWindDirection:0];
-        
-        [self scheduleUpdate];
+        //[self scheduleUpdate];
         
         //[self runAction:[CCRepeatForever actionWithAction:[CCSequence actions:delay0, sad, delay1, had, nil]]];
         
-        CCDelayTime *delay = [CCDelayTime actionWithDuration:1.0];
-        CCCallFunc *cb = [CCCallFunc actionWithTarget:self selector:@selector(scoreAddByTime)];
-        CCRepeatForever *repeat = [CCRepeatForever actionWithAction:[CCSequence actions:delay, cb, nil]];
-        [self runAction:repeat];
+        
         
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"LOW C.caf"];
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"C.caf"];
@@ -265,7 +232,6 @@ const float PTM_RATIO = 64.0f;
 
 - (void)setWindDirection:(CGFloat)angle
 {
-    wind.angle = angle;
     [ball3DLayer setArrowDirection:CC_RADIANS_TO_DEGREES(angle)];
 }
 
@@ -288,18 +254,73 @@ const float PTM_RATIO = 64.0f;
     scoreLabel.string = [NSNumber numberWithInt:score].stringValue;
 }
 
+- (void)startGame
+{
+    
+    world = new b2World(b2Vec2(0.0f,0.0f));
+    world->SetAllowSleeping(NO);
+    
+    contact = new ContactListener;
+    world->SetContactListener(contact);
+    
+    [self CreateScreenBound];
+    CGPoint p = [ball3DLayer getBallLocation];
+    CGFloat r = [ball3DLayer getBallRadius];
+    theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
+    wind = [[Wind alloc] initWithForce:0.04
+                              andAngle:CCRANDOM_MINUS1_1()*M_PI
+                                repeat:YES];
+    [wind blow:theBall];
+    [self addChild:wind];
+    [wind release];
+    
+    [self setWindDirection:wind.angle];
+    
+    
+    CCMenuItemSprite *pauseItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"back.png"]
+                                                                  target:self
+                                                                selector:@selector(pausePressed:)];
+    pauseItem.position = ccp(110, 210);
+    pauseItem.scale = 0.6;
+    
+    pausemenu = [CCMenu menuWithItems:pauseItem, nil];
+    [pausemenu setOpacity:0];
+    [self addChild:pausemenu];
+    
+    [pausemenu runAction:[CCFadeIn actionWithDuration:0.4]];
+    
+    CCDelayTime *delay = [CCDelayTime actionWithDuration:1.0];
+    CCCallFunc *cb = [CCCallFunc actionWithTarget:self selector:@selector(scoreAddByTime)];
+    CCRepeatForever *repeat = [CCRepeatForever actionWithAction:[CCSequence actions:delay, cb, nil]];
+    [self runAction:repeat];
+    
+    [self scheduleUpdate];
+}
+
 - (void)pauseGame
 {
     _isGamePlaying = NO;
     [ball3DLayer pauseSchedulerAndActions];
+    [wind pauseSchedulerAndActions];
     [self pauseSchedulerAndActions];
+    
+    if (!pauselayer){
+        pauselayer = [PauseScene node];
+        pauselayer.visible = NO;
+        pauselayer.delegate = self;
+        [self addChild:pauselayer z:1];
+    }
+    [pauselayer modal];
 }
 
 - (void)resumeGame
 {
     _isGamePlaying = YES;
     [ball3DLayer resumeSchedulerAndActions];
+    [wind resumeSchedulerAndActions];
     [self resumeSchedulerAndActions];
+
 }
 
 #pragma mark - Overrided Methods
@@ -350,17 +371,12 @@ const float PTM_RATIO = 64.0f;
 - (void)onEnter
 {
     [super onEnter];
-    [self pauseGame];
+    //[self pauseGame];
 }
 
 - (void)pausePressed:(id)sender
 {
-    if (!pauselayer){
-        pauselayer = [PauseScene node];
-        pauselayer.visible = NO;
-        pauselayer.delegate = self;
-        [self addChild:pauselayer z:5];
-    }
+    
     [self pauseGame];
     [pauselayer modal];
 }
@@ -379,7 +395,7 @@ const float PTM_RATIO = 64.0f;
 
 - (void)onStart:(id)sender
 {
-    [self resumeGame];
+    [self startGame];
     CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
     [menulayer runAction:[CCSequence actions:[CCEaseElasticOut actionWithAction:move period:0.4], [CCHide action], nil]];
 }
@@ -403,7 +419,6 @@ const float PTM_RATIO = 64.0f;
 
 - (void)onResume:(id)sender
 {
-    [pauselayer dismiss];
     [self resumeGame];
 }
 @end
