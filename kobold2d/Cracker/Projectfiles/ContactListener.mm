@@ -10,6 +10,7 @@
 #import "SimpleAudioEngine.h"
 #import "GameOver.h"
 #import "GameScene.h"
+#import "PlayLayer.h"
 
 void ContactListener::BeginContact(b2Contact* contact)
 {

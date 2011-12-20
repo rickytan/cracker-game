@@ -16,12 +16,11 @@
 
 @end
 
-@interface GameOver : CCLayer {
+@interface GameOver : CCLayerColor {
     
 }
 
 @property (nonatomic, assign) uint score;
 @property (nonatomic, assign) id<GameOverDelegate> delegate;
 
-- (void)againPressed:(id)sender;
 @end

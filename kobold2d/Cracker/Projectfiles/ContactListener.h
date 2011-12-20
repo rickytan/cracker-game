@@ -6,7 +6,7 @@
  */
 
 #import "Box2D.h"
-#import "PlayLayer.h"
+
 
 class ContactListener : public b2ContactListener
 {
@@ -15,7 +15,7 @@ public:
         this->playlayer = userdata;
         
     }
-    virtual ~ContactListener();
+    virtual ~ContactListener(){}
 private:
     void *playlayer;
     
