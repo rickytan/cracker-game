@@ -94,18 +94,7 @@ const float PTM_RATIO = 64.0f;
 }
 
 #pragma mark - Private Methods
-- (void)control:(NSTimer *)timer
-{
-    static int counter = 0;
-    counter++;
-    
-    if (counter % 2){
-        if (isAdShown)
-            [self hideAd];
-        else
-            [self showAd];
-    }
-}
+
 - (void)moveDownTopFace
 {
     topBoundBody->SetLinearVelocity([self toMeters:ccp(0, -50 / 0.35)]);
@@ -134,9 +123,26 @@ const float PTM_RATIO = 64.0f;
     isAdShown = YES;
     
     [self moveDownTopFace];
-    [ball3DLayer showAd];
+    [ball3DLayer moveTo:100];
     
-    CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, -50)];
+    if (!upmenu){
+        CGPoint c = [CCDirector sharedDirector].screenCenter;
+        CCMenuItemSprite *upItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"up.png"]
+                                                           selectedSprite:[CCSprite spriteWithFile:@"up.png"]
+                                                                    block:^(id sender){
+                                                                        [ball3DLayer moveTo:60];
+                                                                    }];
+        upItem.position = ccpSub(c, ccp(upItem.contentSize.width + 10, -upItem.contentSize.height - 10));
+        
+        upmenu = [CCMenu menuWithItems:upItem, nil];
+        
+        [self addChild:upmenu];
+    }
+    
+    CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, -100)];
+    [upmenu runAction:move];
+    
+    move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, -100)];
     [pausemenu runAction:move];
 }
 
@@ -146,7 +152,7 @@ const float PTM_RATIO = 64.0f;
         return;
     isAdShown = NO;
     [self moveUpTopFace];
-    [ball3DLayer hideAd];
+    [ball3DLayer moveTo:0];
     
     CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, 50)];
     [pausemenu runAction:move];
@@ -260,13 +266,14 @@ const float PTM_RATIO = 64.0f;
     world = new b2World(b2Vec2(0.0f,0.0f));
     world->SetAllowSleeping(NO);
     
-    contact = new ContactListener;
+    contact = new ContactListener(self);
     world->SetContactListener(contact);
     
     [self CreateScreenBound];
     CGPoint p = [ball3DLayer getBallLocation];
     CGFloat r = [ball3DLayer getBallRadius];
     theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
+    srand(time(nil));
     wind = [[Wind alloc] initWithForce:0.04
                               andAngle:CCRANDOM_MINUS1_1()*M_PI
                                 repeat:YES];
@@ -277,18 +284,28 @@ const float PTM_RATIO = 64.0f;
     [self setWindDirection:wind.angle];
     
     
-    CCMenuItemSprite *pauseItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
-                                                          selectedSprite:[CCSprite spriteWithFile:@"back.png"]
+    CCMenuItemSprite *pauseItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"pause.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"pause.png"]
                                                                   target:self
                                                                 selector:@selector(pausePressed:)];
     pauseItem.position = ccp(110, 210);
     pauseItem.scale = 0.6;
-    
+
     pausemenu = [CCMenu menuWithItems:pauseItem, nil];
     [pausemenu setOpacity:0];
     [self addChild:pausemenu];
     
     [pausemenu runAction:[CCFadeIn actionWithDuration:0.4]];
+    
+    if (!motionStreak){
+        motionStreak = [CCMotionStreak streakWithFade:1.0
+                                               minSeg:0.0
+                                                image:@"streak.png"
+                                                width:20.0 
+                                               length:40.0
+                                                color:ccc4(0x0, 0x80, 0xff, 0xc0)];
+        [self addChild:motionStreak];
+    }
     
     CCDelayTime *delay = [CCDelayTime actionWithDuration:1.0];
     CCCallFunc *cb = [CCCallFunc actionWithTarget:self selector:@selector(scoreAddByTime)];
@@ -298,10 +315,15 @@ const float PTM_RATIO = 64.0f;
     [self scheduleUpdate];
 }
 
+- (void)endGame
+{
+    
+}
+
 - (void)pauseGame
 {
     _isGamePlaying = NO;
-    [ball3DLayer pauseSchedulerAndActions];
+    //[ball3DLayer pauseSchedulerAndActions];
     [wind pauseSchedulerAndActions];
     [self pauseSchedulerAndActions];
     
@@ -317,10 +339,10 @@ const float PTM_RATIO = 64.0f;
 - (void)resumeGame
 {
     _isGamePlaying = YES;
-    [ball3DLayer resumeSchedulerAndActions];
+    //[ball3DLayer resumeSchedulerAndActions];
     [wind resumeSchedulerAndActions];
     [self resumeSchedulerAndActions];
-
+    
 }
 
 #pragma mark - Overrided Methods
@@ -328,6 +350,7 @@ const float PTM_RATIO = 64.0f;
 - (void)update:(ccTime)delta
 {
 	CCDirector* director = [CCDirector sharedDirector];
+    CGPoint center = director.screenCenter;
     
     KKInput* input = [KKInput sharedInput];
     if (director.currentDeviceIsSimulator == NO)
@@ -336,6 +359,10 @@ const float PTM_RATIO = 64.0f;
         b2Vec2 gravity = 10.0f * b2Vec2(acceleration.smoothedX, acceleration.smoothedY);
         world->SetGravity(gravity);
     }
+    
+    static NSString *soundTable[] = {@"C.caf",@"D.caf",@"E.caf",@"F.caf",@"G.caf",@"A.caf",@"B.caf"};
+    const static int soundCount = sizeof(soundTable) / sizeof(NSString*);
+    static int lastSound = 0;
     
     CGPoint lastPosition = [self toPixels:theBall->GetPosition()];
     
@@ -354,6 +381,14 @@ const float PTM_RATIO = 64.0f;
     [ball3DLayer setArrowDirection:CC_RADIANS_TO_DEGREES(wind.angle)];
     [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
     
+    motionStreak.position = p;
+    
+    int currentSound = fabsf(p.x - center.x) * soundCount / center.x;
+    if (currentSound != lastSound){
+        lastSound = currentSound;
+        [[SimpleAudioEngine sharedEngine] playEffect:soundTable[lastSound]];
+    }
+
     /*
      // for each body, get its assigned sprite and update the sprite's position
      for (b2Body* body = world->GetBodyList(); body != nil; body = body->GetNext())
@@ -420,5 +455,17 @@ const float PTM_RATIO = 64.0f;
 - (void)onResume:(id)sender
 {
     [self resumeGame];
+}
+
+#pragma mark - GameOverDelegate Methods
+
+- (void)onAgain:(id)sender
+{
+    
+}
+
+- (void)onMenu:(id)sender
+{
+    
 }
 @end

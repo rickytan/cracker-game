@@ -74,8 +74,8 @@ const float PTM_RATIO = 96.0f;
 		[CCMenuItemFont setFontName: @"Courier New"];
         
         
-        CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook.png"]
-                                                       selectedSprite:[CCSprite spriteWithFile:@"facebook.png"]
+        CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook-hd.png"]
+                                                       selectedSprite:[CCSprite spriteWithFile:@"facebook-hd.png"]
                                                                 target:self
                                                              selector:@selector(onShareFacebook:)];
         CCMenuItemSprite *tw = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"twitter-hd.png"]
@@ -84,11 +84,7 @@ const float PTM_RATIO = 96.0f;
                                                              selector:@selector(onShareTwitter:)];
         //fb.scale = 0.5;
         //tw.scale = 0.5;
-        menu = [CCMenu menuWithItems:fb, tw, nil];
-        [menu alignItemsHorizontally];
-        [self addChild:menu];
-        menu.position = ccpSub(ccp(screenSize.width,screenSize.height), ccp(menu.contentSize.width, menu.contentSize.height));
-        
+
         CCMenuItemSprite *item0 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"start.png"]
                                                           selectedSprite:[CCSprite spriteWithFile:@"start.png"]
                                                                    target:self
@@ -102,9 +98,14 @@ const float PTM_RATIO = 96.0f;
                                                                    target:self
                                                                 selector:@selector(onAbout:)];
         
-		menu = [CCMenu menuWithItems:item0, item1, item2, nil];
-		[menu alignItemsVertically];
-		
+		menu = [CCMenu menuWithItems:item0, item1, item2, fb, tw, nil];
+        [menu alignItemsInColumns:
+         [NSNumber numberWithInt:1],
+         [NSNumber numberWithInt:1],
+         [NSNumber numberWithInt:1],
+         [NSNumber numberWithInt:2], nil];
+
+		/*
         CGSize s = [[CCDirector sharedDirector] winSize];
         int i=0;
         for( CCNode *child in [menu children] ) {
@@ -117,7 +118,7 @@ const float PTM_RATIO = 96.0f;
             child.position = ccp( dstPoint.x + offset, dstPoint.y);
             i++;
         }
-        
+        */
 		[self addChild: menu];
         
         // elastic effect
@@ -125,14 +126,15 @@ const float PTM_RATIO = 96.0f;
 
         for( CCNode *child in [menu children] ) {
             CGPoint dstPoint = child.position;
-            dstPoint.x = 0;
+            //dstPoint.x = 0;
+            /*
             [child runAction: 
              [CCEaseElasticOut actionWithAction: 
               [CCMoveTo actionWithDuration:duration
                                   position:dstPoint]
                                          period: 0.35f]];
             i++;
-            
+            */
             /*=============== Add Bodies =================*/
             b2Body *body;
             b2BodyDef bodyDef;

@@ -13,16 +13,18 @@
 
 
 @implementation GameScene
+@synthesize score;
 
 - (id)init
 {
     if ((self = [super init])){
 
+        CCDirector *dir = [CCDirector sharedDirector];
         
-        [[CCDirector sharedDirector] enableRetinaDisplay:YES];
+        [dir enableRetinaDisplay:YES];
         
         playlayer = [PlayLayer node];
-        
+        playlayer.tag = kPlayLayer;
         [self addChild:playlayer];
     }
     return self;
@@ -55,6 +57,11 @@
     adView.frame = CGRectMake(0, -50, 320, 50);
     
     [UIView commitAnimations];
+}
+
+- (uint)getScore
+{
+    return playlayer.score;
 }
 
 - (void)onEnter

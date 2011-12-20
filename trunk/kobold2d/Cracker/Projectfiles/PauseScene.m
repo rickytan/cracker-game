@@ -24,8 +24,8 @@
 - (id)init
 {
     if ((self = [super initWithColor:ccc4(0x0, 0x0, 0x0, 0xc0)])){
-        CCMenuItemImage *resumeItem = [CCMenuItemImage itemFromNormalImage:@"continue.png"
-                                                             selectedImage:@"continue.png"
+        CCMenuItemImage *resumeItem = [CCMenuItemImage itemFromNormalImage:@"back.png"
+                                                             selectedImage:@"back.png"
                                                                     target:self
                                                                   selector:@selector(resumePressed:)];
         CCScaleBy *scale = [CCScaleBy actionWithDuration:0.5 scale:1.1];
@@ -35,8 +35,8 @@
                            [CCEaseOut actionWithAction:[scale reverse] rate:1.8], nil];
         [resumeItem runAction:[CCRepeatForever actionWithAction:seq]];
         
-        CCMenuItemImage *quit = [CCMenuItemImage itemFromNormalImage:@"blueArrow.png"
-                                                       selectedImage:@"blackArrow.png"
+        CCMenuItemImage *quit = [CCMenuItemImage itemFromNormalImage:@"menu.png"
+                                                       selectedImage:@"menu.png"
                                                               target:self
                                                             selector:@selector(quitPressed:)];
         menu = [CCMenu menuWithItems:resumeItem, quit, nil];

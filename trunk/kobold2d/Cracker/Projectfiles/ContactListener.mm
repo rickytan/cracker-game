@@ -8,9 +8,12 @@
 #import "ContactListener.h"
 #import "cocos2d.h"
 #import "SimpleAudioEngine.h"
+#import "GameOver.h"
+#import "GameScene.h"
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
+    /*
 	b2Body* bodyA = contact->GetFixtureA()->GetBody();
 	b2Body* bodyB = contact->GetFixtureB()->GetBody();
 	CCSprite* spriteA = (__bridge CCSprite*)bodyA->GetUserData();
@@ -21,7 +24,11 @@ void ContactListener::BeginContact(b2Contact* contact)
 		spriteA.color = ccMAGENTA;
 		spriteB.color = ccMAGENTA;
 	}
+     */
     [[SimpleAudioEngine sharedEngine] playEffect:@"LOW C.caf"];
+
+    PlayLayer *p = (__bridge PlayLayer*)this->playlayer;
+    [p endGame];
 }
 
 void ContactListener::EndContact(b2Contact* contact)
