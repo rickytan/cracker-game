@@ -21,7 +21,6 @@ enum {
 @interface GameScene : CCScene <ADBannerViewDelegate> {
     ADBannerView *          adView;
     PlayLayer *             playlayer;  // Weak assign
-    PauseScene *            pauselayer; // Weak assign
 }
 
 - (void)showAd;

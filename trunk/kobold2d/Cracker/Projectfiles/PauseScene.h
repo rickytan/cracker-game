@@ -16,7 +16,7 @@
 
 @end
 
-@interface PauseScene : CCLayer {
+@interface PauseScene : CCLayerColor <CCTargetedTouchDelegate>{
     CCMenu *                menu;   // Weak assign
 }
 @property (nonatomic, assign) id<PauseDelegate> delegate;

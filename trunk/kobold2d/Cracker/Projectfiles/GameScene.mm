@@ -22,13 +22,8 @@
         [[CCDirector sharedDirector] enableRetinaDisplay:YES];
         
         playlayer = [PlayLayer node];
-        playlayer.tag = kPlayLayer;
-        pauselayer = [PauseScene node];
-        pauselayer.tag = kPauseLayer;
         
-        CCLayerMultiplex *layer = [CCLayerMultiplex layerWithLayers:playlayer,pauselayer,nil];
-        
-        [self addChild:layer];
+        [self addChild:playlayer];
     }
     return self;
 }
@@ -119,7 +114,7 @@
                willLeaveApplication:(BOOL)willLeave
 {
     if (!willLeave && playlayer.isGamePlaying) {
-        [playlayer pausePressed:nil];
+        [playlayer pauseGame];
     }
     return YES;
 }

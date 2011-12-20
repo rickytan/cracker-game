@@ -30,16 +30,18 @@
     MainMenu *              menulayer;  // Weak assign
     PauseScene *            pauselayer; // Weak assign
     CCMenu *                pausemenu;  // Weak assign
-
+    CCMotionStreak *        motionStreak;   // Weak assign
+    
     BOOL                    isAdShown;
 }
 
 @property (nonatomic, assign) uint score;
 @property (nonatomic, readonly) BOOL isGamePlaying;
 
-- (void)pausePressed:(id)sender;
+
 - (void)showAd;
 - (void)hideAd;
+- (void)startGame;
 - (void)pauseGame;
 - (void)resumeGame;
 @end
