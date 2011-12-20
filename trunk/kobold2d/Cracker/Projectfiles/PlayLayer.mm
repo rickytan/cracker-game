@@ -127,6 +127,7 @@ const float PTM_RATIO = 64.0f;
     
     if (!upmenu){
         CGPoint c = [CCDirector sharedDirector].screenCenter;
+        
         CCMenuItemSprite *upItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"up.png"]
                                                            selectedSprite:[CCSprite spriteWithFile:@"up.png"]
                                                                     block:^(id sender){
@@ -266,7 +267,7 @@ const float PTM_RATIO = 64.0f;
     world = new b2World(b2Vec2(0.0f,0.0f));
     world->SetAllowSleeping(NO);
     
-    contact = new ContactListener(self);
+    contact = new ContactListener((__bridge void*)self);
     world->SetContactListener(contact);
     
     [self CreateScreenBound];
@@ -317,7 +318,18 @@ const float PTM_RATIO = 64.0f;
 
 - (void)endGame
 {
+    if (!gameover){
+        gameover = [GameOver node];
+        gameover.delegate = self;
+        [self addChild:gameover];
+    }
+    gameover.score = self.score;
+    gameover.position = ccp(0,[CCDirector sharedDirector].winSize.height);
+    CCMoveTo *move = [CCMoveTo actionWithDuration:1.2 position:ccp(0, 0)];
+    [gameover runAction:[CCEaseElasticOut actionWithAction:move]];
     
+    [wind pauseSchedulerAndActions];
+    [self pauseSchedulerAndActions];
 }
 
 - (void)pauseGame
