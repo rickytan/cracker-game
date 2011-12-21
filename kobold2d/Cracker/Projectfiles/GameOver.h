@@ -17,7 +17,7 @@
 @end
 
 @interface GameOver : CCLayerColor {
-    
+    CCLabelBMFont *             scoreLabel;
 }
 
 @property (nonatomic, assign) uint score;

@@ -10,7 +10,6 @@
 #import "GameScene.h"
 #import "Helper.h"
 
-const float PTM_RATIO = 96.0f;
 
 @interface MainMenu (PrivateMethods)
 

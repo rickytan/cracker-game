@@ -227,7 +227,7 @@ typedef enum {
         CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
         _floorNode.transformMatrix = matrix;
         
-        [_ball markTransformDirty];
+        //[_ball markTransformDirty];
         for (int i=0; i<AD_CUBE_TOTAL; ++i) {
             [_adCube[i] markTransformDirty];
         }

@@ -26,11 +26,12 @@
         CCSprite *best = [CCSprite spriteWithFile:@"bestscore.png"];
         CCSprite *_score = [CCSprite spriteWithFile:@"score.png"];
         
-        CCLabelBMFont *scoreLabel = [CCLabelBMFont labelWithString:@"" fntFile:@"bitmapFontTest2.fnt"];
+        scoreLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
         
         oops.position = ccpAdd(c, ccp(0, 160));
-        _score.position = ccpAdd(c, ccp(-60, 100));
-        best.position = ccpAdd(c, ccp(-90, 60));
+        _score.position = ccpAdd(c, ccp(-56, 100));
+        best.position = ccpAdd(c, ccp(-80, 60));
+        scoreLabel.position = ccpAdd(c, ccp(60, 100));
         
         CCMenuItemSprite *again = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
                                                           selectedSprite:[CCSprite spriteWithFile:@"back.png"]
@@ -53,13 +54,33 @@
     return self;
 }
 
+- (void)setScore:(uint)_score
+{
+    score = _score;
+    scoreLabel.string = [NSString stringWithFormat:@"%d",self.score];
+}
+
 - (void)againPressed:(id)sender
 {
-    [delegate onAgain:sender];
+    self.scale = 1.0f;
+    CCScaleTo *scale = [CCScaleTo actionWithDuration:0.6 scale:0.0f];
+    [self runAction:[CCSequence actions:
+                     [CCEaseIn actionWithAction:scale rate:5.0], 
+                     [CCHide action],
+                     [CCCallBlock actionWithBlock:^(){
+        [delegate onAgain:sender];
+    }], nil]];
 }
 
 - (void)menuPressed:(id)sender
 {
-    [delegate onMenu:sender];
+    self.scale = 1.0f;
+    CCScaleTo *scale = [CCScaleTo actionWithDuration:0.6 scale:0.0f];
+    [self runAction:[CCSequence actions:
+                     [CCEaseIn actionWithAction:scale rate:5.0], 
+                     [CCHide action],
+                     [CCCallBlock actionWithBlock:^(){
+        [delegate onMenu:sender];
+    }], nil]];
 }
 @end
