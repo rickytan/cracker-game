@@ -7,18 +7,27 @@
 //
 
 #import "Helper.h"
-#import "Box2D.h"
+#import "SHKItem.h"
+#import "SHKSharer.h"
+#import "SHKFacebook.h"
+#import "SHKTwitter.h"
 
 @implementation Helper
 
 + (void)shareTwitter
 {
+    NSString * text = @"Hi! My friends. I'm playing Cracker on iPhone, and it's very funny";
     
+    SHKItem *item = [SHKItem text:text];
+    [SHKTwitter shareItem:item];
 }
 
 + (void)shareFacebook
 {
+    NSString * text = @"Hi! My friends. I'm playing Cracker on iPhone, and it's very funny";
     
+    SHKItem *item = [SHKItem text:text];
+    [SHKFacebook shareItem:item];
 }
 
 // convenience method to convert a CGPoint to a b2Vec2
