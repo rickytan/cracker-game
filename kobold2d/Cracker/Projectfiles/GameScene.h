@@ -11,6 +11,8 @@
 #import "MainMenu.h"
 #import "PauseScene.h"
 #import "GameOver.h"
+#import "TipsLayer.h"
+#import "CreditLayer.h"
 #import <iAd/iAd.h>
 
 
@@ -18,7 +20,9 @@ typedef enum {
     kGameStateMenu,
     kGameStatePlaying,
     kGameStatePausing,
-    kGameStateOver
+    kGameStateOver,
+    kGameStateTips,
+    kGameStateCredits
 } GameState;
 
 @class PlayLayer;
@@ -30,6 +34,8 @@ typedef enum {
     GameOver *              gameover;   // Weak assign
     MainMenu *              menulayer;   // Weak assign
     PauseScene *            pauselayer; // Weak assign
+    TipsLayer *             tiplayer;   // Weak
+    CreditLayer *           creditlayer;// Weak
 }
 @property (nonatomic, assign) GameState state;
 + (GameScene*)sharedGame;

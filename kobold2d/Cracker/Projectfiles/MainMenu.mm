@@ -73,23 +73,23 @@
 		[CCMenuItemFont setFontName: @"Courier New"];
         
         
-        CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook-hd.png"]
-                                                       selectedSprite:[CCSprite spriteWithFile:@"facebook-hd.png"]
+        CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook.png"]
+                                                       selectedSprite:[CCSprite spriteWithFile:@"facebook.png"]
                                                                 target:self
                                                              selector:@selector(onShareFacebook:)];
-        CCMenuItemSprite *tw = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"twitter-hd.png"]
-                                                       selectedSprite:[CCSprite spriteWithFile:@"twitter-hd.png"]
+        CCMenuItemSprite *tw = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"twitter.png"]
+                                                       selectedSprite:[CCSprite spriteWithFile:@"twitter.png"]
                                                                 target:self
                                                              selector:@selector(onShareTwitter:)];
         //fb.scale = 0.5;
         //tw.scale = 0.5;
 
         CCMenuItemSprite *item0 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"start.png"]
-                                                          selectedSprite:[CCSprite spriteWithFile:@"start.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"start_grey.png"]
                                                                    target:self
                                                                 selector:@selector(onStart:)];
-        CCMenuItemSprite *item1 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"help.png"]
-                                                          selectedSprite:[CCSprite spriteWithFile:@"help.png"]
+        CCMenuItemSprite *item1 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"tips.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"tips_grey.png"]
                                                                    target:self
                                                                 selector:@selector(onHelp:)];
         CCMenuItemSprite *item2 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"credits_ch.png"]

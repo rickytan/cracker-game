@@ -103,7 +103,9 @@ static GameScene *_sharedGame = nil;
     CGSize s = [CCDirector sharedDirector].screenSize;
     switch (state) {
         case kGameStateMenu:
-            
+            if (_state == kGameStateCredits || _state == kGameStateTips) {
+                break;
+            }
             gameover.visible = NO;
             pauselayer.visible = NO;
             [playlayer hideAd];
@@ -147,6 +149,30 @@ static GameScene *_sharedGame = nil;
             }
             //[self showAd];
             break;
+        case kGameStateTips:
+        {
+            if (!tiplayer){
+                tiplayer = [TipsLayer node];
+                [self addChild:tiplayer z:3];
+            }
+            tiplayer.scale = 0.0f;
+            CCScaleTo *scale = [CCScaleTo actionWithDuration:1.2 scale:1.0f];
+            
+            [tiplayer runAction:[CCSequence actions:[CCShow action], [CCEaseElasticOut actionWithAction:scale], nil]];
+            break;
+        }
+        case kGameStateCredits:
+        {
+            if (!creditlayer){
+                creditlayer = [CreditLayer node];
+                [self addChild:creditlayer z:3];
+            }
+            creditlayer.scale = 0.0f;
+            CCScaleTo *scale = [CCScaleTo actionWithDuration:1.2 scale:1.0f];
+            
+            [creditlayer runAction:[CCSequence actions:[CCShow action], [CCEaseElasticOut actionWithAction:scale], nil]];
+            break;
+        }
         default:
             break;
     }
@@ -200,12 +226,12 @@ static GameScene *_sharedGame = nil;
 
 - (void)onAbout:(id)sender
 {
-    
+    self.state = kGameStateCredits;
 }
 
 - (void)onHelp:(id)sender
 {
-    
+    self.state = kGameStateTips;
 }
 
 #pragma mark - PauseDelegate Methods
