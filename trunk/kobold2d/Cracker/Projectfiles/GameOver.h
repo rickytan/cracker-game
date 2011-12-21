@@ -18,9 +18,12 @@
 
 @interface GameOver : CCLayerColor {
     CCLabelBMFont *             scoreLabel;
+    CCLabelBMFont *             bestLabel;
 }
 
 @property (nonatomic, assign) uint score;
+@property (nonatomic, readonly) uint best;
 @property (nonatomic, assign) id<GameOverDelegate> delegate;
 
+- (uint)best;
 @end

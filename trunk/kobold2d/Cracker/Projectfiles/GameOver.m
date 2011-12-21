@@ -14,7 +14,8 @@
 @end
 
 @implementation GameOver
-@synthesize score;
+@synthesize score = _score;
+@synthesize best = _best;
 @synthesize delegate;
 
 - (id)init
@@ -54,10 +55,22 @@
     return self;
 }
 
-- (void)setScore:(uint)_score
+- (void)setScore:(uint)score
 {
-    score = _score;
+    _score = score;
     scoreLabel.string = [NSString stringWithFormat:@"%d",self.score];
+    
+    if (_score > [self best]){
+        
+    }
+}
+
+- (uint)best
+{
+    if (_best == 0){
+        
+    }
+    return _best;
 }
 
 - (void)againPressed:(id)sender
