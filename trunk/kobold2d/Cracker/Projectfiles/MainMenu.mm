@@ -92,8 +92,8 @@
                                                           selectedSprite:[CCSprite spriteWithFile:@"help.png"]
                                                                    target:self
                                                                 selector:@selector(onHelp:)];
-        CCMenuItemSprite *item2 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"about.png"]
-                                                          selectedSprite:[CCSprite spriteWithFile:@"about.png"]
+        CCMenuItemSprite *item2 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"credits_ch.png"]
+                                                          selectedSprite:[CCSprite spriteWithFile:@"credits_ch_grey.png"]
                                                                    target:self
                                                                 selector:@selector(onAbout:)];
         

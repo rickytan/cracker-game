@@ -52,6 +52,8 @@ typedef enum {
 - (void)addChildToFloor:(CC3Node*)child;
 - (void)reset;
 - (void)moveTo:(CGFloat)offset;
+- (void)moveTo:(CGFloat)offset inSeconds:(ccTime)time;
+- (void)setTo:(CGFloat)offset;
 @end
 
 @implementation Ball3DWorld
@@ -99,11 +101,11 @@ typedef enum {
         {              0,               0,-cube_height}
     };
     NSString *cube_texture[] = {
-        @"material.png",
-        @"material.png",
-        @"material.png",
-        @"material.png",
-        @"floor.png"
+        @"wall.png",
+        @"wall.png",
+        @"wall.png",
+        @"wall.png",
+        @"bg.png"
     };
     for (int i=AD_CUBE_TOTAL -1 ; i >= 0; --i) {
         _adCube[i] = [CC3BoxNode node];
@@ -135,7 +137,7 @@ typedef enum {
     _floor.material.isOpaque = YES;
     _floor.material.sourceBlend = GL_SRC_ALPHA;
     _floor.material.destinationBlend = GL_ONE_MINUS_SRC_ALPHA;
-    [self addChildToFloor:_floor];
+    //[self addChildToFloor:_floor];
     
     CC3PlaneNode *_arrow = [CC3PlaneNode nodeWithName:@"arrow"];
     
@@ -227,7 +229,7 @@ typedef enum {
         CC3GLMatrix *matrix = [CC3GLMatrix matrixFromGLMatrix:glMat];
         _floorNode.transformMatrix = matrix;
         
-        //[_ball markTransformDirty];
+        [_ball markTransformDirty];
         for (int i=0; i<AD_CUBE_TOTAL; ++i) {
             [_adCube[i] markTransformDirty];
         }
@@ -281,6 +283,11 @@ typedef enum {
 
 - (void)moveTo:(CGFloat)offset
 {
+    [self moveTo:offset inSeconds:0.35];
+}
+
+- (void)moveTo:(CGFloat)offset inSeconds:(ccTime)time
+{
     static BOOL _first = YES;
     static CC3Vector orgiLocation;
     if (_first){
@@ -288,9 +295,22 @@ typedef enum {
         orgiLocation = _adCube[AD_CUBE_TOP].location;
     }
     
-    CC3MoveTo *move = [CC3MoveTo actionWithDuration:0.35 moveTo:CC3VectorAdd(orgiLocation, cc3v(0, -offset/ratio, 0))];
+    CC3MoveTo *move = [CC3MoveTo actionWithDuration:time moveTo:CC3VectorAdd(orgiLocation, cc3v(0, -offset/ratio, 0))];
     
     [_adCube[AD_CUBE_TOP] runAction:move];
+}
+
+- (void)setTo:(CGFloat)offset
+{
+    static BOOL _first = YES;
+    static CC3Vector orgiLocation;
+    if (_first){
+        _first = NO;
+        orgiLocation = _adCube[AD_CUBE_TOP].location;
+    }
+    CC3Vector l = orgiLocation;
+    l.y -= offset/ratio;
+    _adCube[AD_CUBE_TOP].location = l;
 }
 
 - (void)reset
@@ -362,6 +382,18 @@ typedef enum {
 {
     Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
     [w moveTo:d];
+}
+
+- (void)moveTo:(CGFloat)d inSeconds:(ccTime)time
+{
+    Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
+    [w moveTo:d inSeconds:time];
+}
+
+- (void)setTo:(CGFloat)d
+{
+    Ball3DWorld *w = (Ball3DWorld*)self.cc3World;
+    [w setTo:d];
 }
 
 #pragma mark - Overrided Methods
