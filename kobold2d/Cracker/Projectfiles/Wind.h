@@ -40,4 +40,5 @@ typedef list<b2Body*>   bodyList;
 - (void)decreaseBy:(CGFloat)delta;
 - (void)startBlow;
 - (void)stopBlow;
+- (void)level0;
 @end

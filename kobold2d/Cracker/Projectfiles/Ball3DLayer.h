@@ -23,4 +23,6 @@
 - (CGFloat)getBallRadius;
 - (void)setArrowDirection:(CGFloat)angle;
 - (void)moveTo:(CGFloat)d;
+- (void)moveTo:(CGFloat)d inSeconds:(ccTime)time;
+- (void)setTo:(CGFloat)d;
 @end

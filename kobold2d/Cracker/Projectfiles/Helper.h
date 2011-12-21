@@ -8,13 +8,22 @@
 
 #import <Foundation/Foundation.h>
 #import "Box2D.h"
+#import "SHKSharer.h"
 
 #define PTM_RATIO 96.0f
 
-@interface Helper : NSObject
+@interface Helper : NSObject <SHKSharerDelegate>
++ (Helper*)sharedHelper;
+
 
 + (void)shareFacebook;
 + (void)shareTwitter;
+
 + (b2Vec2)toMeters:(CGPoint)point;
 + (CGPoint)toPixels:(b2Vec2)vec;
+
++ (uint)bestScore;
++ (void)saveBestScore:(uint)score;
++ (BOOL)isShared;
++ (void)setShared:(BOOL)shared;
 @end

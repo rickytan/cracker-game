@@ -36,9 +36,10 @@
         _duration = 2.0f;
         _repeat = NO;
         
+
         [self level1];
-        [self pauseSchedulerAndActions];
         [self scheduleUpdate];
+        [self pauseSchedulerAndActions];
     }
     return self;
 }
@@ -84,7 +85,7 @@
 }
 - (void)increase
 {
-    [self increaseBy:0.012*expf(_force)];
+    [self increaseBy:0.01*expf(_force)];
 }
 - (void)increaseBy:(CGFloat)delta
 {
@@ -110,6 +111,10 @@
     [self pauseSchedulerAndActions];
 }
 
+- (void)level0
+{
+    
+}
 
 - (void)level1
 {

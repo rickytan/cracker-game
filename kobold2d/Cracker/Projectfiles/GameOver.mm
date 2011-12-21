@@ -7,6 +7,7 @@
 //
 
 #import "GameOver.h"
+#import "Helper.h"
 
 @interface GameOver (PrivateMethods)
 - (void)againPressed:(id)sender;
@@ -25,14 +26,16 @@
         
         CCSprite *oops = [CCSprite spriteWithFile:@"oops.png"];
         CCSprite *best = [CCSprite spriteWithFile:@"bestscore.png"];
-        CCSprite *_score = [CCSprite spriteWithFile:@"score.png"];
+        CCSprite *score = [CCSprite spriteWithFile:@"score.png"];
         
         scoreLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
+        bestLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
         
         oops.position = ccpAdd(c, ccp(0, 160));
-        _score.position = ccpAdd(c, ccp(-56, 100));
+        score.position = ccpAdd(c, ccp(-56, 100));
         best.position = ccpAdd(c, ccp(-80, 60));
         scoreLabel.position = ccpAdd(c, ccp(60, 100));
+        bestLabel.position = ccpAdd(c, ccp(60, 60));
         
         CCMenuItemSprite *again = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
                                                           selectedSprite:[CCSprite spriteWithFile:@"back.png"]
@@ -48,9 +51,12 @@
         
         [self addChild:oops];
         [self addChild:best];
-        [self addChild:_score];
+        [self addChild:score];
         [self addChild:scoreLabel];
-        [self addChild:menu];
+        [self addChild:bestLabel];
+        [self addChild:menu]; 
+        
+        _best = [Helper bestScore];
     }
     return self;
 }
@@ -60,17 +66,11 @@
     _score = score;
     scoreLabel.string = [NSString stringWithFormat:@"%d",self.score];
     
-    if (_score > [self best]){
-        
+    if (_score > _best){
+        _best = _score;
+        [Helper saveBestScore:_best];
+        bestLabel.string = [NSString stringWithFormat:@"%d",_best];
     }
-}
-
-- (uint)best
-{
-    if (_best == 0){
-        
-    }
-    return _best;
 }
 
 - (void)againPressed:(id)sender

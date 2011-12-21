@@ -30,8 +30,9 @@ void ContactListener::EndContact(b2Contact *contact)
 - (void)scoreAddByPixel:(CGFloat)pixels;
 - (void)setWindDirection:(CGFloat)angle;
 - (void)speedUpWind;
-- (void)moveTopFace:(CGFloat)d;
+- (void)moveTopFace:(CGFloat)d pushDown:(BOOL)down;
 - (void)stopMoveTopFace;
+- (void)pushDown;
 - (void)removeAd;
 - (b2Vec2)toMeters:(CGPoint)point;
 - (CGPoint)toPixels:(b2Vec2)vec;
@@ -42,8 +43,13 @@ void ContactListener::EndContact(b2Contact *contact)
 @implementation PlayLayer
 @synthesize score;
 @synthesize isGamePlaying = _isGamePlaying;
+@synthesize isAdshown = _isAdshown;
 
-const static float PTM_RATIO = 96.0f;
+const static float PTM_RATIO = 80.0f;
+
+CGPoint positions[] = {
+    
+};
 
 - (void)dealloc
 {
@@ -68,13 +74,29 @@ const static float PTM_RATIO = 96.0f;
         contact = new ContactListener;
         world->SetContactListener(contact);
         
+        if ([CCDirector sharedDirector].currentDeviceIsSimulator)
+            world->SetGravity(b2Vec2(0, -1));
+        
         [self CreateScreenBound];
+        
+        ball3DLayer = [Ball3DLayer node];
+        [self addChild:ball3DLayer z:-2];
+        
         CGPoint p = [ball3DLayer getBallLocation];
         CGFloat r = [ball3DLayer getBallRadius];
         theBall = [self CreateBallAtScreenLocation:p withScreenRadius:r];
         
-        ball3DLayer = [Ball3DLayer node];
-        [self addChild:ball3DLayer z:-2];
+        CCMenuItemSprite *upItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"up_w.png"]
+                                                           selectedSprite:[CCSprite spriteWithFile:@"up.png"]
+                                                                   target:self
+                                                                 selector:@selector(upPressed:)];
+        CCEaseIn *ease = [CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:0.5 position:ccp(0, 8)]];
+        [upItem runAction:[CCRepeatForever actionWithAction:[CCSequence actions:ease, [ease reverse], nil]]];
+        upmenu = [CCMenu menuWithItems:upItem, nil];
+        upmenu.visible = NO;
+        [upmenu alignItemsVertically];
+        
+        [self addChild:upmenu];
         
         [self scheduleUpdate];
         [self pauseSchedulerAndActions];
@@ -99,12 +121,22 @@ const static float PTM_RATIO = 96.0f;
 
 #pragma mark - Private Methods
 
-- (void)moveTopFace:(CGFloat)d
+- (void)moveTopFace:(CGFloat)d pushDown:(BOOL)down
 {
     CGPoint p = [self toPixels:topBoundBody->GetPosition()];
-    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, -d - p.y / 0.35)]);
-    CCCallFunc *cb = [CCCallFunc actionWithTarget:self
-                                         selector:@selector(stopMoveTopFace)];
+    
+    if (-d - p.y == 0.0)
+        return;
+    topBoundBody->SetLinearVelocity([self toMeters:ccp(0, (-d - p.y) / 0.35)]);
+    
+    CCCallFunc *cb = nil;
+    if (!down){
+        cb = [CCCallFunc actionWithTarget:self
+                                 selector:@selector(stopMoveTopFace)];
+    }
+    else
+        cb = [CCCallFunc actionWithTarget:self
+                                 selector:@selector(pushDown)];
     CCDelayTime *delay = [CCDelayTime actionWithDuration:0.35];
     [self runAction:[CCSequence actions:delay, cb, nil]];
 }
@@ -112,47 +144,29 @@ const static float PTM_RATIO = 96.0f;
 - (void)stopMoveTopFace
 {
     topBoundBody->SetLinearVelocity(b2Vec2(0,0));
+    topBoundBody->SetTransform(b2Vec2_zero, 0);
 }
+
+- (void)pushDown
+{
+    topBoundBody->SetLinearVelocity(b2Vec2(0,-4 / PTM_RATIO));
+}
+
 - (void)showAd
 {
-    if (isAdShown)
+    if (_isAdshown)
         return;
-    isAdShown = YES;
-    
-    [self moveTopFace:100];
-    [ball3DLayer moveTo:100];
-    
-    if (!upmenu){
-        CGPoint c = [CCDirector sharedDirector].screenCenter;
-        
-        CCMenuItemSprite *upItem = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"up.png"]
-                                                           selectedSprite:[CCSprite spriteWithFile:@"up.png"]
-                                                                   target:self
-                                                                 selector:@selector(upPressed:)];
-        upItem.position = ccpSub(c, ccp(upItem.contentSize.width + 10, -upItem.contentSize.height - 10));
-        
-        upmenu = [CCMenu menuWithItems:upItem, nil];
-        
-        [self addChild:upmenu];
-    }
-    
-    CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, -100)];
-    [upmenu runAction:move];
-    
-    move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, -100)];
-    [pausemenu runAction:move];
+    _isAdshown = YES;
+    upmenu.visible = YES;
+    [self moveTopFace:100 pushDown:YES];
 }
 
 - (void)hideAd
 {
-    if (!isAdShown)
+    if (!_isAdshown)
         return;
-    isAdShown = NO;
-    [self moveTopFace:0];
-    [ball3DLayer moveTo:0];
-    
-    CCMoveBy *move = [CCMoveBy actionWithDuration:0.35 position:ccp(0, 50)];
-    [pausemenu runAction:move];
+    _isAdshown = NO;
+    [self moveTopFace:0 pushDown:NO];
 }
 
 - (void)CreateScreenBound
@@ -173,7 +187,7 @@ const static float PTM_RATIO = 96.0f;
     
     // Define the static container body, which will provide the collisions at screen borders.
     b2BodyDef screenBorderDef;
-    screenBorderDef.type = b2_kinematicBody;
+    screenBorderDef.type = b2_staticBody;
     screenBorderDef.position.Set(0, 0);
     b2Body* screenBorderBody = world->CreateBody(&screenBorderDef);
     
@@ -274,8 +288,8 @@ const static float PTM_RATIO = 96.0f;
     if (!scoreLabel){
         scoreLabel = [CCLabelBMFont labelWithString:@"        0" fntFile:@"bitmapFontTest.fnt"];
         
-        scoreLabel.position = ccp(4 + scoreLabel.contentSize.width / 2,
-                                  s.height - scoreLabel.contentSize.height/2);
+        scoreLabel.position = ccp(s.width - scoreLabel.contentSize.width / 2 - 10,
+                                  scoreLabel.contentSize.height/2 + 4);
         
         [self addChild:scoreLabel];
     }
@@ -285,15 +299,16 @@ const static float PTM_RATIO = 96.0f;
     theBall->SetLinearVelocity(b2Vec2(0,0));
     theBall->SetAngularVelocity(0);
     
-    if (!wind){
-        wind = [[Wind alloc] initWithForce:0.04
-                                  andAngle:CCRANDOM_MINUS1_1()*M_PI
-                                    repeat:YES];
-        [wind blow:theBall];
-        [self addChild:wind];
-        [wind release];
-    }
-    wind.force = 0.14;
+    [wind removeFromParentAndCleanup:YES];
+    
+    wind = [[Wind alloc] initWithForce:0.02
+                              andAngle:CCRANDOM_MINUS1_1()*M_PI
+                                repeat:YES];
+    [wind blow:theBall];
+    [self addChild:wind];
+    [wind release];
+    
+    wind.force = 0.02;
     [wind startBlow];
     [self setWindDirection:wind.angle];
     
@@ -302,7 +317,7 @@ const static float PTM_RATIO = 96.0f;
                                                               selectedSprite:[CCSprite spriteWithFile:@"pause.png"]
                                                                       target:self
                                                                     selector:@selector(pausePressed:)];
-        pauseItem.position = ccp(110, 210);
+        pauseItem.position = ccp(-130, -210);
         pauseItem.scale = 0.6;
         
         pausemenu = [CCMenu menuWithItems:pauseItem, nil];
@@ -366,6 +381,7 @@ const static float PTM_RATIO = 96.0f;
 	CCDirector* director = [CCDirector sharedDirector];
     CGPoint center = director.screenCenter;
     
+    
     KKInput* input = [KKInput sharedInput];
     if (director.currentDeviceIsSimulator == NO)
     {
@@ -396,13 +412,19 @@ const static float PTM_RATIO = 96.0f;
         [ball3DLayer updateBallLocation:p andRotation:CC_RADIANS_TO_DEGREES(a)];
         
         motionStreak.position = p;
-        
         int currentSound = MAX(fabsf(p.x - center.x) * soundCount / center.x, 
                                fabsf(p.y - center.y) * soundCount / center.y);
         if (currentSound != lastSound){
             lastSound = currentSound;
             [[SimpleAudioEngine sharedEngine] playEffect:soundTable[lastSound]];
         }
+        
+        
+        CGPoint ptmp = [self toPixels:topBoundBody->GetPosition()];
+        [ball3DLayer setTo:-ptmp.y];
+        upmenu.position = ccpAdd(ptmp, ccp(center.x, center.y * 2 + 24));
+        
+        
     }
     else {
         ((GameScene*)self.parent).state = kGameStateOver;
@@ -424,8 +446,11 @@ const static float PTM_RATIO = 96.0f;
 
 - (void)upPressed:(id)sender
 {
-    [ball3DLayer moveTo:60];
-    [self moveTopFace:60];
+    
+    CGPoint p = [self toPixels:topBoundBody->GetPosition()];
+    p.y += 16;
+    topBoundBody->SetTransform([self toMeters:p], 0);
+    
 }
 
 @end

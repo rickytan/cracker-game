@@ -32,16 +32,21 @@ private:
     uint                    score;
     CCLabelBMFont *         scoreLabel;
     NSTimer *               scoreAddTimer;
+    CGFloat                 topFaceOffset;
+    enum{
+        kAdState_EMPTY = 0,
+        kAdState_HALF,
+        kAdState_FULL
+    } AdState;
 
     CCMenu *                pausemenu;  // Weak assign
     CCMenu *                upmenu;     // Weak assign
     CCMotionStreak *        motionStreak;   // Weak assign
-    
-    BOOL                    isAdShown;
 }
 
 @property (nonatomic, assign) uint score;
 @property (nonatomic, readonly) BOOL isGamePlaying;
+@property (nonatomic, readonly) BOOL isAdshown;
 
 - (void)showAd;
 - (void)hideAd;

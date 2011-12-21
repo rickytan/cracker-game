@@ -60,8 +60,6 @@ static GameScene *_sharedGame = nil;
         [self addChild:pauselayer z:1];
         [self addChild:menulayer];
         
-        [self showAd];
-        
         [self scheduleUpdate];
         
         self.state = kGameStateMenu;
@@ -89,7 +87,7 @@ static GameScene *_sharedGame = nil;
 {
     [playlayer hideAd];
     
-    [UIView beginAnimations:@"AdViewAppear" context:nil];
+    [UIView beginAnimations:@"AdViewDisappear" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveLinear];
     [UIView setAnimationDuration:0.35];
     
@@ -108,6 +106,7 @@ static GameScene *_sharedGame = nil;
             
             gameover.visible = NO;
             pauselayer.visible = NO;
+            [playlayer hideAd];
             
             menulayer.visible = YES;
             menulayer.position = ccp(-s.width, 0);
@@ -146,6 +145,7 @@ static GameScene *_sharedGame = nil;
             else {
                 [playlayer startGame];
             }
+            //[self showAd];
             break;
         default:
             break;
@@ -246,8 +246,17 @@ static GameScene *_sharedGame = nil;
 // it wished to defer placing the banner in a view hierarchy until the banner has content to display.
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    if (playlayer.isGamePlaying) {
+    if (playlayer.isGamePlaying && !playlayer.isAdshown) {
         [self showAd];
+    }
+    else if (playlayer.isAdshown){
+        [UIView beginAnimations:@"flixad" context:nil];
+        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+        [UIView setAnimationDuration:2.0];
+        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft
+                               forView:adView
+                                 cache:YES];
+        [UIView commitAnimations];
     }
 }
 
@@ -255,7 +264,7 @@ static GameScene *_sharedGame = nil;
 // The ADError enum lists the possible error codes.
 - (void)bannerView:(ADBannerView *)banner didFailToReceiveAdWithError:(NSError *)error
 {
-    [self hideAd];
+    //[self hideAd];
 }
 
 // This message will be sent when the user taps on the banner and some action is to be taken.
@@ -269,7 +278,7 @@ static GameScene *_sharedGame = nil;
                willLeaveApplication:(BOOL)willLeave
 {
     if (!willLeave && playlayer.isGamePlaying) {
-        [playlayer pauseGame];
+        self.state = kGameStatePausing;
     }
     return YES;
 }

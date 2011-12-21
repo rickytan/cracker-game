@@ -25,5 +25,4 @@
 @property (nonatomic, readonly) uint best;
 @property (nonatomic, assign) id<GameOverDelegate> delegate;
 
-- (uint)best;
 @end
