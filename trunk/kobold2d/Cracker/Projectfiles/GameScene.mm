@@ -17,7 +17,7 @@ static GameScene *_sharedGame = nil;
 @implementation GameScene
 @synthesize state = _state;
 
-+ (id)sharedGame
++ (GameScene*)sharedGame
 {
     if (!_sharedGame){
         _sharedGame = [[GameScene alloc] init];
@@ -44,7 +44,7 @@ static GameScene *_sharedGame = nil;
         CCDirector *dir = [CCDirector sharedDirector];
         
         [dir enableRetinaDisplay:YES];
-
+        
         
         playlayer = [PlayLayer node];
         gameover = [GameOver node];
@@ -105,13 +105,15 @@ static GameScene *_sharedGame = nil;
     CGSize s = [CCDirector sharedDirector].screenSize;
     switch (state) {
         case kGameStateMenu:
-
+            
             gameover.visible = NO;
             pauselayer.visible = NO;
             
             menulayer.visible = YES;
             menulayer.position = ccp(-s.width, 0);
-            [menulayer runAction:[CCEaseElasticOut actionWithAction:[CCMoveTo actionWithDuration:1.2 position:ccp(0, 0)]]];
+            [menulayer runAction:[CCSequence actions:[CCEaseElasticOut actionWithAction:[CCMoveTo actionWithDuration:1.2 position:ccp(0, 0)]],[CCCallBlock actionWithBlock:^(){
+                [menulayer resumeSchedulerAndActions];
+            }], nil]];
             break;
         case kGameStateOver:
             if (_state == kGameStatePlaying){
@@ -137,7 +139,9 @@ static GameScene *_sharedGame = nil;
             else if (_state == kGameStateMenu){ // first start
                 [playlayer startGame];
                 CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
-                [menulayer runAction:[CCSequence actions:move, [CCHide action], nil]];
+                [menulayer runAction:[CCSequence actions: move, [CCHide action],[CCCallBlock actionWithBlock:^(){
+                    [menulayer pauseSchedulerAndActions];
+                }], nil]];
             }
             else {
                 [playlayer startGame];

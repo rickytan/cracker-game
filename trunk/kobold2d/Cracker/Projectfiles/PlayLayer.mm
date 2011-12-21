@@ -13,6 +13,14 @@
 #import "SimpleAudioEngine.h"
 #import "GameScene.h"
 
+void ContactListener::BeginContact(b2Contact* contact)
+{
+    [GameScene sharedGame].state = kGameStateOver;
+}
+void ContactListener::EndContact(b2Contact *contact)
+{
+    
+}
 
 @interface PlayLayer (PrivateMethods)
 - (void)CreateScreenBound;
@@ -43,7 +51,7 @@ const static float PTM_RATIO = 96.0f;
     [super dealloc];
 #endif
     delete world;
-    
+    delete contact;
     if ([timer isValid])
         [timer invalidate];
     if ([scoreAddTimer isValid])
@@ -56,6 +64,9 @@ const static float PTM_RATIO = 96.0f;
         
         world = new b2World(b2Vec2(0.0f,0.0f));
         world->SetAllowSleeping(NO);
+        
+        contact = new ContactListener;
+        world->SetContactListener(contact);
         
         [self CreateScreenBound];
         CGPoint p = [ball3DLayer getBallLocation];
@@ -376,7 +387,7 @@ const static float PTM_RATIO = 96.0f;
     int32 positionIterations = 1;
     world->Step(delta, velocityIterations, positionIterations);
     
-    if (!theBall->GetContactList()){
+    if (self.isGamePlaying){
         CGPoint p = [self toPixels:theBall->GetPosition()];
         CGFloat a = theBall->GetAngle();
         
@@ -395,6 +406,7 @@ const static float PTM_RATIO = 96.0f;
     }
     else {
         ((GameScene*)self.parent).state = kGameStateOver;
+        [[SimpleAudioEngine sharedEngine] playEffect:@"LOW C.caf"];
     }
 }
 

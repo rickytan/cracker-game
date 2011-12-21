@@ -8,7 +8,7 @@
 
 #import "cocos2d.h"
 #import "PlayLayer.h"
-#import "MenuScene.h"
+#import "MainMenu.h"
 #import "PauseScene.h"
 #import "GameOver.h"
 #import <iAd/iAd.h>
@@ -21,6 +21,8 @@ typedef enum {
     kGameStateOver
 } GameState;
 
+@class PlayLayer;
+
 @interface GameScene : CCScene 
 <ADBannerViewDelegate, GameOverDelegate, MainMenuButtonDelegate, PauseDelegate> {
     ADBannerView *          adView;
@@ -30,7 +32,7 @@ typedef enum {
     PauseScene *            pauselayer; // Weak assign
 }
 @property (nonatomic, assign) GameState state;
-+ (id)sharedGame;
++ (GameScene*)sharedGame;
 - (void)showAd;
 - (void)hideAd;
 @end

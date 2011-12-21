@@ -11,19 +11,19 @@
 #import "CC3Node.h"
 #import "Ball3DLayer.h"
 #import "Wind.h"
-#import "MainMenu.h"
-#import "PauseScene.h"
-#import "GameOver.h"
+#import "GameScene.h"
 
-class ContactListener::b2ContactListener
+class ContactListener:public b2ContactListener
 {
 private:
-    virtual 
+    virtual void BeginContact(b2Contact* contact);
+    virtual void EndContact(b2Contact* contact);
 };
+
 @interface PlayLayer : CCLayer {
     b2World *               world;
     b2Body *                topBoundBody;
-
+    ContactListener *       contact;
     b2Body *                theBall;    // Weak assign
     
     Ball3DLayer *           ball3DLayer;// Weak assign
@@ -42,7 +42,6 @@ private:
 
 @property (nonatomic, assign) uint score;
 @property (nonatomic, readonly) BOOL isGamePlaying;
-
 
 - (void)showAd;
 - (void)hideAd;
