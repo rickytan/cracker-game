@@ -6,7 +6,7 @@
  */
 
 #import "AppDelegate.h"
-#import "MenuScene.h"
+#import "GameScene.h"
 
 @implementation AppDelegate
 
@@ -20,7 +20,7 @@
     
 // ===================== Game Initializing ========================
     
-    //[[CCDirector sharedDirector] runWithScene:[MenuScene node]];
+    [[CCDirector sharedDirector] runWithScene:[GameScene sharedGame]];
 }
 
 -(id) alternateRootViewController

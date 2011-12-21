@@ -10,22 +10,61 @@
 #import "MenuScene.h"
 #import "SimpleAudioEngine.h"
 #import "PauseScene.h"
+#import "Helper.h"
 
+static GameScene *_sharedGame = nil;
 
 @implementation GameScene
-@synthesize score;
+@synthesize state = _state;
+
++ (id)sharedGame
+{
+    if (!_sharedGame){
+        _sharedGame = [[GameScene alloc] init];
+    }
+    return _sharedGame;
+}
+
++ (id)alloc
+{
+    NSAssert(_sharedGame == nil, @"Can't alloc twice!!!");
+    return [super alloc];
+}
+
+- (void)dealloc
+{
+    [super dealloc];
+    _sharedGame = nil;
+}
 
 - (id)init
 {
     if ((self = [super init])){
-
+        
         CCDirector *dir = [CCDirector sharedDirector];
         
         [dir enableRetinaDisplay:YES];
+
         
         playlayer = [PlayLayer node];
-        playlayer.tag = kPlayLayer;
-        [self addChild:playlayer];
+        gameover = [GameOver node];
+        menulayer = [MainMenu node];
+        pauselayer = [PauseScene node];
+        
+        gameover.delegate = self;
+        pauselayer.delegate = self;
+        menulayer.delegate = self;
+        
+        [self addChild:playlayer z:-3];
+        [self addChild:gameover z:2];
+        [self addChild:pauselayer z:1];
+        [self addChild:menulayer];
+        
+        [self showAd];
+        
+        [self scheduleUpdate];
+        
+        self.state = kGameStateMenu;
     }
     return self;
 }
@@ -33,13 +72,13 @@
 - (void)showAd
 {
     [playlayer showAd];
-
+    
     adView.frame = CGRectMake(0, -50, 320, 50);
     
     [UIView beginAnimations:@"AdViewAppear" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveLinear];
     [UIView setAnimationDuration:0.35];
-
+    
     adView.hidden = NO;
     adView.frame = CGRectMake(0, 0, 320, 50);
     
@@ -59,10 +98,58 @@
     [UIView commitAnimations];
 }
 
-- (uint)getScore
+#pragma mark - setter
+
+- (void)setState:(GameState)state
 {
-    return playlayer.score;
+    CGSize s = [CCDirector sharedDirector].screenSize;
+    switch (state) {
+        case kGameStateMenu:
+
+            gameover.visible = NO;
+            pauselayer.visible = NO;
+            
+            menulayer.visible = YES;
+            menulayer.position = ccp(-s.width, 0);
+            [menulayer runAction:[CCEaseElasticOut actionWithAction:[CCMoveTo actionWithDuration:1.2 position:ccp(0, 0)]]];
+            break;
+        case kGameStateOver:
+            if (_state == kGameStatePlaying){
+                [playlayer endGame];
+                
+                gameover.score = playlayer.score;
+                gameover.visible = YES;
+                gameover.scale = 1.0f;
+                gameover.position = ccp(0,s.height);
+                CCMoveTo *move = [CCMoveTo actionWithDuration:1.2 position:ccp(0, 0)];
+                [gameover runAction:[CCEaseElasticOut actionWithAction:move]];
+                
+            }
+            break;
+        case kGameStatePausing:
+            [playlayer pauseGame];
+            [pauselayer modal];
+            break;
+        case kGameStatePlaying:
+            if (_state == kGameStatePausing){   // resume game
+                [playlayer resumeGame];
+            }
+            else if (_state == kGameStateMenu){ // first start
+                [playlayer startGame];
+                CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
+                [menulayer runAction:[CCSequence actions:move, [CCHide action], nil]];
+            }
+            else {
+                [playlayer startGame];
+            }
+            break;
+        default:
+            break;
+    }
+    _state = state;
 }
+
+#pragma mark - Overrided Methods
 
 - (void)onEnter
 {
@@ -84,6 +171,63 @@
     [adView release];
     adView = nil;
 }
+
+- (void)update:(ccTime)d
+{
+    
+}
+
+#pragma mark - MainMenuDelegate Methods
+
+- (void)onShareTwitter:(id)sender
+{
+    [Helper shareTwitter];
+}
+
+- (void)onShareFacebook:(id)sender
+{
+    [Helper shareFacebook];
+}
+
+- (void)onStart:(id)sender
+{
+    self.state = kGameStatePlaying;
+}
+
+- (void)onAbout:(id)sender
+{
+    
+}
+
+- (void)onHelp:(id)sender
+{
+    
+}
+
+#pragma mark - PauseDelegate Methods
+
+- (void)onQuit:(id)sender
+{
+    self.state = kGameStateMenu;
+}
+
+- (void)onResume:(id)sender
+{
+    self.state = kGameStatePlaying;
+}
+
+#pragma mark - GameOverDelegate Methods
+
+- (void)onAgain:(id)sender
+{
+    self.state = kGameStatePlaying;
+}
+
+- (void)onMenu:(id)sender
+{
+    self.state = kGameStateMenu;
+}
+
 #pragma mark - AdBannerDelegate
 
 // This method is invoked when the banner has confirmation that an ad will be presented, but before the ad

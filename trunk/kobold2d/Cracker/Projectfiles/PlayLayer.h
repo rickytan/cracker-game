@@ -10,16 +10,20 @@
 #import "Box2D.h"
 #import "CC3Node.h"
 #import "Ball3DLayer.h"
-#import "ContactListener.h"
 #import "Wind.h"
 #import "MainMenu.h"
 #import "PauseScene.h"
 #import "GameOver.h"
 
-@interface PlayLayer : CCLayer <MainMenuButtonDelegate, PauseDelegate, GameOverDelegate> {
+class ContactListener::b2ContactListener
+{
+private:
+    virtual 
+};
+@interface PlayLayer : CCLayer {
     b2World *               world;
     b2Body *                topBoundBody;
-    ContactListener *       contact;
+
     b2Body *                theBall;    // Weak assign
     
     Ball3DLayer *           ball3DLayer;// Weak assign
@@ -28,9 +32,7 @@
     uint                    score;
     CCLabelBMFont *         scoreLabel;
     NSTimer *               scoreAddTimer;
-    MainMenu *              menulayer;  // Weak assign
-    PauseScene *            pauselayer; // Weak assign
-    GameOver *              gameover;   // Weak assign
+
     CCMenu *                pausemenu;  // Weak assign
     CCMenu *                upmenu;     // Weak assign
     CCMotionStreak *        motionStreak;   // Weak assign
