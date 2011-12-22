@@ -69,8 +69,8 @@
     if (_score > _best){
         _best = _score;
         [Helper saveBestScore:_best];
-        bestLabel.string = [NSString stringWithFormat:@"%d",_best];
     }
+    bestLabel.string = [NSString stringWithFormat:@"%d",_best];
 }
 
 - (void)againPressed:(id)sender
