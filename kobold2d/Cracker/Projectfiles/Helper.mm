@@ -107,7 +107,10 @@ failedWithError:(NSError *)error
     
     NSString *fileName=[[paths objectAtIndex:0] stringByAppendingPathComponent:@"data.plist"];
     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithContentsOfFile:fileName];
-    
+    if (!dic)
+        dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+               [NSNumber numberWithUnsignedInt:0],@"bestscore",
+               [NSNumber numberWithBool:NO], @"shared", nil];
     [dic setValue:[NSNumber numberWithUnsignedInt:score]
            forKey:@"bestscore"];
     [dic writeToFile:fileName
@@ -131,7 +134,10 @@ failedWithError:(NSError *)error
     
     NSString *fileName=[[paths objectAtIndex:0] stringByAppendingPathComponent:@"data.plist"];
     NSMutableDictionary *dic = [NSMutableDictionary dictionaryWithContentsOfFile:fileName];
-    
+    if (!dic)
+        dic = [NSMutableDictionary dictionaryWithObjectsAndKeys:
+               [NSNumber numberWithUnsignedInt:0],@"bestscore",
+               [NSNumber numberWithBool:NO], @"shared", nil];
     [dic setValue:[NSNumber numberWithBool:shared]
            forKey:@"shared"];
     [dic writeToFile:fileName
