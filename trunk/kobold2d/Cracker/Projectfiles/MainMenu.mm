@@ -39,8 +39,7 @@
         world = new b2World(b2Vec2(0.0f, 0.0f));
         world->SetAllowSleeping(NO);
         //playScene = [GameScene new];
-        
-        
+ 
         worldStatic = YES;
         //[self enableBox2dDebugDrawing];
         
@@ -103,6 +102,7 @@
          [NSNumber numberWithInt:1],
          [NSNumber numberWithInt:1],
          [NSNumber numberWithInt:2], nil];
+        
 
 		/*
         CGSize s = [[CCDirector sharedDirector] winSize];

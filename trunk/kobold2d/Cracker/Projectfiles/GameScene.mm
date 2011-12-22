@@ -34,6 +34,11 @@ static GameScene *_sharedGame = nil;
 {
     [super dealloc];
     _sharedGame = nil;
+    
+    
+    [adView removeFromSuperview];
+    [adView release];
+    adView = nil;
 }
 
 - (id)init
@@ -58,12 +63,24 @@ static GameScene *_sharedGame = nil;
         [self addChild:gameover z:2];
         [self addChild:pauselayer z:1];
         [self addChild:menulayer];
-        
-        [self scheduleUpdate];
+
         
         self.state = kGameStateMenu;
     }
     return self;
+}
+
+- (void)initAd
+{
+    if (adView)
+        return;
+    
+    adView = [[ADBannerView alloc] initWithFrame:CGRectZero];
+    
+    adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier320x50;
+    [[CCDirector sharedDirector].openGLView addSubview:adView];
+    adView.delegate = self;
+    adView.hidden = YES;
 }
 
 - (void)showAd
@@ -137,6 +154,7 @@ static GameScene *_sharedGame = nil;
                 [playlayer resumeGame];
             }
             else if (_state == kGameStateMenu){ // first start
+                [self initAd];
                 [playlayer startGame];
                 CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
                 [menulayer runAction:[CCSequence actions: move, [CCHide action],[CCCallBlock actionWithBlock:^(){
@@ -176,34 +194,6 @@ static GameScene *_sharedGame = nil;
             break;
     }
     _state = state;
-}
-
-#pragma mark - Overrided Methods
-
-- (void)onEnter
-{
-    [super onEnter];
-    
-    adView = [[ADBannerView alloc] initWithFrame:CGRectZero];
-    
-    adView.currentContentSizeIdentifier = ADBannerContentSizeIdentifier320x50;
-    [[CCDirector sharedDirector].openGLView addSubview:adView];
-    adView.delegate = self;
-    adView.hidden = YES;
-}
-
-- (void)onExit
-{
-    [super onExit];
-    
-    [adView removeFromSuperview];
-    [adView release];
-    adView = nil;
-}
-
-- (void)update:(ccTime)d
-{
-    
 }
 
 #pragma mark - MainMenuDelegate Methods

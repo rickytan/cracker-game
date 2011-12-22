@@ -39,6 +39,7 @@ typedef enum {
 }
 @property (nonatomic, assign) GameState state;
 + (GameScene*)sharedGame;
+- (void)initAd;
 - (void)showAd;
 - (void)hideAd;
 @end
