@@ -272,17 +272,19 @@ static GameScene *_sharedGame = nil;
 // it wished to defer placing the banner in a view hierarchy until the banner has content to display.
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    if (playlayer.isGamePlaying && !playlayer.isAdshown) {
-        [self showAd];
-    }
-    else if (playlayer.isAdshown){
-        [UIView beginAnimations:@"flixad" context:nil];
-        [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
-        [UIView setAnimationDuration:2.0];
-        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft
-                               forView:adView
-                                 cache:YES];
-        [UIView commitAnimations];
+    if ([Helper isShared]){
+        if (playlayer.isGamePlaying && !playlayer.isAdshown) {
+            [self showAd];
+        }
+        else if (playlayer.isAdshown){
+            [UIView beginAnimations:@"flixad" context:nil];
+            [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+            [UIView setAnimationDuration:2.0];
+            [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft
+                                   forView:adView
+                                     cache:YES];
+            [UIView commitAnimations];
+        }
     }
 }
 
