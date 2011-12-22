@@ -15,7 +15,8 @@
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
-    [GameScene sharedGame].state = kGameStateOver;
+    if (![CCDirector sharedDirector].currentDeviceIsSimulator)
+        [GameScene sharedGame].state = kGameStateOver;
 }
 void ContactListener::EndContact(b2Contact *contact)
 {
