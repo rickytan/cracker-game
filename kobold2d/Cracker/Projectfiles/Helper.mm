@@ -75,7 +75,7 @@ static SHKSharer *_sharer = nil;
 
 - (void)sharerFinishedSending:(SHKSharer *)sharer
 {
-    
+    [Helper setShared:YES];
 }
 
 - (void)sharer:(SHKSharer *)sharer 
