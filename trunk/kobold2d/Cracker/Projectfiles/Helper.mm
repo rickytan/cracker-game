@@ -14,13 +14,16 @@
 #import "SHKTwitter.h"
 
 static Helper *_sharedHelper = nil;
+static SHKSharer *_sharer = nil;
 
 @implementation Helper
 
 + (Helper*) sharedHelper
 {
     if (!_sharedHelper){
-        _sharedHelper = [[[Helper alloc] init] autorelease];
+        _sharedHelper = [[Helper alloc] init];
+        
+        [SHK flushOfflineQueue];
     }
     return _sharedHelper;
 }
@@ -48,19 +51,21 @@ static Helper *_sharedHelper = nil;
 + (void)shareTwitter
 {
     NSString * text = @"Hi! My friends. I'm playing Cracker on iPhone, and it's very funny";
+    [_sharer release];
     
     SHKItem *item = [SHKItem text:text];
-    SHKSharer *sharer = [SHKTwitter shareItem:item];
-    sharer.shareDelegate = [Helper sharedHelper];
+    _sharer = [[SHKTwitter shareItem:item] retain];
+    _sharer.shareDelegate = [Helper sharedHelper];
 }
 
 + (void)shareFacebook
 {
     NSString * text = @"Hi! My friends. I'm playing Cracker on iPhone, and it's very funny";
+    [_sharer release];
     
     SHKItem *item = [SHKItem text:text];
-    SHKSharer *sharer = [SHKFacebook shareItem:item];
-    sharer.shareDelegate = [Helper sharedHelper];
+    _sharer = [[SHKFacebook shareItem:item] retain];
+    _sharer.shareDelegate = [Helper sharedHelper];
 }
 
 - (void)sharerStartedSending:(SHKSharer *)sharer
