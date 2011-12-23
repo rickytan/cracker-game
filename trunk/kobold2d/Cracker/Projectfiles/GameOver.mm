@@ -28,8 +28,13 @@
         CCSprite *best = [CCSprite spriteWithFile:@"bestscore.png"];
         CCSprite *score = [CCSprite spriteWithFile:@"score.png"];
         
-        scoreLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
-        bestLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
+        //scoreLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
+        //bestLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
+        
+        scoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Schwarzwald Regular" fontSize:32];
+        scoreLabel.color = ccWHITE;
+        bestLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Schwarzwald Regular" fontSize:32];
+        bestLabel.color = ccYELLOW;
         
         oops.position = ccpAdd(c, ccp(0, 160));
         score.position = ccpAdd(c, ccp(-56, 100));

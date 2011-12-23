@@ -85,7 +85,7 @@ static SHKSharer *_sharer = nil;
 failedWithError:(NSError *)error
  shouldRelogin:(BOOL)shouldRelogin
 {
-    
+    NSLog(@"%@",error);
 }
 
 - (void)sharerCancelledSending:(SHKSharer *)sharer

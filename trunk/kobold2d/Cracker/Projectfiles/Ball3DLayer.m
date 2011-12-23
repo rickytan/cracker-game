@@ -141,7 +141,7 @@ typedef enum {
     
     CC3PlaneNode *_arrow = [CC3PlaneNode nodeWithName:@"arrow"];
     
-    CC3Texture *tex = [CC3Texture textureFromFile:@"blackArrow.png"];
+    CC3Texture *tex = [CC3Texture textureFromFile:@"wind.png"];
     
     [_arrow populateAsTexturedRectangleWithSize:CGSizeMake(0.6, 2.4) 
                                        andPivot:ccp(0.3, 1.2)];
