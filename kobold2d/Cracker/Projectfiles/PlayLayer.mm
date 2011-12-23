@@ -96,11 +96,20 @@ CGPoint positions[] = {
         [upItem runAction:[CCRepeatForever actionWithAction:[CCSequence actions:ease, [ease reverse], nil]]];
         
         upmenu = [CCMenu menuWithItems:upItem, nil];
-        
+        upmenu.visible = NO;
+
         [self addChild:upmenu];
+        
+        
+        
+        CCDelayTime *delay = [CCDelayTime actionWithDuration:1.0];
+        CCCallFunc *cb = [CCCallFunc actionWithTarget:self selector:@selector(scoreAddByTime)];
+        CCRepeatForever *repeat = [CCRepeatForever actionWithAction:[CCSequence actions:delay, cb, nil]];
+        [self runAction:repeat];
         
         [self scheduleUpdate];
         [self pauseSchedulerAndActions];
+        
         
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"LOW C.caf"];
         [[SimpleAudioEngine sharedEngine] preloadEffect:@"C.caf"];
@@ -330,11 +339,7 @@ CGPoint positions[] = {
                                                 color:ccc4(0x0, 0x80, 0xff, 0xc0)];
         [self addChild:motionStreak];
     }
-    
-    CCDelayTime *delay = [CCDelayTime actionWithDuration:1.0];
-    CCCallFunc *cb = [CCCallFunc actionWithTarget:self selector:@selector(scoreAddByTime)];
-    CCRepeatForever *repeat = [CCRepeatForever actionWithAction:[CCSequence actions:delay, cb, nil]];
-    [self runAction:repeat];
+
     
     [self resumeGame];
 }
