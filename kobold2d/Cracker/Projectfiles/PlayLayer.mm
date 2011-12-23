@@ -338,7 +338,7 @@ CGPoint positions[] = {
                                                 image:@"streak.png"
                                                 width:20.0 
                                                length:40.0
-                                                color:ccc4(0x0, 0x80, 0xff, 0xc0)];
+                                                color:ccc4(0xc0, 0x0, 0xf0, 0xc0)];
         [self addChild:motionStreak];
     }
 

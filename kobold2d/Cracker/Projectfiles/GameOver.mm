@@ -29,7 +29,7 @@
         CCSprite *score = [CCSprite spriteWithFile:@"score.png"];
         
         //scoreLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
-        //bestLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"bitmapFontTest2.fnt"];
+        //bestLabel = [CCLabelBMFont labelWithString:@"0" fntFile:@"futura-48.fnt"];
         
         scoreLabel = [CCLabelTTF labelWithString:@"0" fontName:@"Schwarzwald Regular" fontSize:32];
         scoreLabel.color = ccWHITE;

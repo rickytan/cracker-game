@@ -101,9 +101,9 @@ typedef enum {
         {              0,               0,-cube_height}
     };
     NSString *cube_texture[] = {
+        @"wall_r.png",
         @"wall.png",
-        @"wall.png",
-        @"wall.png",
+        @"wall_r.png",
         @"wall.png",
         @"bg.png"
     };

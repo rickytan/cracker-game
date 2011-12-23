@@ -18,7 +18,7 @@
 
 @interface GameOver : CCLayerColor {
     CCLabelTTF *             scoreLabel;
-    CCLabelTTF *             bestLabel;
+    CCLabelTTF *          bestLabel;
 }
 
 @property (nonatomic, assign) uint score;
