@@ -293,7 +293,7 @@ CGPoint positions[] = {
     score = 0;
     
     if (!scoreLabel){
-        scoreLabel = [CCLabelBMFont labelWithString:@"        0" fntFile:@"bitmapFontTest.fnt"];
+        scoreLabel = [CCLabelBMFont labelWithString:@"        0" fntFile:@"konqa32.fnt"];
         
         scoreLabel.position = ccp(s.width - scoreLabel.contentSize.width / 2 - 10,
                                   scoreLabel.contentSize.height/2 + 4);
