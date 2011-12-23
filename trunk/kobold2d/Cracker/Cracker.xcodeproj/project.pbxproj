@@ -463,7 +463,7 @@
 		DC65615913A969B600A7AC53 /* libobjectal-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libobjectal-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC65615A13A969B600A7AC53 /* libsneakyinput-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libsneakyinput-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC65615B13A969B600A7AC53 /* libwax-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libwax-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		DCC1A0E313A94ED5005BD75D /* Cracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCC1A0E313A94ED5005BD75D /* >20s?.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ">20s?.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC1A0FB13A94ED5005BD75D /* fps_images.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fps_images.png; path = Resources/fps_images.png; sourceTree = "<group>"; };
 		DCC1A0FD13A94ED5005BD75D /* Icon-72.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-72.png"; path = "Resources/Icon-72.png"; sourceTree = "<group>"; };
 		DCC1A0FF13A94ED5005BD75D /* Icon-Small-50.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "Icon-Small-50.png"; path = "Resources/Icon-Small-50.png"; sourceTree = "<group>"; };
@@ -1015,7 +1015,7 @@
 		DCC1A0E413A94ED5005BD75D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DCC1A0E313A94ED5005BD75D /* Cracker.app */,
+				DCC1A0E313A94ED5005BD75D /* >20s?.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1132,7 +1132,7 @@
 			);
 			name = "Cracker-iOS";
 			productName = "Hello-World-iOS";
-			productReference = DCC1A0E313A94ED5005BD75D /* Cracker.app */;
+			productReference = DCC1A0E313A94ED5005BD75D /* >20s?.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1392,7 +1392,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = Cracker;
+				PRODUCT_NAME = ">20s?";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1406,7 +1406,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
 				LIBRARY_SEARCH_PATHS = "$(inherited)";
-				PRODUCT_NAME = Cracker;
+				PRODUCT_NAME = ">20s?";
 				PROVISIONING_PROFILE = "";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 1;

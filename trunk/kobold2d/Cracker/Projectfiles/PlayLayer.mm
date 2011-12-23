@@ -173,6 +173,7 @@ CGPoint positions[] = {
     if (!_isAdshown)
         return;
     _isAdshown = NO;
+    upmenu.visible = NO;
     [self moveTopFace:0 pushDown:NO];
 }
 
