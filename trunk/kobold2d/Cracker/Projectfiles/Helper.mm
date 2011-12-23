@@ -76,6 +76,9 @@ static SHKSharer *_sharer = nil;
 - (void)sharerFinishedSending:(SHKSharer *)sharer
 {
     [Helper setShared:YES];
+    [_sharer dismissViewControllerAnimated:YES
+                                completion:^(){
+                                }];
 }
 
 - (void)sharer:(SHKSharer *)sharer 
