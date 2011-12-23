@@ -47,7 +47,7 @@ static GameScene *_sharedGame = nil;
         
         CCDirector *dir = [CCDirector sharedDirector];
         
-        [dir enableRetinaDisplay:YES];
+        //[dir enableRetinaDisplay:YES];
         
         
         playlayer = [PlayLayer node];
@@ -72,7 +72,7 @@ static GameScene *_sharedGame = nil;
 
 - (void)initAd
 {
-    if (adView)
+    if ([Helper isShared] || adView)
         return;
     
     adView = [[ADBannerView alloc] initWithFrame:CGRectZero];
@@ -86,9 +86,11 @@ static GameScene *_sharedGame = nil;
 
 - (void)showAd
 {
+    if ([Helper isShared])
+        return;
+    
     [playlayer showAd];
 
-    
     [UIView beginAnimations:@"AdViewAppear" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveLinear];
     [UIView setAnimationDuration:0.35];

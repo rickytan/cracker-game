@@ -8,13 +8,13 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "Cracker/Projectfiles/Helper.mm"
-         timestampString = "346169686.112896"
+         filePath = "Cracker/Projectfiles/CreditLayer.m"
+         timestampString = "346186007.19353"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "67"
-         endingLineNumber = "67"
-         landmarkName = "-sharerStartedSending:"
+         startingLineNumber = "26"
+         endingLineNumber = "26"
+         landmarkName = "-ccTouchBegan:withEvent:"
          landmarkType = "5">
       </FileBreakpoint>
       <FileBreakpoint
@@ -23,11 +23,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Cracker/Projectfiles/Helper.mm"
-         timestampString = "346169686.960122"
+         timestampString = "346336934.408299"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "72"
-         endingLineNumber = "72"
+         startingLineNumber = "79"
+         endingLineNumber = "79"
          landmarkName = "-sharerFinishedSending:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -37,25 +37,11 @@
          continueAfterRunningActions = "No"
          isPathRelative = "1"
          filePath = "Cracker/Projectfiles/Helper.mm"
-         timestampString = "346169688.159622"
+         timestampString = "346337644.345429"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "79"
-         endingLineNumber = "79"
-         landmarkName = "-sharer:failedWithError:shouldRelogin:"
-         landmarkType = "5">
-      </FileBreakpoint>
-      <FileBreakpoint
-         shouldBeEnabled = "Yes"
-         ignoreCount = "0"
-         continueAfterRunningActions = "No"
-         isPathRelative = "1"
-         filePath = "Cracker/Projectfiles/Helper.mm"
-         timestampString = "346169689.007564"
-         startingColumnNumber = "9223372036854775807"
-         endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "84"
-         endingLineNumber = "84"
+         startingLineNumber = "92"
+         endingLineNumber = "92"
          landmarkName = "-sharerCancelledSending:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -64,13 +50,13 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          isPathRelative = "1"
-         filePath = "Cracker/Projectfiles/CreditLayer.m"
-         timestampString = "346186007.19353"
+         filePath = "Cracker/Projectfiles/Helper.mm"
+         timestampString = "346336758.863006"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "26"
-         endingLineNumber = "26"
-         landmarkName = "-ccTouchBegan:withEvent:"
+         startingLineNumber = "72"
+         endingLineNumber = "72"
+         landmarkName = "-sharerStartedSending:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>
