@@ -150,7 +150,8 @@ CGPoint positions[] = {
 - (void)stopMoveTopFace
 {
     topBoundBody->SetLinearVelocity(b2Vec2(0,0));
-    topBoundBody->SetTransform(b2Vec2_zero, 0);
+    if (!_isAdshown)
+        topBoundBody->SetTransform(b2Vec2_zero, 0);
 }
 
 - (void)pushDown
@@ -329,6 +330,7 @@ CGPoint positions[] = {
         pausemenu = [CCMenu menuWithItems:pauseItem, nil];
         [self addChild:pausemenu];
     }
+    [self hideAd];
     
     if (!motionStreak){
         motionStreak = [CCMotionStreak streakWithFade:1.0
@@ -441,8 +443,7 @@ CGPoint positions[] = {
 
 - (void)pausePressed:(id)sender
 {
-    GameScene *game = (GameScene*)self.parent;
-    game.state = kGameStatePausing;
+    [GameScene sharedGame].state = kGameStatePausing;
 }
 
 - (void)upPressed:(id)sender
