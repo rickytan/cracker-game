@@ -47,7 +47,7 @@ static GameScene *_sharedGame = nil;
         
         CCDirector *dir = [CCDirector sharedDirector];
         
-        //[dir enableRetinaDisplay:YES];
+        [dir enableRetinaDisplay:YES];
         
         
         playlayer = [PlayLayer node];
