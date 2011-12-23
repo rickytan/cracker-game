@@ -155,6 +155,8 @@ static GameScene *_sharedGame = nil;
             }
             else if (_state == kGameStateMenu){ // first start
                 [self initAd];
+                if (adView.isBannerLoaded)
+                    [self showAd];
                 [playlayer startGame];
                 CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
                 [menulayer runAction:[CCSequence actions: move, [CCHide action],[CCCallBlock actionWithBlock:^(){
