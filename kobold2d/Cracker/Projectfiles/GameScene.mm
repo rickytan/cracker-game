@@ -81,13 +81,13 @@ static GameScene *_sharedGame = nil;
     [[CCDirector sharedDirector].openGLView addSubview:adView];
     adView.delegate = self;
     adView.hidden = YES;
+    adView.frame = CGRectMake(0, -50, 320, 50);
 }
 
 - (void)showAd
 {
     [playlayer showAd];
-    
-    adView.frame = CGRectMake(0, -50, 320, 50);
+
     
     [UIView beginAnimations:@"AdViewAppear" context:nil];
     [UIView setAnimationCurve:UIViewAnimationCurveLinear];
@@ -119,12 +119,13 @@ static GameScene *_sharedGame = nil;
     CGSize s = [CCDirector sharedDirector].screenSize;
     switch (state) {
         case kGameStateMenu:
+            
+            gameover.visible = NO;
+            pauselayer.visible = NO;
+            [self hideAd];
             if (_state == kGameStateCredits || _state == kGameStateTips) {
                 break;
             }
-            gameover.visible = NO;
-            pauselayer.visible = NO;
-            [playlayer hideAd];
             
             menulayer.visible = YES;
             menulayer.position = ccp(-s.width, 0);
@@ -154,10 +155,12 @@ static GameScene *_sharedGame = nil;
                 [playlayer resumeGame];
             }
             else if (_state == kGameStateMenu){ // first start
+                [playlayer startGame];
+                
                 [self initAd];
                 if (adView.isBannerLoaded)
                     [self showAd];
-                [playlayer startGame];
+                
                 CCMoveTo *move = [CCMoveTo actionWithDuration:0.35 position:ccp(-500, 0)];
                 [menulayer runAction:[CCSequence actions: move, [CCHide action],[CCCallBlock actionWithBlock:^(){
                     [menulayer pauseSchedulerAndActions];
@@ -165,6 +168,10 @@ static GameScene *_sharedGame = nil;
             }
             else {
                 [playlayer startGame];
+                
+                [self initAd];
+                if (adView.isBannerLoaded)
+                    [self showAd];
             }
             //[self showAd];
             break;
