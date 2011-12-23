@@ -91,10 +91,10 @@ CGPoint positions[] = {
                                                            selectedSprite:[CCSprite spriteWithFile:@"up.png"]
                                                                    target:self
                                                                  selector:@selector(upPressed:)];
-        CCEaseIn *ease = [CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:0.5 position:ccp(0, 8)]];
+        CCEaseIn *ease = [CCEaseIn actionWithAction:[CCMoveBy actionWithDuration:0.5 position:ccp(0, 24)]];
         [upItem runAction:[CCRepeatForever actionWithAction:[CCSequence actions:ease, [ease reverse], nil]]];
         upmenu = [CCMenu menuWithItems:upItem, nil];
-        upmenu.visible = NO;
+        //upmenu.visible = NO;
         [upmenu alignItemsVertically];
         
         [self addChild:upmenu];
@@ -420,10 +420,9 @@ CGPoint positions[] = {
             [[SimpleAudioEngine sharedEngine] playEffect:soundTable[lastSound]];
         }
         
-        
         CGPoint ptmp = [self toPixels:topBoundBody->GetPosition()];
         [ball3DLayer setTo:-ptmp.y];
-        upmenu.position = ccpAdd(ptmp, ccp(center.x, center.y * 2 + 24));
+        upmenu.position = ccpAdd(ptmp, ccp(center.x, center.y * 2 + 12));
         
         
     }

@@ -261,7 +261,7 @@ static GameScene *_sharedGame = nil;
 // it wished to defer placing the banner in a view hierarchy until the banner has content to display.
 - (void)bannerViewDidLoadAd:(ADBannerView *)banner
 {
-    if ([Helper isShared]){
+    if (![Helper isShared]){
         if (playlayer.isGamePlaying && !playlayer.isAdshown) {
             [self showAd];
         }
