@@ -90,7 +90,9 @@ failedWithError:(NSError *)error
 
 - (void)sharerCancelledSending:(SHKSharer *)sharer
 {
-    
+    [_sharer dismissViewControllerAnimated:YES
+                                completion:^(){
+                                }];
 }
 
 + (uint)bestScore
