@@ -50,7 +50,7 @@ static SHKSharer *_sharer = nil;
 
 + (void)shareTwitter
 {
-    NSString * text = @"Hi! My friends. I'm playing Cracker on iPhone, and it's very funny";
+    NSString * text = @"Hi! My friends. I'm playing \">20s?\" on iPhone, join me!";
     [_sharer release];
     
     SHKItem *item = [SHKItem text:text];
@@ -60,7 +60,7 @@ static SHKSharer *_sharer = nil;
 
 + (void)shareFacebook
 {
-    NSString * text = @"Hi! My friends. I'm playing Cracker on iPhone, and it's very funny";
+    NSString * text = @"Hi! My friends. I'm playing \">20s?\" on iPhone, join me!";
     [_sharer release];
     
     SHKItem *item = [SHKItem text:text];
