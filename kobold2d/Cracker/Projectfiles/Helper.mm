@@ -77,22 +77,36 @@ static SHKSharer *_sharer = nil;
 {
     [Helper setShared:YES];
     [_sharer dismissViewControllerAnimated:YES
-                                completion:^(){
-                                }];
+                                completion:NO];
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[sharer title]
+                                                    message:@"Share succeeded!Now you have disabled the Ad and pushed the wall back"
+                                                   delegate:nil
+                                          cancelButtonTitle:@"OK"
+                                          otherButtonTitles:nil];
+    [alert show];
+    [alert release];
 }
 
 - (void)sharer:(SHKSharer *)sharer 
 failedWithError:(NSError *)error
  shouldRelogin:(BOOL)shouldRelogin
 {
+#ifdef DEBUG
     NSLog(@"%@",error);
+#endif
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:[NSString stringWithFormat:@"%@ Error!",[sharer title]]
+                                                    message:[error description]
+                                                   delegate:nil
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:nil];
+    [alert show];
+    [alert release];
 }
 
 - (void)sharerCancelledSending:(SHKSharer *)sharer
 {
     [_sharer dismissViewControllerAnimated:YES
-                                completion:^(){
-                                }];
+                                completion:NO];
 }
 
 + (uint)bestScore

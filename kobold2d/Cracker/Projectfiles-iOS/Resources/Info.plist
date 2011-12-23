@@ -39,7 +39,7 @@
 		</dict>
 	</dict>
 	<key>CFBundleIdentifier</key>
-	<string>com.hengtiansoft.${PRODUCT_NAME}</string>
+	<string>com.hengtiansoft.Cracker</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
