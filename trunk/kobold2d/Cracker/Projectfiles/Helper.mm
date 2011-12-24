@@ -175,6 +175,15 @@ failedWithError:(NSError *)error
 	return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
 }
 
++ (void)initGameCenter
+{
+    KKGameKitHelper *gameCenter = [KKGameKitHelper sharedGameKitHelper];
+    gameCenter.delegate = [Helper sharedHelper];
+    if (gameCenter.isGameCenterAvailable){
+        [gameCenter authenticateLocalPlayer];
+    }
+}
+
 /** Called when local player was authenticated or logged off. */
 -(void) onLocalPlayerAuthenticationChanged
 {

@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Box2D.h"
 #import "SHKSharer.h"
+#import "KKGameKitHelper.h"
 
 #define PTM_RATIO 96.0f
 
@@ -26,4 +27,6 @@
 + (void)saveBestScore:(uint)score;
 + (BOOL)isShared;
 + (void)setShared:(BOOL)shared;
+
++ (void)initGameCenter;
 @end

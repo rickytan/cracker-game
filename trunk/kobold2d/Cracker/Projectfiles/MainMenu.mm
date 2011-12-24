@@ -80,8 +80,10 @@
                                                        selectedSprite:[CCSprite spriteWithFile:@"twitter.png"]
                                                                 target:self
                                                              selector:@selector(onShareTwitter:)];
-        //fb.scale = 0.5;
-        //tw.scale = 0.5;
+        CCMenuItemSprite *gc = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"gamecenter.png"]
+                                                       selectedSprite:[CCSprite spriteWithFile:@"gamecenter.png"]
+                                                                target:self
+                                                             selector:@selector(onGameCenter:)];
 
         CCMenuItemSprite *item0 = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"start.png"]
                                                           selectedSprite:[CCSprite spriteWithFile:@"start_grey.png"]
@@ -96,12 +98,12 @@
                                                                    target:self
                                                                 selector:@selector(onAbout:)];
         
-		menu = [CCMenu menuWithItems:item0, item1, item2, fb, tw, nil];
+		menu = [CCMenu menuWithItems:item0, item1, item2, fb, gc, tw, nil];
         [menu alignItemsInColumns:
          [NSNumber numberWithInt:1],
          [NSNumber numberWithInt:1],
          [NSNumber numberWithInt:1],
-         [NSNumber numberWithInt:2], nil];
+         [NSNumber numberWithInt:3], nil];
         
 
 		/*
@@ -189,6 +191,10 @@
 - (void)onShareTwitter:(id)sender
 {
     [delegate onShareTwitter:sender];
+}
+- (void)onGameCenter:(id)sender
+{
+    [delegate onGameCenter:sender];
 }
 
 
