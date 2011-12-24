@@ -219,6 +219,11 @@ static GameScene *_sharedGame = nil;
     [Helper shareFacebook];
 }
 
+- (void)onGameCenter:(id)sender
+{
+    [Helper initGameCenter];
+}
+
 - (void)onStart:(id)sender
 {
     self.state = kGameStatePlaying;

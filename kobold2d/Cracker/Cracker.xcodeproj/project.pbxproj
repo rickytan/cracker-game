@@ -173,6 +173,8 @@
 		81C1266D149F0EFC00C6D8C4 /* tuffy_bold_italic-charmap-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264E149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap-hd.png */; };
 		81C1266E149F0EFC00C6D8C4 /* tuffy_bold_italic-charmap.png in Resources */ = {isa = PBXBuildFile; fileRef = 81C1264F149F0EFB00C6D8C4 /* tuffy_bold_italic-charmap.png */; };
 		9C8B5D4E1494900700398B7E /* Wind.mm in Sources */ = {isa = PBXBuildFile; fileRef = 9C8B5D4D1494900700398B7E /* Wind.mm */; };
+		C2898D8114A6867200BF4978 /* gamecenter.png in Resources */ = {isa = PBXBuildFile; fileRef = C2898D8014A6867200BF4978 /* gamecenter.png */; };
+		C2898D8414A68A6900BF4978 /* gamecenter-hd.png in Resources */ = {isa = PBXBuildFile; fileRef = C2898D8314A68A6900BF4978 /* gamecenter-hd.png */; };
 		DC65615C13A969B600A7AC53 /* libbox2d-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC65615013A969B600A7AC53 /* libbox2d-ios.a */; };
 		DC65615D13A969B600A7AC53 /* libchipmunk-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC65615113A969B600A7AC53 /* libchipmunk-ios.a */; };
 		DC65615E13A969B600A7AC53 /* libchipmunk-spacemanager-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC65615213A969B600A7AC53 /* libchipmunk-spacemanager-ios.a */; };
@@ -452,6 +454,8 @@
 		9C8382CB148FC7800004268A /* BuildSettings-Release-iOS.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "BuildSettings-Release-iOS.xcconfig"; sourceTree = "<group>"; };
 		9C8B5D4C1494900600398B7E /* Wind.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wind.h; sourceTree = "<group>"; };
 		9C8B5D4D1494900700398B7E /* Wind.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Wind.mm; sourceTree = "<group>"; };
+		C2898D8014A6867200BF4978 /* gamecenter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = gamecenter.png; sourceTree = "<group>"; };
+		C2898D8314A68A6900BF4978 /* gamecenter-hd.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "gamecenter-hd.png"; sourceTree = "<group>"; };
 		DC65615013A969B600A7AC53 /* libbox2d-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libbox2d-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC65615113A969B600A7AC53 /* libchipmunk-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libchipmunk-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC65615213A969B600A7AC53 /* libchipmunk-spacemanager-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = "libchipmunk-spacemanager-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -523,6 +527,8 @@
 		8123E24814908C84006E28A2 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				C2898D8314A68A6900BF4978 /* gamecenter-hd.png */,
+				C2898D8014A6867200BF4978 /* gamecenter.png */,
 				29C0139D14A4C10A00B6B750 /* wall_r-hd.png */,
 				29C0139E14A4C10C00B6B750 /* wall_r.png */,
 				29C0139514A4B4E700B6B750 /* up_w.png */,
@@ -1267,6 +1273,8 @@
 				29C013A214A4C53A00B6B750 /* icon-57.png in Resources */,
 				29C013A414A4C57400B6B750 /* icon-114.png in Resources */,
 				29C013A614A4C59100B6B750 /* icon-72.png in Resources */,
+				C2898D8114A6867200BF4978 /* gamecenter.png in Resources */,
+				C2898D8414A68A6900BF4978 /* gamecenter-hd.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

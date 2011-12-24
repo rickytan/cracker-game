@@ -19,7 +19,7 @@
 - (void)onAbout:(id)sender;
 - (void)onShareFacebook:(id)sender;
 - (void)onShareTwitter:(id)sender;
-
+- (void)onGameCenter:(id)sender;
 @end
 
 @interface MainMenu : CCLayer {
@@ -37,4 +37,5 @@
 - (void)onAbout:(id)sender;
 - (void)onShareFacebook:(id)sender;
 - (void)onShareTwitter:(id)sender;
+- (void)onGameCenter:(id)sender;
 @end
