@@ -174,4 +174,107 @@ failedWithError:(NSError *)error
 {
 	return ccpMult(CGPointMake(vec.x, vec.y), PTM_RATIO);
 }
+
+/** Called when local player was authenticated or logged off. */
+-(void) onLocalPlayerAuthenticationChanged
+{
+    
+}
+
+/** Called when friend list was received from Game Center. */
+-(void) onFriendListReceived:(NSArray*)friends
+{
+    
+}
+/** Called when player info was received from Game Center. */
+-(void) onPlayerInfoReceived:(NSArray*)players
+{
+    
+}
+
+/** Called when scores where submitted. This can fail, so check for success. */
+-(void) onScoresSubmitted:(bool)success
+{
+    
+}
+/** Called when scores were received from Game Center. */
+-(void) onScoresReceived:(NSArray*)scores
+{
+    
+}
+
+/** Called when achievement was reported to Game Center. */
+-(void) onAchievementReported:(GKAchievement*)achievement
+{
+    
+}
+/** Called when achievement list was received from Game Center. */
+-(void) onAchievementsLoaded:(NSDictionary*)achievements
+{
+    
+}
+/** Called to indicate whether the reset achievements command was successful. */
+-(void) onResetAchievements:(bool)success
+{
+    
+}
+
+/** Called when a match was found. */
+-(void) onMatchFound:(GKMatch*)match
+{
+    
+}
+/** Called to indicate whether adding players to a match was successful. */
+-(void) onPlayersAddedToMatch:(bool)success
+{
+    
+}
+/** Called when matchmaking activity was received from Game Center. */
+-(void) onReceivedMatchmakingActivity:(NSInteger)activity
+{
+    
+}
+
+/** Called when a player connected to the match. */
+-(void) onPlayerConnected:(NSString*)playerID
+{
+    
+}
+/** Called when a player disconnected from a match. */
+-(void) onPlayerDisconnected:(NSString*)playerID
+{
+    
+}
+/** Called when the match begins. */
+-(void) onStartMatch
+{
+    
+}
+/** Called whenever data from another player was received. */
+-(void) onReceivedData:(NSData*)data fromPlayer:(NSString*)playerID
+{
+    
+}
+
+/** Called when the matchmaking view was closed. */
+-(void) onMatchmakingViewDismissed
+{
+    
+}
+/** Called for any generic error in the matchmaking view. */
+-(void) onMatchmakingViewError
+{
+    
+}
+/** Called when the leaderboard view was closed. */
+-(void) onLeaderboardViewDismissed
+{
+    
+}
+/** Called when the achievements view was closed. */
+-(void) onAchievementsViewDismissed
+{
+    
+}
+
 @end

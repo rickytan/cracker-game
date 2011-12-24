@@ -14,7 +14,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DCC1A0E213A94ED5005BD75D"
-               BuildableName = "Cracker.app"
+               BuildableName = "&gt;20s?.app"
                BlueprintName = "Cracker-iOS"
                ReferencedContainer = "container:Cracker.xcodeproj">
             </BuildableReference>
@@ -32,7 +32,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DCC1A0E213A94ED5005BD75D"
-            BuildableName = "Cracker.app"
+            BuildableName = "&gt;20s?.app"
             BlueprintName = "Cracker-iOS"
             ReferencedContainer = "container:Cracker.xcodeproj">
          </BuildableReference>
@@ -52,7 +52,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DCC1A0E213A94ED5005BD75D"
-            BuildableName = "Cracker.app"
+            BuildableName = "&gt;20s?.app"
             BlueprintName = "Cracker-iOS"
             ReferencedContainer = "container:Cracker.xcodeproj">
          </BuildableReference>
@@ -72,7 +72,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DCC1A0E213A94ED5005BD75D"
-            BuildableName = "Cracker.app"
+            BuildableName = "&gt;20s?.app"
             BlueprintName = "Cracker-iOS"
             ReferencedContainer = "container:Cracker.xcodeproj">
          </BuildableReference>

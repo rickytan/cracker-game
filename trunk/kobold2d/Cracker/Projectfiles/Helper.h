@@ -12,7 +12,7 @@
 
 #define PTM_RATIO 96.0f
 
-@interface Helper : NSObject <SHKSharerDelegate>
+@interface Helper : NSObject <SHKSharerDelegate, KKGameKitHelperProtocol>
 + (Helper*)sharedHelper;
 
 
