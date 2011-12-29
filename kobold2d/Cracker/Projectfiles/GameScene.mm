@@ -77,10 +77,10 @@ static GameScene *_sharedGame = nil;
         WizardLayer *wl = [WizardLayer node];
         CGPoint c = [CCDirector sharedDirector].screenCenter;
         wl.position = ccp(c.x * 2, 0);
-        CCMoveTo *move = [CCMoveTo actionWithDuration:0.6
+        CCMoveTo *move = [CCMoveTo actionWithDuration:1.2
                                              position:CGPointZero];
         CCDelayTime *delay = [CCDelayTime actionWithDuration:0.4];
-        CCSequence *seq = [CCSequence actions:delay, [CCEaseElasticInOut actionWithAction:move], nil];
+        CCSequence *seq = [CCSequence actions:delay, [CCEaseElasticOut actionWithAction:move], nil];
         [wl runAction:seq];
         [self addChild:wl];
     }
