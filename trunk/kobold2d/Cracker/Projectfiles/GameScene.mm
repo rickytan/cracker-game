@@ -10,6 +10,7 @@
 #import "SimpleAudioEngine.h"
 #import "PauseScene.h"
 #import "Helper.h"
+#import "WizardLayer.h"
 
 static GameScene *_sharedGame = nil;
 
@@ -68,6 +69,37 @@ static GameScene *_sharedGame = nil;
         self.state = kGameStateMenu;
     }
     return self;
+}
+
+- (void)onEnter
+{
+    if ([self isFirstRun]){
+        WizardLayer *wl = [WizardLayer node];
+        CGPoint c = [CCDirector sharedDirector].screenCenter;
+        wl.position = ccp(c.x * 2, 0);
+        CCMoveTo *move = [CCMoveTo actionWithDuration:0.35
+                                             position:CGPointZero];
+        CCDelayTime *delay = [CCDelayTime actionWithDuration:0.4];
+        CCSequence *seq = [CCSequence actions:delay, [CCEaseElasticInOut actionWithAction:move period:0.4], nil];
+        [wl runAction:seq];
+        [self addChild:wl];
+    }
+    [super onEnter];
+}
+
+- (BOOL)isFirstRun
+{
+    NSString *dir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    NSFileManager *fm = [NSFileManager defaultManager];
+    NSString *file = [dir stringByAppendingPathComponent:@"FirstRun"];
+    if ([fm fileExistsAtPath:file]){
+        return NO;
+    }
+    else{
+        [@"" writeToFile:file
+              atomically:YES];
+        return YES;
+    }
 }
 
 - (void)initAd

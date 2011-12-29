@@ -71,6 +71,9 @@
 		[CCMenuItemFont setFontSize:30];
 		[CCMenuItemFont setFontName: @"Courier New"];
         
+        CCSprite *logo = [CCSprite spriteWithFile:@"logo_new.png"];
+        [self addChild:logo];
+        logo.position = ccp(screenSize.width/2, screenSize.height/2 + 160);
         
         CCMenuItemSprite *fb = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"facebook.png"]
                                                        selectedSprite:[CCSprite spriteWithFile:@"facebook.png"]
@@ -98,12 +101,13 @@
                                                                    target:self
                                                                 selector:@selector(onAbout:)];
         
-		menu = [CCMenu menuWithItems:item0, item1, item2, fb, gc, tw, nil];
+		menu = [CCMenu menuWithItems:item0, item2, fb, item1, tw, gc, nil];
+
         [menu alignItemsInColumns:
          [NSNumber numberWithInt:1],
          [NSNumber numberWithInt:1],
-         [NSNumber numberWithInt:1],
-         [NSNumber numberWithInt:3], nil];
+         [NSNumber numberWithInt:3],
+         [NSNumber numberWithInt:1], nil];
         
 
 		/*

@@ -118,7 +118,7 @@
 
 - (void)level1
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:2.5];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:6];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:2];
