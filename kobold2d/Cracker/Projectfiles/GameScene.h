@@ -42,4 +42,5 @@ typedef enum {
 - (void)initAd;
 - (void)showAd;
 - (void)hideAd;
+- (BOOL)isFirstRun;
 @end
