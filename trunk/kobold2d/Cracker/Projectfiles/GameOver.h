@@ -25,4 +25,5 @@
 @property (nonatomic, readonly) uint best;
 @property (nonatomic, assign) id<GameOverDelegate> delegate;
 
+- (void)uploadBest:(id)sender;
 @end
