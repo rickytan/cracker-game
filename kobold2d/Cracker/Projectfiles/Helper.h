@@ -29,4 +29,5 @@
 + (void)setShared:(BOOL)shared;
 
 + (void)initGameCenter;
++ (void)submitBestScore;
 @end

@@ -44,7 +44,7 @@
         
         CCMenuItemSprite *again = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"back.png"]
                                                           selectedSprite:[CCSprite spriteWithFile:@"back.png"]
-                                                                   target:self
+                                                                  target:self
                                                                 selector:@selector(againPressed:)];
         [again runAction:[CCRepeatForever actionWithAction:[CCRotateBy actionWithDuration:1 angle:360]]];
         CCMenuItemSprite *m = [CCMenuItemSprite itemFromNormalSprite:[CCSprite spriteWithFile:@"menu.png"]
@@ -74,8 +74,22 @@
     if (_score > _best){
         _best = _score;
         [Helper saveBestScore:_best];
+        CCLabelTTF *upload = [CCLabelTTF labelWithString:@"Upload new record"
+                                                fontName:@"Marker Felt"
+                                                fontSize:32];
+        CCMenuItemLabel *umi = [CCMenuItemLabel itemWithLabel:upload
+                                                       target:self
+                                                     selector:@selector(uploadBest:)];
+        CCMenu *u = [CCMenu menuWithItems:umi, nil];
+        [self addChild:u];
+        u.position = ccpAdd(u.position, ccp(0, -60));
     }
     bestLabel.string = [NSString stringWithFormat:@"%d",_best];
+}
+
+- (void)uploadBest:(id)sender
+{
+    [Helper submitBestScore];
 }
 
 - (void)againPressed:(id)sender

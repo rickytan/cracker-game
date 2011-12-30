@@ -180,14 +180,44 @@ failedWithError:(NSError *)error
     KKGameKitHelper *gameCenter = [KKGameKitHelper sharedGameKitHelper];
     gameCenter.delegate = [Helper sharedHelper];
     if (gameCenter.isGameCenterAvailable){
-        [gameCenter authenticateLocalPlayer];
+        GKLocalPlayer *player = [GKLocalPlayer localPlayer];
+        if (!player.authenticated){
+            [gameCenter authenticateLocalPlayer];
+        }
+        else
+            [gameCenter showLeaderboard];
     }
+}
+
++ (void)submitBestScore
+{
+    KKGameKitHelper *gameCenter = [KKGameKitHelper sharedGameKitHelper];
+    gameCenter.delegate = [Helper sharedHelper];
+    GKLocalPlayer *player = [GKLocalPlayer localPlayer];
+    if (!player.authenticated)
+        [gameCenter authenticateLocalPlayer];
+    else
+        [gameCenter submitScore:[Helper bestScore]
+                       category:@"cracker.morethan20s.bestscore"];
 }
 
 /** Called when local player was authenticated or logged off. */
 -(void) onLocalPlayerAuthenticationChanged
 {
-    
+    KKGameKitHelper *gameCenter = [KKGameKitHelper sharedGameKitHelper];
+    switch ([GameScene sharedGame].state) {
+        case kGameStateMenu:
+            [gameCenter showLeaderboard];
+            break;
+        case kGameStateOver:
+            
+            [gameCenter submitScore:[Helper bestScore]
+                           category:@"cracker.morethan20s.bestscore"];
+            break;
+        default:
+            break;
+    }
+    [gameCenter showLeaderboard];
 }
 
 /** Called when friend list was received from Game Center. */
@@ -204,7 +234,15 @@ failedWithError:(NSError *)error
 /** Called when scores where submitted. This can fail, so check for success. */
 -(void) onScoresSubmitted:(bool)success
 {
-    
+    if (success){
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success"
+                                                        message:@"Your score has been submitted!"
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+        [alert release];
+    }
 }
 /** Called when scores were received from Game Center. */
 -(void) onScoresReceived:(NSArray*)scores

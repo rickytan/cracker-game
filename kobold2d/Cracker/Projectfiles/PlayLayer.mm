@@ -15,7 +15,7 @@
 
 void ContactListener::BeginContact(b2Contact* contact)
 {
-    if (![CCDirector sharedDirector].currentDeviceIsSimulator)
+    //if (![CCDirector sharedDirector].currentDeviceIsSimulator)
         [GameScene sharedGame].state = kGameStateOver;
 }
 void ContactListener::EndContact(b2Contact *contact)
@@ -391,7 +391,7 @@ CGPoint positions[] = {
     if (director.currentDeviceIsSimulator == NO)
     {
         KKAcceleration* acceleration = input.deviceMotion.gravity;
-        b2Vec2 gravity = 10.0f * b2Vec2(acceleration.smoothedX, acceleration.smoothedY);
+        b2Vec2 gravity = 15.0f * b2Vec2(acceleration.smoothedX, acceleration.smoothedY);
         world->SetGravity(gravity);
     }
     
