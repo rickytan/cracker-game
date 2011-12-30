@@ -118,7 +118,7 @@
 
 - (void)level1
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:6];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:5.0];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:2];
@@ -129,7 +129,7 @@
 
 - (void)level2
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:2.0];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:3.0];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:3];
@@ -140,7 +140,7 @@
 
 - (void)level3
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.5];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:2.0];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:4];
@@ -151,7 +151,7 @@
 
 - (void)level4
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.0];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.5];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     CCRepeat *r = [CCRepeat actionWithAction:[CCSequence actions:d1, c1, nil] times:5];
@@ -162,7 +162,7 @@
 
 - (void)level5
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.0];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.5];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     CCCallFunc *c2 = [CCCallFunc actionWithTarget:self selector:@selector(increase)];
@@ -174,7 +174,7 @@
 
 - (void)level6
 {
-    CCDelayTime *d1 = [CCDelayTime actionWithDuration:0.6];
+    CCDelayTime *d1 = [CCDelayTime actionWithDuration:1.0];
     CCCallFunc *c1 = [CCCallFunc actionWithTarget:self
                                          selector:@selector(randomDirection)];
     
